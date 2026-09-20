@@ -6,7 +6,8 @@
     --bg:#060A09;
     --bg-glow: radial-gradient(60% 50% at 50% -10%, rgba(57,255,138,.10), transparent 60%),
                radial-gradient(45% 40% at 90% 10%, rgba(255,62,203,.06), transparent 60%);
-    --surface:#0C1512;
+    --surface:#0A1210;
+    --surface-top:#0F1B17;
     --surface-2:#121F1A;
     --surface-3:#182B24;
     --line:#1E332B;
@@ -42,7 +43,7 @@
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3{ font-family:'Chakra Petch',system-ui,sans-serif; text-wrap:balance; letter-spacing:.01em; }
+  h1{ font-family:'Chakra Petch',system-ui,sans-serif; text-wrap:balance; letter-spacing:.01em; }
   .mono{ font-family:'JetBrains Mono','Courier New',monospace; }
   .tabular{ font-variant-numeric:tabular-nums; font-family:'JetBrains Mono','Courier New',monospace; }
   button{ font-family:inherit; }
@@ -61,9 +62,9 @@
   .status{ display:flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); }
   .status .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); }
   .status.offline .dot{ background:var(--amber); box-shadow:0 0 8px var(--amber); }
-  .today{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+  .today{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
 
-  nav.tabs{ display:flex; gap:2px; background:var(--surface); padding:4px; border-radius:12px; border:1px solid var(--line); overflow-x:auto; }
+  nav.tabs{ display:flex; gap:2px; background:var(--surface-2); padding:4px; border-radius:12px; border:1px solid var(--line); overflow-x:auto; }
   nav.tabs button{
     flex:1 1 auto; min-width:56px; border:none; background:transparent; color:var(--ink-faint);
     font-family:'Chakra Petch',sans-serif; font-size:11px; font-weight:600; letter-spacing:.02em;
@@ -71,9 +72,20 @@
   }
   nav.tabs button.active{ background:var(--surface-3); color:var(--green); text-shadow:0 0 10px rgba(57,255,138,.5); box-shadow:inset 0 0 0 1px var(--line-bright); }
 
-  .card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:14px; box-shadow:var(--shadow); }
-  .card h2{ font-size:17px; font-weight:600; margin:0 0 4px; color:var(--ink); }
-  .card .sub{ font-size:12.5px; color:var(--ink-dim); margin:0 0 14px; }
+  .card{
+    position:relative;
+    background:linear-gradient(180deg,var(--surface-top),var(--surface));
+    border:1px solid rgba(57,255,138,.10);
+    border-radius:18px; padding:20px; margin-bottom:14px; box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; top:0; left:16px; right:16px; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(57,255,138,.45), transparent);
+  }
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--green); text-transform:uppercase; margin:0 0 5px; }
+  .card-title{ font-family:'Chakra Petch',sans-serif; font-size:18px; font-weight:600; margin:0; color:var(--ink); }
+  .card .sub{ font-size:12.5px; color:var(--ink-dim); margin:4px 0 14px; line-height:1.55; }
   .card .sub:last-child{ margin-bottom:0; }
   .card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
 
@@ -91,8 +103,7 @@
   .ring-wrap{ position:relative; flex:none; width:128px; height:128px; }
   .ring-wrap svg{ width:100%; height:100%; transform:rotate(-90deg); }
   .ring-wrap .ring-bg{ fill:none; stroke:var(--surface-3); stroke-width:11; }
-  .ring-wrap .ring-fg{ fill:none; stroke:var(--green); stroke-width:11; stroke-linecap:round; filter:drop-shadow(0 0 6px rgba(57,255,138,.85)); transition:stroke-dasharray .4s; }
-  .ring-wrap .ring-fg.over{ stroke:var(--magenta); filter:drop-shadow(0 0 6px rgba(255,79,216,.85)); }
+  .ring-wrap .ring-fg{ fill:none; stroke-width:11; stroke-linecap:round; transition:stroke-dasharray .4s; }
   .ring-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
   .ring-center .n{ font-size:25px; font-weight:700; line-height:1; color:var(--ink); }
   .ring-center .u{ font-size:10px; color:var(--ink-dim); margin-top:3px; letter-spacing:.03em; }
@@ -102,11 +113,12 @@
   .hero-side .row .v{ font-weight:700; color:var(--ink); }
 
   .macro{ margin-top:18px; }
-  .macro-row{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; }
-  .macro-row .l{ color:var(--ink-dim); font-weight:600; }
-  .macro-row .v{ font-weight:700; color:var(--ink); }
-  .macro-track{ height:7px; border-radius:99px; background:var(--surface-2); overflow:hidden; margin-bottom:6px; border:1px solid var(--line); }
-  .macro-fill{ height:100%; border-radius:99px; }
+  .macro-row{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .macro-dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .macro-row .l{ flex:1; color:var(--ink-dim); font-weight:600; font-size:12px; }
+  .macro-row .v{ font-weight:700; color:var(--ink); font-size:11.5px; }
+  .macro-track{ height:6px; border-radius:99px; background:var(--surface-2); overflow:hidden; margin-bottom:6px; border:1px solid var(--line); }
+  .macro-fill{ height:100%; border-radius:99px; display:block; }
   .macro-fill.p{ background:var(--green); box-shadow:0 0 8px rgba(57,255,138,.7); }
   .macro-fill.c{ background:var(--cyan); box-shadow:0 0 8px rgba(55,231,255,.7); }
   .macro-fill.g{ background:var(--magenta); box-shadow:0 0 8px rgba(255,79,216,.7); }
@@ -118,9 +130,9 @@
   .goal-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
   .goal-stat{ background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
   .goal-stat .l{ font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.04em; font-weight:700; font-family:'Chakra Petch',sans-serif; }
-  .goal-stat .v{ font-size:18px; font-weight:700; margin-top:3px; color:var(--ink); }
+  .goal-stat .v{ font-size:18px; font-weight:700; margin-top:3px; color:var(--ink); font-family:'JetBrains Mono',monospace; }
   .progress-track{ height:9px; border-radius:99px; background:var(--surface-2); overflow:hidden; margin:4px 0 6px; border:1px solid var(--line); }
-  .progress-fill{ height:100%; background:linear-gradient(90deg,var(--green-dim),var(--green)); border-radius:99px; box-shadow:0 0 10px rgba(57,255,138,.5); }
+  .progress-fill{ height:100%; background:linear-gradient(90deg,var(--green-dim),var(--green)); border-radius:99px; box-shadow:0 0 10px rgba(57,255,138,.5); display:block; }
   .progress-caption{ display:flex; justify-content:space-between; font-size:11px; color:var(--ink-dim); }
 
   .chart-wrap svg{ width:100%; height:auto; display:block; }
@@ -146,16 +158,17 @@
   .btn:disabled{ opacity:.45; cursor:default; box-shadow:none; }
 
   /* ---- meal rows with log actions ---- */
-  .meal-row{ display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid var(--line); border-left:3px solid transparent; padding-left:8px; margin-left:-8px; transition:border-color .15s; }
-  .meal-row:last-child{ border-bottom:none; }
-  .meal-row.status-eaten{ border-left-color:var(--green); }
-  .meal-row.status-planned{ border-left-color:var(--cyan); }
+  .meal-row{ display:flex; align-items:center; gap:10px; padding:12px 10px; border-radius:12px; margin-bottom:6px; border-left:3px solid transparent; }
+  .meal-row:last-child{ margin-bottom:0; }
+  .meal-row.status-eaten{ background:rgba(57,255,138,.05); border-left-color:var(--green); }
+  .meal-row.status-planned{ background:rgba(55,231,255,.05); border-left-color:var(--cyan); }
   .meal-row .info{ flex:1; min-width:0; }
   .meal-row .info .name{ font-weight:700; font-size:13.5px; color:var(--ink); }
   .meal-row .info .items{ font-size:11px; color:var(--ink-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .meal-row .kcal{ flex:none; font-weight:700; font-size:12px; color:var(--ink); }
+  .meal-row .kcal{ flex:none; font-weight:700; font-size:12px; color:var(--ink); font-family:'JetBrains Mono',monospace; }
   .meal-actions{ display:flex; gap:5px; flex:none; }
   .mini-btn{
+    display:flex; align-items:center; gap:4px;
     border:1px solid var(--line-bright); background:var(--surface-2); color:var(--ink-dim);
     font-family:'Chakra Petch',sans-serif; font-size:9.5px; font-weight:700; letter-spacing:.02em;
     padding:6px 7px; border-radius:7px; cursor:pointer; white-space:nowrap;
@@ -178,7 +191,7 @@
   .plan-meal:last-child{ margin-bottom:0; }
   .plan-meal-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:8px; }
   .plan-meal-head input.meal-name{ font-family:'Chakra Petch',sans-serif; font-size:16px; font-weight:600; border:none; background:transparent; padding:2px 0; width:auto; color:var(--green); }
-  .plan-meal-head .totals{ font-size:11.5px; color:var(--ink-dim); font-weight:700; white-space:nowrap; }
+  .plan-meal-head .totals{ font-size:11.5px; color:var(--ink-dim); font-weight:700; white-space:nowrap; font-family:'JetBrains Mono',monospace; }
   table.items{ width:100%; border-collapse:collapse; font-size:12px; }
   table.items th{ text-align:left; font-size:9.5px; text-transform:uppercase; color:var(--ink-faint); font-weight:700; padding:0 4px 6px; letter-spacing:.03em; }
   table.items td{ padding:3px 4px; vertical-align:middle; }
@@ -196,14 +209,14 @@
   .nutrient-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
   .nutrient-head .name{ font-weight:700; font-size:13.5px; color:var(--ink); }
   .nutrient-head .why{ font-size:10.5px; color:var(--ink-faint); }
-  .nutrient-head .amt{ font-size:12px; font-weight:700; }
+  .nutrient-head .amt{ font-size:12px; font-weight:700; font-family:'JetBrains Mono',monospace; }
   .nutrient-track{ height:8px; border-radius:99px; background:var(--surface-2); overflow:hidden; border:1px solid var(--line); }
-  .nutrient-fill{ height:100%; border-radius:99px; }
+  .nutrient-fill{ height:100%; border-radius:99px; display:block; }
   .nutrient-fill.ok{ background:var(--green); box-shadow:0 0 8px rgba(57,255,138,.6); }
   .nutrient-fill.warn{ background:var(--amber); box-shadow:0 0 8px rgba(255,201,74,.6); }
   .nutrient-fill.bad{ background:var(--red); box-shadow:0 0 8px rgba(255,84,112,.6); }
 
-  .ai-card{ border-color:var(--line-bright); }
+  .ai-card{ border-color:rgba(55,231,255,.18); }
   .ai-response{ background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-top:12px; font-size:13px; color:var(--ink); }
   .ai-response p{ margin:0 0 8px; }
   .ai-response p:last-child{ margin-bottom:0; }
@@ -217,22 +230,22 @@
   /* ---- gráficos tab ---- */
   .donut-wrap{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
   .donut{ width:140px; height:140px; border-radius:50%; position:relative; flex:none; }
-  .donut-hole{ position:absolute; inset:20px; background:var(--surface); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .donut-hole .n{ font-size:19px; font-weight:700; color:var(--ink); }
+  .donut-hole{ position:absolute; inset:20px; background:var(--surface); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px solid var(--line); }
+  .donut-hole .n{ font-size:19px; font-weight:700; color:var(--ink); font-family:'JetBrains Mono',monospace; }
   .donut-hole .u{ font-size:8.5px; color:var(--ink-dim); margin-top:2px; letter-spacing:.02em; }
   .donut-legend{ display:flex; flex-direction:column; gap:9px; font-size:12px; flex:1; min-width:140px; }
   .donut-legend .row{ display:flex; align-items:center; gap:8px; }
   .donut-legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; flex:none; }
   .donut-legend .lbl{ color:var(--ink-dim); flex:1; }
-  .donut-legend .val{ color:var(--ink); font-weight:700; }
+  .donut-legend .val{ color:var(--ink); font-weight:700; font-family:'JetBrains Mono',monospace; }
 
   .bar-item{ margin-bottom:12px; }
   .bar-item:last-child{ margin-bottom:0; }
   .bar-item-head{ display:flex; justify-content:space-between; gap:8px; font-size:12px; margin-bottom:4px; }
   .bar-item-head .name{ color:var(--ink); font-weight:600; }
-  .bar-item-head .val{ color:var(--ink-dim); flex:none; }
+  .bar-item-head .val{ color:var(--ink-dim); flex:none; font-family:'JetBrains Mono',monospace; }
   .bar-track{ height:9px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden; }
-  .bar-fill{ height:100%; border-radius:99px; }
+  .bar-fill{ height:100%; border-radius:99px; display:block; }
   .bar-fill.eaten{ background:var(--green); box-shadow:0 0 8px rgba(57,255,138,.6); }
   .bar-fill.planned{ background:var(--cyan); box-shadow:0 0 8px rgba(55,231,255,.6); }
   .bar-fill.pending{ background:var(--ink-faint); opacity:.6; }
@@ -241,7 +254,7 @@
   .hist-chart{ display:flex; align-items:flex-end; gap:7px; height:140px; position:relative; padding-top:10px; }
   .hist-chart .target-line{ position:absolute; left:0; right:0; border-top:1px dashed var(--magenta); opacity:.7; }
   .hist-bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; min-width:0; }
-  .hist-bar{ width:100%; max-width:26px; border-radius:6px 6px 3px 3px; min-height:3px; }
+  .hist-bar{ width:100%; max-width:26px; border-radius:6px 6px 3px 3px; min-height:3px; display:block; }
   .hist-bar.ok{ background:var(--green); box-shadow:0 0 8px rgba(57,255,138,.6); }
   .hist-bar.warn{ background:var(--amber); box-shadow:0 0 8px rgba(255,201,74,.6); }
   .hist-bar.bad{ background:var(--red); box-shadow:0 0 8px rgba(255,84,112,.6); }
@@ -251,7 +264,7 @@
   .report-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .report-item{ background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
   .report-item .l{ font-size:10px; color:var(--ink-dim); text-transform:uppercase; font-weight:700; letter-spacing:.02em; font-family:'Chakra Petch',sans-serif; }
-  .report-item .v{ font-size:16px; font-weight:700; margin-top:2px; color:var(--ink); }
+  .report-item .v{ font-size:16px; font-weight:700; margin-top:2px; color:var(--ink); font-family:'JetBrains Mono',monospace; }
   .report-item .v small{ font-size:10.5px; color:var(--ink-dim); font-weight:600; font-family:'Sora',sans-serif; }
 
   .field-row{ display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
@@ -289,6 +302,9 @@
 <script>
 (function(){
   "use strict";
+
+  var CLOCK_SVG = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 16 14"></polyline></svg>';
+  var CHECK_SVG = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 
   // ---------- baseline report (Relaxmedic, 20/09/2026) ----------
   var REPORT = {
@@ -373,6 +389,9 @@
   function escAttr(s){ return String(s==null?'':s).replace(/"/g,'&quot;'); }
   function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function statusForPct(pct){ return pct>=0.9?'ok':(pct>=0.5?'warn':'bad'); }
+  function cardHead(eyebrow, title){
+    return '<div class="eyebrow">'+eyebrow+'</div><div class="card-title">'+title+'</div>';
+  }
 
   function computeTargets(s){
     var factor = (ACTIVITY[s.activityLevel]||ACTIVITY.leve).factor;
@@ -667,6 +686,8 @@
     var over = consumed.kcal > targets.calorieTarget;
     var r = 54, circumference = 2*Math.PI*r;
     var dash = circumference*clamp(pct,0,1);
+    var ringStroke = over ? 'var(--magenta)' : 'url(#ringGrad)';
+    var ringGlow = over ? 'rgba(255,79,216,.6)' : 'rgba(57,255,138,.6)';
 
     var currentW = latestWeightKg();
     var status = computeStatus(s, targets, currentW);
@@ -686,8 +707,8 @@
           + '<div class="info"><div class="name">'+escHtml(meal.name)+'</div><div class="items">'+escHtml((meal.items||[]).map(function(it){return it.food;}).join(', '))+'</div></div>'
           + '<div class="kcal tabular">'+fmt(t.kcal)+' kcal</div>'
           + '<div class="meal-actions">'
-          +   '<button class="mini-btn plan'+(status2==='planned'?' active':'')+'" data-meal-status="'+escAttr(id)+'" data-status="planned">VOU COMER</button>'
-          +   '<button class="mini-btn eat'+(status2==='eaten'?' active':'')+'" data-meal-status="'+escAttr(id)+'" data-status="eaten">COMI</button>'
+          +   '<button class="mini-btn plan'+(status2==='planned'?' active':'')+'" data-meal-status="'+escAttr(id)+'" data-status="planned">'+CLOCK_SVG+'<span>VOU</span></button>'
+          +   '<button class="mini-btn eat'+(status2==='eaten'?' active':'')+'" data-meal-status="'+escAttr(id)+'" data-status="eaten">'+CHECK_SVG+'<span>COMI</span></button>'
           + '</div>'
           + '</div>';
       }).join('');
@@ -703,12 +724,13 @@
 
     return ''
       + '<div class="card">'
-      +   '<h2>CONSUMO DE HOJE</h2>'
-      +   '<p class="sub">Alta proteína, carboidrato quase zero — meta calculada a partir do seu perfil.</p>'
+      +   cardHead('PAINEL DIÁRIO','Consumo de hoje')
+      +   '<div class="sub">Alta proteína, carboidrato quase zero — meta calculada a partir do seu perfil.</div>'
       +   '<div class="hero">'
       +     '<div class="ring-wrap"><svg viewBox="0 0 128 128">'
+      +       '<defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="var(--green)"></stop><stop offset="100%" stop-color="var(--cyan)"></stop></linearGradient></defs>'
       +       '<circle class="ring-bg" cx="64" cy="64" r="'+r+'"></circle>'
-      +       '<circle class="ring-fg'+(over?' over':'')+'" cx="64" cy="64" r="'+r+'" stroke-dasharray="'+dash.toFixed(1)+' '+circumference.toFixed(1)+'"></circle>'
+      +       '<circle class="ring-fg" cx="64" cy="64" r="'+r+'" stroke-dasharray="'+dash.toFixed(1)+' '+circumference.toFixed(1)+'" style="stroke:'+ringStroke+';filter:drop-shadow(0 0 8px '+ringGlow+')"></circle>'
       +     '</svg><div class="ring-center"><div class="n tabular">'+fmt(consumed.kcal)+'</div><div class="u">DE '+fmt(targets.calorieTarget)+' KCAL</div></div></div>'
       +     '<div class="hero-side">'
       +       '<div class="row"><span class="l">Restante hoje</span><span class="v tabular">'+fmt(Math.max(0,targets.calorieTarget-consumed.kcal))+' kcal</span></div>'
@@ -725,10 +747,10 @@
 
       + '<div class="card">'
       +   '<div class="card-head">'
-      +     '<h2>META DE PESO</h2>'
+      +     '<div>'+cardHead('OBJETIVO','Meta de peso')+'</div>'
       +     '<span class="pill '+status.status+'">'+status.label+'</span>'
       +   '</div>'
-      +   '<p class="sub">'+fmt(s.startWeightKg,1)+' kg → '+fmt(s.targetWeightKg,1)+' kg · início em '+new Date(s.startDate+'T00:00:00').toLocaleDateString('pt-BR')+'</p>'
+      +   '<div class="sub">'+fmt(s.startWeightKg,1)+' kg → '+fmt(s.targetWeightKg,1)+' kg · início em '+new Date(s.startDate+'T00:00:00').toLocaleDateString('pt-BR')+'</div>'
       +   '<div class="goal-grid">'
       +     goalStat('Peso atual', fmt(currentW,1)+' kg')
       +     goalStat('Faltam', fmt(toGo,1)+' kg')
@@ -744,14 +766,14 @@
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>REFEIÇÕES DE HOJE</h2>'
-      +   '<p class="sub">Marque "VOU COMER" para planejar ou "COMI" assim que terminar — os cálculos atualizam na hora.</p>'
+      +   cardHead('REGISTRO','Refeições de hoje')
+      +   '<div class="sub">Marque "vou comer" para planejar ou "comi" assim que terminar — os cálculos atualizam na hora.</div>'
       +   mealRows
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>ITENS AVULSOS</h2>'
-      +   '<p class="sub">Lanches ou refeições fora do plano — entram já como comidos.</p>'
+      +   cardHead('EXTRA','Itens avulsos')
+      +   '<div class="sub">Lanches ou refeições fora do plano — entram já como comidos.</div>'
       +   customRows
       +   '<form class="add-form" id="addForm">'
       +     '<div><span class="lbl">Alimento</span><input type="text" id="af-name" placeholder="Ex: Peito de peru" required></div>'
@@ -766,7 +788,8 @@
 
   function macroBar(label, val, target, cls){
     var pct = clamp((val/(target||1))*100, 0, 100);
-    return '<div class="macro-row"><span class="l">'+label+'</span><span class="v tabular">'+fmt(val)+' / '+fmt(target)+' g</span></div>'
+    var dotColor = cls==='p'?'var(--green)':(cls==='c'?'var(--cyan)':'var(--magenta)');
+    return '<div class="macro-row"><span class="macro-dot" style="background:'+dotColor+'"></span><span class="l">'+label+'</span><span class="v tabular">'+fmt(val)+' / '+fmt(target)+' g</span></div>'
       + '<div class="macro-track" style="margin-bottom:14px"><div class="macro-fill '+cls+'" style="width:'+pct.toFixed(1)+'%"></div></div>';
   }
   function remainingBar(label, consumed, target, unit, cls){
@@ -774,7 +797,8 @@
     var over = consumed>target;
     var diff = Math.abs(target-consumed);
     var note = over ? ('+'+fmt(diff)+' '+unit+' acima da meta') : ('faltam '+fmt(diff)+' '+unit);
-    return '<div class="macro-row"><span class="l">'+label+'</span><span class="v tabular">'+fmt(consumed)+' / '+fmt(target)+' '+unit+'</span></div>'
+    var dotColor = cls==='p'?'var(--green)':(cls==='c'?'var(--cyan)':'var(--magenta)');
+    return '<div class="macro-row"><span class="macro-dot" style="background:'+dotColor+'"></span><span class="l">'+label+'</span><span class="v tabular">'+fmt(consumed)+' / '+fmt(target)+' '+unit+'</span></div>'
       + '<div class="macro-track"><div class="macro-fill '+(over?'over':cls)+'" style="width:'+pct.toFixed(1)+'%"></div></div>'
       + '<div class="remain-note'+(over?' over':'')+'">'+note+'</div>';
   }
@@ -837,6 +861,7 @@
     var W=560, H=180, padL=34, padR=10, padT=10, padB=22;
     function x(d){ return padL + ((d-startDate)/totalMs)*(W-padL-padR); }
     function y(w){ return padT + (1-((w-minW)/spanW))*(H-padT-padB); }
+    var baseline = H-padB;
 
     var gridLines = '', gridLabels = '';
     var steps = 3;
@@ -849,18 +874,24 @@
 
     var goalPath = 'M '+x(startDate).toFixed(1)+' '+y(s.startWeightKg).toFixed(1)+' L '+x(targetDate).toFixed(1)+' '+y(s.targetWeightKg).toFixed(1);
 
-    var actualPath = '', dots = '';
+    var actualPath = '', areaPath = '', dots = '', firstX = null, lastX = null;
     entries.forEach(function(e, i){
       var d = new Date(e.date+'T00:00:00');
       var px = x(d), py = y(e.weightKg);
+      if(firstX===null) firstX = px;
+      lastX = px;
       actualPath += (i===0?'M ':'L ')+px.toFixed(1)+' '+py.toFixed(1)+' ';
+      areaPath += (i===0?'M ':'L ')+px.toFixed(1)+' '+py.toFixed(1)+' ';
       dots += '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="3.5" fill="var(--green)" style="filter:drop-shadow(0 0 4px rgba(57,255,138,.9))"></circle>';
     });
+    if(entries.length){ areaPath += 'L '+lastX.toFixed(1)+' '+baseline+' L '+firstX.toFixed(1)+' '+baseline+' Z'; }
 
     var todayX = x(today);
 
     return '<div class="chart-wrap"><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'
+      + '<defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--green)" stop-opacity="0.28"></stop><stop offset="100%" stop-color="var(--green)" stop-opacity="0"></stop></linearGradient></defs>'
       + gridLines + gridLabels
+      + (areaPath ? '<path d="'+areaPath.trim()+'" fill="url(#areaGrad)"></path>' : '')
       + '<line x1="'+todayX.toFixed(1)+'" y1="'+padT+'" x2="'+todayX.toFixed(1)+'" y2="'+(H-padB)+'" stroke="var(--line-bright)" stroke-width="1" stroke-dasharray="2 3"></line>'
       + '<path d="'+goalPath+'" fill="none" stroke="var(--magenta)" stroke-width="2" stroke-dasharray="5 4" opacity="0.7"></path>'
       + (actualPath ? '<path d="'+actualPath.trim()+'" fill="none" stroke="var(--green)" stroke-width="2.5" style="filter:drop-shadow(0 0 4px rgba(57,255,138,.6))"></path>' : '')
@@ -906,44 +937,44 @@
 
     return ''
       + '<div class="card">'
-      +   '<h2>RESUMO DE HOJE</h2>'
-      +   '<p class="sub">De onde vieram as calorias que você já comeu.</p>'
+      +   cardHead('VISÃO GERAL','Resumo de hoje')
+      +   '<div class="sub">De onde vieram as calorias que você já comeu.</div>'
       +   renderMacroDonut(consumed)
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>META QUE FALTA BATER</h2>'
-      +   '<p class="sub">Quanto falta hoje para fechar cada meta.</p>'
+      +   cardHead('PROGRESSO','Meta que falta bater')
+      +   '<div class="sub">Quanto falta hoje para fechar cada meta.</div>'
       +   remainingBar('Calorias', consumed.kcal, targets.calorieTarget, 'kcal', 'p')
       +   remainingBar('Proteína', consumed.p, targets.proteinG, 'g', 'p')
       +   remainingBar('Carboidrato', consumed.c, targets.carbsG, 'g', 'c')
       +   remainingBar('Gordura', consumed.g, targets.fatG, 'g', 'g')
-      +   '<div class="goal-grid" style="margin-top:6px">'
+      +   '<div class="goal-grid" style="grid-template-columns:1fr 1fr;margin-top:6px">'
       +     goalStat('Peso p/ meta', fmt(toGoKg,1)+' kg')
       +     goalStat('Semanas no ritmo', weeksLeft==null?'—':String(weeksLeft))
       +   '</div>'
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>O QUE COMI HOJE</h2>'
+      +   cardHead('REGISTRADO','O que comi hoje')
       +   eatenListHtml
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>O QUE FALTA COMER</h2>'
-      +   '<p class="sub">Refeições do plano ainda não marcadas como "COMI".</p>'
+      +   cardHead('PENDENTE','O que falta comer')
+      +   '<div class="sub">Refeições do plano ainda não marcadas como "comi".</div>'
       +   remainListHtml
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>HISTÓRICO DE CALORIAS</h2>'
-      +   '<p class="sub">Últimos dias registrados vs. sua meta calórica atual.</p>'
+      +   cardHead('TENDÊNCIA','Histórico de calorias')
+      +   '<div class="sub">Últimos dias registrados vs. sua meta calórica atual.</div>'
       +   renderHistoryChart(state.dailyHistory, targets.calorieTarget)
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>EVOLUÇÃO DE PESO</h2>'
-      +   '<p class="sub">'+fmt(s.startWeightKg,1)+' kg → '+fmt(s.targetWeightKg,1)+' kg.</p>'
+      +   cardHead('PESO','Evolução de peso')
+      +   '<div class="sub">'+fmt(s.startWeightKg,1)+' kg → '+fmt(s.targetWeightKg,1)+' kg.</div>'
       +   renderWeightChart(s, targets, timeline)
       + '</div>';
   }
@@ -981,16 +1012,16 @@
     return ''
       + '<div class="card">'
       +   '<div class="card-head">'
-      +     '<h2>NUTRIENTES ESSENCIAIS</h2>'
+      +     '<div>'+cardHead('NUTRIENTES','Nutrientes essenciais')+'</div>'
       +     '<span class="pill '+summaryStatus+'">'+(shortfallCount===0?'TUDO EM DIA':shortfallCount+' EM RISCO')+'</span>'
       +   '</div>'
-      +   '<p class="sub">Sem frutas nem verduras, fibra, vitamina C, potássio, magnésio e folato tendem a ficar abaixo do ideal. Acompanhe aqui e ajuste com a ajuda da IA.</p>'
+      +   '<div class="sub">Sem frutas nem verduras, fibra, vitamina C, potássio, magnésio e folato tendem a ficar abaixo do ideal. Acompanhe aqui e ajuste com a ajuda da IA.</div>'
       +   rows
       + '</div>'
 
       + '<div class="card ai-card">'
-      +   '<h2>ASSISTENTE NUTRICIONAL · IA</h2>'
-      +   '<p class="sub">'+(aiUnavailable ? 'Assistente de IA indisponível nesta visualização.' : 'Conectado à IA do Claude para sugerir como fechar as metas do dia sem fugir da dieta.')+'</p>'
+      +   cardHead('IA','Assistente nutricional')
+      +   '<div class="sub">'+(aiUnavailable ? 'Assistente de IA indisponível nesta visualização.' : 'Conectado à IA do Claude para sugerir como fechar as metas do dia sem fugir da dieta.')+'</div>'
       +   '<button class="btn primary" id="askDeficiencyBtn" style="width:100%" '+(aiUnavailable||state.aiState==='loading'?'disabled':'')+'>'+(state.aiState==='loading'?'PENSANDO…':'PEDIR SUGESTÃO PARA HOJE')+'</button>'
       +   '<form class="ask-form" id="askFreeForm">'
       +     '<textarea id="af-question" placeholder="Ou pergunte algo específico, ex: como repor magnésio sem verdura?" '+(aiUnavailable?'disabled':'')+'></textarea>'
@@ -1032,8 +1063,8 @@
 
     return ''
       + '<div class="card">'
-      +   '<h2>PLANO ALIMENTAR</h2>'
-      +   '<p class="sub">Alta proteína, praticamente sem carboidrato, sem frutas e sem verduras. Ajuste alimentos e quantidades — salva automaticamente.</p>'
+      +   cardHead('DIETA','Plano alimentar')
+      +   '<div class="sub">Alta proteína, praticamente sem carboidrato, sem frutas e sem verduras. Ajuste alimentos e quantidades — salva automaticamente.</div>'
       +   '<div class="goal-grid">'
       +     goalStat('Total do plano', fmt(dayTotal.kcal)+' kcal')
       +     goalStat('Meta diária', fmt(targets.calorieTarget)+' kcal')
@@ -1055,8 +1086,8 @@
 
     return ''
       + '<div class="card">'
-      +   '<h2>RELATÓRIO DE BIOIMPEDÂNCIA</h2>'
-      +   '<p class="sub">'+REPORT.name+' · '+REPORT.sex+' · '+REPORT.age+' anos · '+REPORT.heightCm+' cm · medido em '+REPORT.examDate+'</p>'
+      +   cardHead('EXAME','Relatório de bioimpedância')
+      +   '<div class="sub">'+REPORT.name+' · '+REPORT.sex+' · '+REPORT.age+' anos · '+REPORT.heightCm+' cm · medido em '+REPORT.examDate+'</div>'
       +   '<div class="report-grid">'
       +     reportItem('Peso no exame', fmt(REPORT.weightKg,1), 'kg')
       +     reportItem('Gordura corporal', fmt(REPORT.bodyFatPct,1), '% · '+fmt(REPORT.bodyFatKg,1)+' kg')
@@ -1068,7 +1099,7 @@
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>MEUS DADOS</h2>'
+      +   cardHead('CONFIGURAÇÃO','Meus dados')
       +   '<div class="field-row"><label for="p-start">Peso inicial (kg)</label><input type="number" id="p-start" step="0.1" value="'+s.startWeightKg+'"></div>'
       +   '<div class="field-row"><label for="p-target">Peso alvo (kg)</label><input type="number" id="p-target" step="0.1" value="'+s.targetWeightKg+'"></div>'
       +   '<div class="field-row"><label for="p-date">Início do acompanhamento</label><input type="text" id="p-date" value="'+s.startDate+'" placeholder="AAAA-MM-DD"></div>'
@@ -1078,13 +1109,13 @@
       + '</div>'
 
       + '<div class="card">'
-      +   '<h2>SUAS METAS CALCULADAS</h2>'
+      +   cardHead('RESULTADO','Suas metas calculadas')
       +   '<div class="goal-grid">'
       +     goalStat('TDEE estimado', fmt(targets.tdee)+' kcal')
       +     goalStat('Meta calórica', fmt(targets.calorieTarget)+' kcal')
       +     goalStat('Perda semanal', '-'+fmt(targets.weeklyLossKg,2)+' kg')
       +   '</div>'
-      +   '<p class="sub" style="margin-top:12px">Proteína: '+fmt(targets.proteinG)+' g (alta, '+PROTEIN_PER_KG_LEAN+' g/kg de massa magra) · Carboidrato: até '+fmt(targets.carbsG)+' g · Gordura: '+fmt(targets.fatG)+' g por dia.</p>'
+      +   '<div class="sub" style="margin-top:12px">Proteína: '+fmt(targets.proteinG)+' g (alta, '+PROTEIN_PER_KG_LEAN+' g/kg de massa magra) · Carboidrato: até '+fmt(targets.carbsG)+' g · Gordura: '+fmt(targets.fatG)+' g por dia.</div>'
       + '</div>'
       + (state.dbAvailable===false ? '<div class="card"><p class="sub" style="margin:0">Sincronização indisponível nesta visualização — seus dados ficam salvos apenas enquanto esta aba estiver aberta.</p></div>' : '');
   }
