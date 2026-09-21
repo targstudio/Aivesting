@@ -186,6 +186,14 @@
   .add-form input{ padding:8px; font-size:12.5px; }
   .add-form .lbl{ font-size:9px; color:var(--ink-faint); text-transform:uppercase; margin-bottom:3px; display:block; letter-spacing:.03em; }
 
+  /* ---- food picker (database-backed) ---- */
+  .food-picker{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); }
+  .food-picker .food-select{ flex:1 1 150px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink); border-radius:8px; padding:9px 8px; font-size:12px; }
+  .food-picker .food-qty{ width:64px; padding:9px 8px; font-size:12px; flex:none; }
+  .food-picker .food-unit{ font-size:10.5px; color:var(--ink-dim); font-family:'JetBrains Mono',monospace; flex:none; }
+  .food-picker .food-preview{ font-size:11px; color:var(--green); font-weight:700; margin-left:auto; font-family:'JetBrains Mono',monospace; }
+  .manual-toggle{ background:none; border:none; color:var(--ink-faint); font-size:11px; text-decoration:underline; cursor:pointer; padding:8px 0 0; font-family:'Sora',sans-serif; }
+
   /* ---- meal plan editor ---- */
   .plan-meal{ margin-bottom:18px; }
   .plan-meal:last-child{ margin-bottom:0; }
@@ -347,6 +355,85 @@
     mg:    {label:'Magnésio', unit:'mg', target:420, why:'sono e recuperação muscular'},
     fol:   {label:'Folato', unit:'mcg', target:400, why:'produção de glóbulos vermelhos'}
   };
+
+  // Food database for the picker — nutrients per 100g ("g" basis) or per typical unit ("unit" basis).
+  var FOODS = [
+    // Carnes
+    {id:'picanha', name:'Picanha grelhada', cat:'Carnes', basis:'g', per100:{kcal:230,p:26,c:0,g:14,fiber:0,vitc:0,k:320,mg:22,fol:7}},
+    {id:'alcatra', name:'Alcatra grelhada', cat:'Carnes', basis:'g', per100:{kcal:190,p:32,c:0,g:7,fiber:0,vitc:0,k:340,mg:24,fol:8}},
+    {id:'contrafile', name:'Contrafilé grelhado', cat:'Carnes', basis:'g', per100:{kcal:220,p:30,c:0,g:11,fiber:0,vitc:0,k:330,mg:23,fol:8}},
+    {id:'patinho', name:'Patinho moído refogado', cat:'Carnes', basis:'g', per100:{kcal:172,p:31,c:0,g:5,fiber:0,vitc:0,k:350,mg:25,fol:9}},
+    {id:'frango-peito', name:'Peito de frango grelhado', cat:'Carnes', basis:'g', per100:{kcal:165,p:31,c:0,g:3.6,fiber:0,vitc:0,k:256,mg:29,fol:4}},
+    {id:'frango-coxa', name:'Coxa/sobrecoxa de frango assada', cat:'Carnes', basis:'g', per100:{kcal:250,p:26,c:0,g:16,fiber:0,vitc:0,k:230,mg:22,fol:9}},
+    {id:'costela-suina', name:'Costela suína assada', cat:'Carnes', basis:'g', per100:{kcal:280,p:25,c:0,g:20,fiber:0,vitc:0,k:270,mg:20,fol:5}},
+    {id:'lombo-suino', name:'Lombo suíno assado', cat:'Carnes', basis:'g', per100:{kcal:210,p:28,c:0,g:10,fiber:0,vitc:0,k:310,mg:22,fol:6}},
+    {id:'bacon', name:'Bacon frito', cat:'Carnes', basis:'g', per100:{kcal:541,p:37,c:1.4,g:42,fiber:0,vitc:0,k:280,mg:18,fol:2}},
+    {id:'linguica', name:'Linguiça toscana grelhada', cat:'Carnes', basis:'g', per100:{kcal:300,p:15,c:2,g:26,fiber:0,vitc:0,k:220,mg:14,fol:3}},
+    {id:'carne-seca', name:'Carne seca dessalgada cozida', cat:'Carnes', basis:'g', per100:{kcal:200,p:35,c:0,g:6,fiber:0,vitc:0,k:290,mg:24,fol:6}},
+    // Peixes e frutos do mar
+    {id:'salmao', name:'Salmão grelhado', cat:'Peixes e frutos do mar', basis:'g', per100:{kcal:208,p:20,c:0,g:13,fiber:0,vitc:0,k:333,mg:28,fol:11}},
+    {id:'tilapia', name:'Tilápia grelhada', cat:'Peixes e frutos do mar', basis:'g', per100:{kcal:128,p:26,c:0,g:2.7,fiber:0,vitc:0,k:380,mg:34,fol:8}},
+    {id:'atum-lata', name:'Atum em água (lata, escorrido)', cat:'Peixes e frutos do mar', basis:'g', per100:{kcal:116,p:26,c:0,g:1,fiber:0,vitc:0,k:260,mg:30,fol:3}},
+    {id:'camarao', name:'Camarão cozido', cat:'Peixes e frutos do mar', basis:'g', per100:{kcal:99,p:24,c:0.2,g:0.3,fiber:0,vitc:2,k:220,mg:39,fol:3}},
+    {id:'bacalhau', name:'Bacalhau dessalgado cozido', cat:'Peixes e frutos do mar', basis:'g', per100:{kcal:105,p:23,c:0,g:1,fiber:0,vitc:0,k:270,mg:26,fol:5}},
+    // Sushi (por peça)
+    {id:'nigiri-salmao', name:'Nigiri de salmão', cat:'Sushi', basis:'unit', unitLabel:'peça (~25g)', perUnit:{kcal:48,p:3,c:7,g:1,fiber:0,vitc:0,k:35,mg:6,fol:3}},
+    {id:'nigiri-atum', name:'Nigiri de atum', cat:'Sushi', basis:'unit', unitLabel:'peça (~25g)', perUnit:{kcal:45,p:4,c:6,g:0.5,fiber:0,vitc:0,k:38,mg:6,fol:2}},
+    {id:'sashimi-salmao', name:'Sashimi de salmão (fatia)', cat:'Sushi', basis:'unit', unitLabel:'fatia (~20g)', perUnit:{kcal:38,p:4,c:0,g:2.5,fiber:0,vitc:0,k:60,mg:5,fol:2}},
+    {id:'uramaki-philadelphia', name:'Uramaki philadelphia', cat:'Sushi', basis:'unit', unitLabel:'peça (~30g)', perUnit:{kcal:60,p:2,c:8,g:2,fiber:0.3,vitc:0,k:30,mg:4,fol:2}},
+    {id:'hot-roll', name:'Hot roll (empanado)', cat:'Sushi', basis:'unit', unitLabel:'peça (~30g)', perUnit:{kcal:75,p:3,c:7,g:4,fiber:0.3,vitc:0,k:28,mg:4,fol:2}},
+    {id:'temaki-salmao', name:'Temaki de salmão', cat:'Sushi', basis:'unit', unitLabel:'unidade (~150g)', perUnit:{kcal:280,p:10,c:45,g:7,fiber:1,vitc:0,k:150,mg:20,fol:8}},
+    // Queijos
+    {id:'queijo-minas', name:'Queijo minas frescal', cat:'Queijos', basis:'g', per100:{kcal:264,p:17,c:3,g:20,fiber:0,vitc:0,k:80,mg:14,fol:25}},
+    {id:'queijo-mussarela', name:'Queijo mussarela', cat:'Queijos', basis:'g', per100:{kcal:330,p:22,c:2,g:26,fiber:0,vitc:0,k:95,mg:18,fol:20}},
+    {id:'queijo-prato', name:'Queijo prato', cat:'Queijos', basis:'g', per100:{kcal:360,p:23,c:1.5,g:29,fiber:0,vitc:0,k:90,mg:16,fol:18}},
+    {id:'queijo-coalho', name:'Queijo coalho grelhado', cat:'Queijos', basis:'g', per100:{kcal:320,p:22,c:1,g:25,fiber:0,vitc:0,k:60,mg:16,fol:10}},
+    {id:'queijo-parmesao', name:'Queijo parmesão ralado', cat:'Queijos', basis:'g', per100:{kcal:420,p:38,c:3,g:29,fiber:0,vitc:0,k:110,mg:44,fol:8}},
+    {id:'queijo-provolone', name:'Queijo provolone', cat:'Queijos', basis:'g', per100:{kcal:350,p:25,c:2,g:27,fiber:0,vitc:0,k:90,mg:16,fol:16}},
+    {id:'queijo-cottage', name:'Queijo cottage', cat:'Queijos', basis:'g', per100:{kcal:98,p:11,c:3,g:4.3,fiber:0,vitc:0,k:104,mg:8,fol:16}},
+    {id:'cream-cheese', name:'Cream cheese', cat:'Queijos', basis:'g', per100:{kcal:342,p:6,c:4,g:34,fiber:0,vitc:0,k:130,mg:10,fol:11}},
+    {id:'queijo-gorgonzola', name:'Queijo gorgonzola', cat:'Queijos', basis:'g', per100:{kcal:353,p:21,c:2,g:29,fiber:0,vitc:0,k:256,mg:23,fol:36}},
+    {id:'queijo-cheddar', name:'Queijo cheddar', cat:'Queijos', basis:'g', per100:{kcal:403,p:25,c:1.3,g:33,fiber:0,vitc:0,k:98,mg:28,fol:18}},
+    {id:'requeijao', name:'Requeijão cremoso', cat:'Queijos', basis:'g', per100:{kcal:257,p:9,c:3,g:23,fiber:0,vitc:0,k:100,mg:12,fol:12}},
+    // Ovos e laticínios
+    {id:'ovo-cozido', name:'Ovo cozido', cat:'Ovos e laticínios', basis:'unit', unitLabel:'unidade (~50g)', perUnit:{kcal:70,p:6,c:0.6,g:5,fiber:0,vitc:0,k:70,mg:6,fol:12}},
+    {id:'ovo-mexido', name:'Ovo mexido na manteiga', cat:'Ovos e laticínios', basis:'unit', unitLabel:'unidade', perUnit:{kcal:90,p:6,c:0.5,g:7,fiber:0,vitc:0,k:75,mg:6,fol:12}},
+    {id:'iogurte-natural', name:'Iogurte natural integral', cat:'Ovos e laticínios', basis:'g', per100:{kcal:61,p:3.5,c:4.7,g:3.3,fiber:0,vitc:0.5,k:155,mg:12,fol:6}},
+    // Suplementos
+    {id:'whey', name:'Whey protein isolado', cat:'Suplementos', basis:'unit', unitLabel:'dose (~30g)', perUnit:{kcal:120,p:27,c:1,g:1,fiber:0,vitc:0,k:150,mg:10,fol:0}},
+    // Oleaginosas e gorduras
+    {id:'castanha-para', name:'Castanha-do-pará', cat:'Oleaginosas e gorduras', basis:'g', per100:{kcal:656,p:14,c:12,g:66,fiber:8,vitc:0,k:650,mg:376,fol:22}},
+    {id:'amendoas', name:'Amêndoas', cat:'Oleaginosas e gorduras', basis:'g', per100:{kcal:579,p:21,c:22,g:50,fiber:13,vitc:0,k:733,mg:270,fol:44}},
+    {id:'noz', name:'Noz', cat:'Oleaginosas e gorduras', basis:'g', per100:{kcal:654,p:15,c:14,g:65,fiber:7,vitc:1,k:441,mg:158,fol:98}},
+    {id:'azeite', name:'Azeite de oliva extra virgem', cat:'Oleaginosas e gorduras', basis:'g', per100:{kcal:884,p:0,c:0,g:100,fiber:0,vitc:0,k:1,mg:0,fol:0}},
+    {id:'manteiga', name:'Manteiga', cat:'Oleaginosas e gorduras', basis:'g', per100:{kcal:717,p:0.9,c:0.1,g:81,fiber:0,vitc:0,k:24,mg:2,fol:3}},
+    {id:'ghee', name:'Manteiga ghee', cat:'Oleaginosas e gorduras', basis:'g', per100:{kcal:900,p:0,c:0,g:100,fiber:0,vitc:0,k:5,mg:0,fol:0}},
+    // Embutidos
+    {id:'presunto', name:'Presunto fatiado', cat:'Embutidos', basis:'unit', unitLabel:'fatia (~20g)', perUnit:{kcal:25,p:4,c:0.5,g:1,fiber:0,vitc:0,k:45,mg:3,fol:1}},
+    {id:'peito-peru', name:'Peito de peru fatiado', cat:'Embutidos', basis:'unit', unitLabel:'fatia (~20g)', perUnit:{kcal:20,p:4,c:0.5,g:0.3,fiber:0,vitc:0,k:50,mg:3,fol:1}},
+    {id:'salame', name:'Salame fatiado', cat:'Embutidos', basis:'unit', unitLabel:'fatia (~10g)', perUnit:{kcal:42,p:2.3,c:0.2,g:3.6,fiber:0,vitc:0,k:35,mg:2,fol:1}}
+  ];
+  function foodById(id){ for(var i=0;i<FOODS.length;i++){ if(FOODS[i].id===id) return FOODS[i]; } return null; }
+  function foodOptionsHtml(){
+    var cats = {}, order = [];
+    FOODS.forEach(function(f){
+      if(!cats[f.cat]){ cats[f.cat]=[]; order.push(f.cat); }
+      cats[f.cat].push(f);
+    });
+    return order.map(function(cat){
+      return '<optgroup label="'+escAttr(cat)+'">'+cats[cat].map(function(f){
+        return '<option value="'+f.id+'">'+escHtml(f.name)+'</option>';
+      }).join('')+'</optgroup>';
+    }).join('');
+  }
+  function computeFoodNutrients(food, qty){
+    if(!food || !qty) return null;
+    var per = food.basis==='g' ? food.per100 : food.perUnit;
+    var factor = food.basis==='g' ? (qty/100) : qty;
+    var out = {};
+    Object.keys(per).forEach(function(k){ out[k] = +((per[k]*factor).toFixed(2)); });
+    return out;
+  }
 
   var PLAN_VERSION = 2;
 
@@ -773,16 +860,18 @@
 
       + '<div class="card">'
       +   cardHead('EXTRA','Itens avulsos')
-      +   '<div class="sub">Lanches ou refeições fora do plano — entram já como comidos.</div>'
+      +   '<div class="sub">Lanches ou refeições fora do plano — escolha da lista e o kcal é calculado sozinho.</div>'
       +   customRows
-      +   '<form class="add-form" id="addForm">'
+      +   foodPickerHtml('avulso')
+      +   '<button class="manual-toggle" type="button" id="toggleManualForm">+ adicionar item manualmente (fora da lista)</button>'
+      +   '<form class="add-form" id="addForm" hidden>'
       +     '<div><span class="lbl">Alimento</span><input type="text" id="af-name" placeholder="Ex: Peito de peru" required></div>'
       +     '<div><span class="lbl">Kcal</span><input type="number" id="af-kcal" min="0" step="1" required></div>'
       +     '<div><span class="lbl">Prot. g</span><input type="number" id="af-p" min="0" step="0.1" value="0"></div>'
       +     '<div><span class="lbl">Carb. g</span><input type="number" id="af-c" min="0" step="0.1" value="0"></div>'
       +     '<div><span class="lbl">Gord. g</span><input type="number" id="af-g" min="0" step="0.1" value="0"></div>'
       +   '</form>'
-      +   '<button class="btn ghost" id="addEntryBtn" style="margin-top:8px;width:100%">+ ADICIONAR ITEM</button>'
+      +   '<button class="btn ghost" id="addEntryBtn" style="margin-top:8px;width:100%" hidden>+ ADICIONAR ITEM MANUAL</button>'
       + '</div>';
   }
 
@@ -1057,14 +1146,15 @@
         + '<table class="items"><thead><tr><th>Alimento</th><th>Qtd.</th><th>Kcal</th><th>P</th><th>C</th><th>G</th><th></th></tr></thead><tbody>'
         + rows
         + '</tbody></table>'
-        + '<button class="btn tiny ghost" data-add-item="'+escAttr(meal.id)+'" style="margin-top:6px">+ ITEM</button>'
+        + foodPickerHtml(meal.id)
+        + '<button class="manual-toggle" type="button" data-add-item="'+escAttr(meal.id)+'">+ adicionar item manualmente (fora da lista)</button>'
         + '</div>';
     }).join('');
 
     return ''
       + '<div class="card">'
       +   cardHead('DIETA','Plano alimentar')
-      +   '<div class="sub">Alta proteína, praticamente sem carboidrato, sem frutas e sem verduras. Ajuste alimentos e quantidades — salva automaticamente.</div>'
+      +   '<div class="sub">Alta proteína, praticamente sem carboidrato, sem frutas e sem verduras. Escolha o alimento e a quantidade na lista — o cálculo de kcal e macros é automático.</div>'
       +   '<div class="goal-grid">'
       +     goalStat('Total do plano', fmt(dayTotal.kcal)+' kcal')
       +     goalStat('Meta diária', fmt(targets.calorieTarget)+' kcal')
@@ -1120,6 +1210,37 @@
       + (state.dbAvailable===false ? '<div class="card"><p class="sub" style="margin:0">Sincronização indisponível nesta visualização — seus dados ficam salvos apenas enquanto esta aba estiver aberta.</p></div>' : '');
   }
 
+  function onFoodSelectChange(pickerId){
+    var sel = document.querySelector('[data-food-select="'+pickerId+'"]');
+    var qtyInp = document.querySelector('[data-food-qty="'+pickerId+'"]');
+    if(!sel || !qtyInp) return;
+    var food = foodById(sel.value);
+    if(food){ qtyInp.value = food.basis==='unit' ? 1 : 100; }
+    updateFoodPickerPreview(pickerId);
+  }
+  function updateFoodPickerPreview(pickerId){
+    var sel = document.querySelector('[data-food-select="'+pickerId+'"]');
+    var qtyInp = document.querySelector('[data-food-qty="'+pickerId+'"]');
+    var unitEl = document.getElementById('food-unit-'+pickerId);
+    var prevEl = document.getElementById('food-preview-'+pickerId);
+    if(!sel || !qtyInp) return;
+    var food = foodById(sel.value);
+    if(!food){ if(unitEl) unitEl.textContent='g'; if(prevEl) prevEl.textContent='—'; return; }
+    if(unitEl) unitEl.textContent = food.basis==='unit' ? (food.unitLabel||'unid') : 'g';
+    var qty = parseFloat(qtyInp.value)||0;
+    var n = computeFoodNutrients(food, qty);
+    if(prevEl) prevEl.textContent = n ? ('≈ '+fmt(n.kcal)+' kcal') : '—';
+  }
+  function foodPickerHtml(pickerId){
+    return '<div class="food-picker">'
+      + '<select class="food-select" data-food-select="'+escAttr(pickerId)+'"><option value="">Escolher alimento…</option>'+foodOptionsHtml()+'</select>'
+      + '<input type="number" class="food-qty" data-food-qty="'+escAttr(pickerId)+'" min="0" step="1" value="100">'
+      + '<span class="food-unit" id="food-unit-'+escAttr(pickerId)+'">g</span>'
+      + '<span class="food-preview tabular" id="food-preview-'+escAttr(pickerId)+'">—</span>'
+      + '<button class="btn tiny primary" type="button" data-add-food="'+escAttr(pickerId)+'">+ ADICIONAR</button>'
+      + '</div>';
+  }
+
   function reportItem(label, value, unit){
     return '<div class="report-item"><div class="l">'+label+'</div><div class="v tabular">'+value+' <small>'+unit+'</small></div></div>';
   }
@@ -1169,6 +1290,48 @@
         });
       });
     }
+    var toggleManualForm = document.getElementById('toggleManualForm');
+    if(toggleManualForm){
+      toggleManualForm.addEventListener('click', function(){
+        var form = document.getElementById('addForm');
+        var btn = document.getElementById('addEntryBtn');
+        if(form) form.hidden = !form.hidden;
+        if(btn) btn.hidden = !btn.hidden;
+      });
+    }
+
+    // food picker (database-backed): search/select + qty -> auto-computed kcal & macros
+    view.querySelectorAll('[data-food-select]').forEach(function(sel){
+      sel.addEventListener('change', function(){ onFoodSelectChange(sel.getAttribute('data-food-select')); });
+    });
+    view.querySelectorAll('[data-food-qty]').forEach(function(inp){
+      inp.addEventListener('input', function(){ updateFoodPickerPreview(inp.getAttribute('data-food-qty')); });
+    });
+    view.querySelectorAll('[data-add-food]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var pickerId = btn.getAttribute('data-add-food');
+        var sel = view.querySelector('[data-food-select="'+pickerId+'"]');
+        var qtyInp = view.querySelector('[data-food-qty="'+pickerId+'"]');
+        if(!sel || !qtyInp) return;
+        var food = foodById(sel.value);
+        var qty = parseFloat(qtyInp.value)||0;
+        if(!food || qty<=0) return;
+        var n = computeFoodNutrients(food, qty);
+        if(!n) return;
+        var qtyLabel = food.basis==='unit' ? (qty+' '+(food.unitLabel||'unid')) : (qty+' g');
+        if(pickerId==='avulso'){
+          addCustomEntry({ name:food.name, kcal:n.kcal, p:n.p, c:n.c, g:n.g, fiber:n.fiber, vitc:n.vitc, k:n.k, mg:n.mg, fol:n.fol });
+        } else {
+          var meal = JSON.parse(JSON.stringify(state.plan[pickerId]));
+          meal.items = meal.items || [];
+          meal.items.push({ food:food.name, qty:qtyLabel, kcal:n.kcal, p:n.p, c:n.c, g:n.g, fiber:n.fiber, vitc:n.vitc, k:n.k, mg:n.mg, fol:n.fol });
+          saveMeal(meal);
+        }
+        sel.value = '';
+        qtyInp.value = 100;
+        updateFoodPickerPreview(pickerId);
+      });
+    });
 
     // plan editing
     view.querySelectorAll('input[data-plan]').forEach(function(inp){
