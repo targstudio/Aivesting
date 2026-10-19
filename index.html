@@ -199,7 +199,24 @@
   .exercise-row{ display:flex; justify-content:space-between; padding:8px 0; border-top:1px dashed var(--line); font-size:13px; }
   .exercise-row:first-child{ border-top:none; }
   .exercise-row .ex-name{ color:var(--ink); font-weight:700; }
-  .exercise-row .ex-sets{ color:var(--ink-dim); font-weight:700; }
+  .exercise-row .ex-sets{ color:var(--ink-dim); font-weight:700; text-align:right; flex:none; margin-left:10px; }
+  .day-note{ background:var(--primary-soft); color:var(--primary-dark); border-radius:14px; padding:10px 12px; font-size:12.5px; line-height:1.45; margin-bottom:6px; }
+
+  /* ---- foto do prato ---- */
+  .photo-btn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:var(--primary); color:#fff; border-radius:14px; padding:14px; font-weight:800; font-size:14px; cursor:pointer; }
+  .photo-btn svg{ width:20px; height:20px; }
+  .photo-btn.disabled{ opacity:.45; pointer-events:none; }
+  .photo-input{ position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+  .photo-preview{ width:100%; max-height:240px; object-fit:cover; border-radius:16px; margin-top:14px; display:block; }
+  .photo-status{ font-size:13px; color:var(--ink-dim); margin-top:12px; text-align:center; }
+  .photo-status.error{ color:#A32E2E; }
+  .photo-result{ margin-top:14px; }
+  .photo-total{ display:flex; justify-content:space-between; align-items:baseline; background:var(--mint); border-radius:14px; padding:12px 14px; margin-top:10px; }
+  .photo-total .l{ font-size:12.5px; font-weight:800; color:var(--mint-ink); }
+  .photo-total .v{ font-size:18px; font-weight:900; color:var(--mint-ink); }
+  .photo-note{ font-size:12px; color:var(--ink-dim); margin-top:10px; line-height:1.45; }
+  .photo-actions{ display:flex; gap:8px; margin-top:14px; }
+  .photo-actions .btn{ flex:1; }
 
   /* ---- charts ---- */
   .chart-wrap svg{ width:100%; height:auto; display:block; }
@@ -268,7 +285,8 @@
     check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
     clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>',
     gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.97 7.97 0 0 0 0-2l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.7-1L15 3h-6l-.3 2.6a8 8 0 0 0-1.7 1l-2.4-1-2 3.4L4.6 11a7.97 7.97 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.7 1L9 21h6l.3-2.6a8 8 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5Z"/></svg>',
-    chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'
+    chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>',
+    camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>'
   };
 
   // ---------- baseline report (Relaxmedic, 20/09/2026) ----------
@@ -293,7 +311,7 @@
   var DEFICITS = {
     suave: {label:'Suave (-15%)', pct:0.15}, moderado: {label:'Moderado (-20%)', pct:0.20}, agressivo: {label:'Agressivo (-25%)', pct:0.25}
   };
-  var PROTEIN_PER_KG_LEAN = 2.3, CARB_CAP_G = 40, PLAN_VERSION = 3, WORKOUT_VERSION = 1;
+  var PROTEIN_PER_KG_LEAN = 2.3, CARB_CAP_G = 40, PLAN_VERSION = 3, WORKOUT_VERSION = 2;
 
   var DEFAULT_PLAN = [
     { id:'breakfast', name:'Café da manhã', order:1, items:[
@@ -319,29 +337,40 @@
     ]}
   ];
 
+  // Weight-loss plan for a 105 kg beginner: 3 full-body strength days + low-impact cardio, no jumping.
   var WORKOUT_PLAN = [
-    {id:'mon', order:1, label:'Segunda', muscle:'Peito e tríceps', exercises:[
-      {name:'Supino reto', sets:4, reps:'10'},{name:'Supino inclinado com halteres', sets:3, reps:'12'},
-      {name:'Crucifixo', sets:3, reps:'12'},{name:'Tríceps corda', sets:4, reps:'12'},{name:'Tríceps testa', sets:3, reps:'12'}
+    {id:'mon', order:1, label:'Segunda', muscle:'Força A — corpo inteiro', note:'Descanse 60–90s entre séries. Use uma carga em que as 2 últimas repetições fiquem difíceis, sem perder a postura.', exercises:[
+      {name:'Aquecimento na bike', sets:1, reps:'5 min'},{name:'Leg press', sets:3, reps:'12'},
+      {name:'Supino na máquina', sets:3, reps:'12'},{name:'Puxada frente', sets:3, reps:'12'},
+      {name:'Elevação pélvica', sets:3, reps:'15'},{name:'Prancha', sets:3, reps:'20–30s'},
+      {name:'Caminhada inclinada na esteira', sets:1, reps:'15 min'}
     ]},
-    {id:'tue', order:2, label:'Terça', muscle:'Costas e bíceps', exercises:[
-      {name:'Puxada frente', sets:4, reps:'10'},{name:'Remada curvada', sets:4, reps:'10'},
-      {name:'Remada unilateral', sets:3, reps:'12'},{name:'Rosca direta', sets:3, reps:'12'},{name:'Rosca alternada', sets:3, reps:'12'}
+    {id:'tue', order:2, label:'Terça', muscle:'Cardio leve (zona 2)', note:'Ritmo em que dá para conversar. Bike, elíptico ou caminhada poupam os joelhos — evite corrida por enquanto.', exercises:[
+      {name:'Bike, elíptico ou caminhada', sets:1, reps:'35–45 min'},{name:'Alongamento', sets:1, reps:'10 min'}
     ]},
-    {id:'wed', order:3, label:'Quarta', muscle:'Pernas', exercises:[
-      {name:'Agachamento livre', sets:4, reps:'10'},{name:'Leg press', sets:4, reps:'12'},
-      {name:'Cadeira extensora', sets:3, reps:'12'},{name:'Mesa flexora', sets:3, reps:'12'},{name:'Panturrilha em pé', sets:4, reps:'15'}
+    {id:'wed', order:3, label:'Quarta', muscle:'Força B — corpo inteiro', note:'Descanse 60–90s entre séries. Aumente a carga quando as 12 repetições ficarem fáceis.', exercises:[
+      {name:'Aquecimento na bike', sets:1, reps:'5 min'},{name:'Sentar e levantar do banco', sets:3, reps:'12'},
+      {name:'Remada sentada', sets:3, reps:'12'},{name:'Desenvolvimento com halteres sentado', sets:3, reps:'12'},
+      {name:'Mesa flexora', sets:3, reps:'12'},{name:'Rosca direta', sets:2, reps:'12'},
+      {name:'Tríceps corda', sets:2, reps:'12'},{name:'Bike', sets:1, reps:'15 min'}
     ]},
-    {id:'thu', order:4, label:'Quinta', muscle:'Ombros e abdômen', exercises:[
-      {name:'Desenvolvimento com halteres', sets:4, reps:'10'},{name:'Elevação lateral', sets:3, reps:'15'},
-      {name:'Elevação frontal', sets:3, reps:'12'},{name:'Abdominal supra', sets:3, reps:'20'},{name:'Prancha', sets:3, reps:'45s'}
+    {id:'thu', order:4, label:'Quinta', muscle:'Intervalado leve + core', note:'Na bike: 30s mais forte e 90s leve. Pare se sentir tontura, falta de ar intensa ou dor no peito.', exercises:[
+      {name:'Aquecimento na bike', sets:1, reps:'5 min'},{name:'Intervalado na bike', sets:8, reps:'30s forte / 90s leve'},
+      {name:'Prancha', sets:3, reps:'20–30s'},{name:'Bird dog', sets:3, reps:'10 cada lado'},
+      {name:'Ponte de glúteo', sets:3, reps:'15'}
     ]},
-    {id:'fri', order:5, label:'Sexta', muscle:'Funcional e cardio', exercises:[
-      {name:'Burpees', sets:4, reps:'15'},{name:'Mountain climber', sets:4, reps:'30s'},
-      {name:'Corda naval', sets:4, reps:'30s'},{name:'Esteira ou bike', sets:1, reps:'20 min'}
+    {id:'fri', order:5, label:'Sexta', muscle:'Força C — corpo inteiro', note:'Descanse 60–90s entre séries. Na passada, use apoio se precisar de equilíbrio.', exercises:[
+      {name:'Aquecimento na bike', sets:1, reps:'5 min'},{name:'Leg press', sets:3, reps:'15'},
+      {name:'Supino inclinado com halteres', sets:3, reps:'12'},{name:'Puxada com pegada neutra', sets:3, reps:'12'},
+      {name:'Passada estática com apoio', sets:2, reps:'10 cada perna'},{name:'Elevação lateral', sets:2, reps:'15'},
+      {name:'Abdominal na máquina', sets:3, reps:'15'},{name:'Caminhada inclinada na esteira', sets:1, reps:'15 min'}
     ]},
-    {id:'sat', order:6, label:'Sábado', muscle:'Caminhada leve', exercises:[{name:'Caminhada', sets:1, reps:'30-40 min'}]},
-    {id:'sun', order:7, label:'Domingo', muscle:'Descanso', exercises:[]}
+    {id:'sat', order:6, label:'Sábado', muscle:'Caminhada longa', note:'Ao ar livre, em ritmo confortável. É o treino que mais soma calorias na semana.', exercises:[
+      {name:'Caminhada', sets:1, reps:'45–60 min'}
+    ]},
+    {id:'sun', order:7, label:'Domingo', muscle:'Descanso ativo', note:'Recuperação. Só mobilidade leve — o músculo cresce no descanso.', exercises:[
+      {name:'Alongamento e mobilidade', sets:1, reps:'15 min'}
+    ]}
   ];
 
   var FOODS = [
@@ -491,7 +520,7 @@
     }
   }
   function addCustomEntry(entry){
-    var date = todayStr(); var id = 'custom_'+Date.now();
+    var date = todayStr(); var id = 'custom_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
     var body = Object.assign({source:'custom', status:'eaten', ts:Date.now()}, entry);
     if(db){ db.doc('foodLog/'+date).collection('entries').doc(id).set(body).catch(function(e){ console.error(e); }); }
     else { mem.entries[date] = mem.entries[date]||{}; mem.entries[date][id] = body; state.todayEntries = Object.assign({}, mem.entries[date]); syncDailySummary(); renderAll(); }
@@ -517,8 +546,96 @@
   var state = {
     tab:'inicio', settings:null, plan:null, workout:null,
     todayEntries:{}, weights:{}, dailyHistory:[], todayWorkout:null, workoutHistory:[],
-    dbAvailable:null, expandedMeal:null, expandedDay: weekdayKey(new Date())
+    dbAvailable:null, expandedMeal:null, expandedDay: weekdayKey(new Date()),
+    photoAvailable:null, photoAccept:'image/*',
+    photo:{ status:'idle', preview:null, items:[], note:'', error:'' }
   };
+
+  // ---------- foto do prato (IA) ----------
+  var sampleFn = null;
+  var PHOTO_PROMPT = 'Você é um nutricionista analisando a foto de um prato de comida para um app de dieta. '
+    + 'Identifique cada alimento visível, estime a porção em gramas (ou em unidades, como peças de sushi ou ovos) pelo tamanho aparente no prato, '
+    + 'e calcule calorias e macronutrientes com base em tabelas nutricionais brasileiras (TACO). Considere óleo, manteiga ou molho de preparo quando visíveis. '
+    + 'Se a imagem não mostrar comida, devolva "items" vazio e explique em "note". '
+    + 'Responda apenas com JSON neste formato: '
+    + '{"items":[{"name":"Peito de frango grelhado","portion":"150 g","kcal":248,"p":46,"c":0,"g":5}],"note":"uma frase curta sobre a confiança da estimativa"}. '
+    + 'Nomes em português; números sem unidade.';
+
+  function photoErrorCopy(code){
+    if(code==='not_granted') return 'Você não autorizou a IA nesta página. Recarregue para tentar de novo.';
+    if(code==='image_rejected') return 'Não consegui usar essa foto. Tente outra (JPG ou PNG).';
+    if(code==='refused') return 'A IA não analisou essa imagem. Tente uma foto só do prato.';
+    if(code==='invalid_json' || code==='empty_completion') return 'Não consegui ler o resultado. Tente tirar a foto de novo.';
+    if(code==='rate_limited') return 'Muitas análises seguidas. Espere um pouco e tente de novo.';
+    if(code==='session_expired') return 'Sua sessão expirou. Entre no Claude de novo.';
+    return 'A análise falhou. Tente de novo em instantes.';
+  }
+  function resetPhoto(){
+    if(state.photo.preview){ try{ URL.revokeObjectURL(state.photo.preview); }catch(e){} }
+    state.photo = { status:'idle', preview:null, items:[], note:'', error:'' };
+  }
+  async function analyzePhoto(file){
+    if(!sampleFn || !file) return;
+    resetPhoto();
+    state.photo = { status:'loading', preview:URL.createObjectURL(file), items:[], note:'', error:'' };
+    renderAll();
+    try{
+      var res = await sampleFn.json(PHOTO_PROMPT, { images:[file] });
+      var items = (res && Array.isArray(res.items) ? res.items : []).map(function(it){
+        return { name:String(it.name||'Alimento'), portion:String(it.portion||''), kcal:Math.max(0,+it.kcal||0), p:Math.max(0,+it.p||0), c:Math.max(0,+it.c||0), g:Math.max(0,+it.g||0) };
+      });
+      state.photo.status = 'done';
+      state.photo.items = items;
+      state.photo.note = res && res.note ? String(res.note) : '';
+    }catch(err){
+      var code = err && err.code;
+      if(code==='images_unavailable'){ state.photoAvailable = false; }
+      state.photo.status = 'error';
+      state.photo.error = photoErrorCopy(code);
+    }
+    renderAll();
+  }
+  async function initSample(){
+    try{ if(window.claude && window.claude.use){ sampleFn = await window.claude.use('sample'); } }catch(e){ sampleFn = null; }
+    var caps = sampleFn ? await sampleFn.limits().catch(function(){ return null; }) : null;
+    state.photoAvailable = !!(caps && caps.images);
+    if(caps && caps.images && caps.images.mediaTypes){ state.photoAccept = caps.images.mediaTypes.join(','); }
+    renderAll();
+  }
+
+  function renderPhotoCard(){
+    var ph = state.photo;
+    var unavailable = state.photoAvailable===false;
+    var total = ph.items.reduce(function(t,it){ t.kcal+=it.kcal; t.p+=it.p; t.c+=it.c; t.g+=it.g; return t; }, {kcal:0,p:0,c:0,g:0});
+    var body = '';
+    if(ph.preview){ body += '<img class="photo-preview" src="'+escAttr(ph.preview)+'" alt="Foto do prato">'; }
+    if(ph.status==='loading'){ body += '<div class="photo-status">Analisando o prato…</div>'; }
+    else if(ph.status==='error'){ body += '<div class="photo-status error">'+escHtml(ph.error)+'</div>'; }
+    else if(ph.status==='done'){
+      if(!ph.items.length){
+        body += '<div class="photo-status">Nenhum alimento identificado.'+(ph.note?' '+escHtml(ph.note):'')+'</div>';
+      } else {
+        body += '<div class="photo-result">'
+          + ph.items.map(function(it,idx){
+              return '<div class="entry-row"><div><div class="name">'+escHtml(it.name)+'</div><div class="macros tabular">'+escHtml(it.portion)+' · '+fmt(it.p)+'g P · '+fmt(it.c)+'g C · '+fmt(it.g)+'g G</div></div>'
+                + '<div class="right"><span class="tabular">'+fmt(it.kcal)+' kcal</span><button class="icon-btn" data-rm-photo-item="'+idx+'" aria-label="Remover '+escAttr(it.name)+'">✕</button></div></div>';
+            }).join('')
+          + '<div class="photo-total"><span class="l">Total estimado</span><span class="v tabular">'+fmt(total.kcal)+' kcal</span></div>'
+          + (ph.note ? '<div class="photo-note">'+escHtml(ph.note)+'</div>' : '')
+          + '<div class="photo-actions"><button class="btn ghost" id="photoDiscard">Descartar</button><button class="btn primary" id="photoAdd">Adicionar ao dia</button></div>'
+          + '</div>';
+      }
+    }
+    if(ph.status==='added'){ body += '<div class="photo-status">Adicionado aos itens de hoje.</div>'; }
+
+    return '<div class="card">'
+      + '<div class="card-title">Foto do prato</div>'
+      + '<div class="sub">'+(unavailable ? 'A análise por foto não está disponível nesta visualização.' : 'Tire uma foto da refeição e a IA estima as calorias e os macros. Revise antes de adicionar.')+'</div>'
+      + '<label class="photo-btn'+(unavailable||ph.status==='loading'?' disabled':'')+'" for="photoInput">'+ICON.camera+'<span>'+(ph.status==='loading'?'Analisando…':(ph.preview?'Tirar outra foto':'Tirar foto do prato'))+'</span></label>'
+      + '<input class="photo-input" type="file" id="photoInput" accept="'+escAttr(state.photoAccept)+'" capture="environment"'+(unavailable?' disabled':'')+'>'
+      + body
+      + '</div>';
+  }
 
   function latestWeightKg(){
     var keys = Object.keys(state.weights||{}).sort();
@@ -528,6 +645,7 @@
 
   // ---------- init ----------
   async function init(){
+    initSample();
     try{ if(window.claude && window.claude.use){ db = await window.claude.use('db'); } }catch(err){ db = null; }
     state.dbAvailable = !!db;
 
@@ -739,6 +857,8 @@
       +   '</div>'
       + '</div>'
 
+      + renderPhotoCard()
+
       + '<div class="card">'
       +   '<div class="card-title">Refeições do dia</div>'
       +   '<div class="sub">Marque "vou comer" para planejar ou "comi" quando terminar.</div>'
@@ -779,6 +899,7 @@
         +   '<span class="chev">'+ICON.chev+'</span>'
         + '</div>'
         + (expanded ? ('<div class="exercise-list">'
+            + (day.note ? '<div class="day-note">'+escHtml(day.note)+'</div>' : '')
             + (day.exercises||[]).map(function(ex){ return '<div class="exercise-row"><span class="ex-name">'+escHtml(ex.name)+'</span><span class="ex-sets tabular">'+ex.sets+'x '+escHtml(String(ex.reps))+'</span></div>'; }).join('')
             + '<div class="items-edit" style="margin-top:10px">'+exList
             +   '<button class="btn tiny ghost" data-add-ex="'+escAttr(id)+'" style="margin-top:6px">+ exercício</button>'
@@ -791,6 +912,7 @@
 
       + '<div class="card">'
       +   '<div class="card-head"><div><div class="card-title">'+escHtml(todayDay?todayDay.muscle:'')+'</div><div class="sub" style="margin-bottom:0">'+(todayDay&&todayDay.exercises.length?todayDay.exercises.length+' exercícios hoje':'Hoje é dia de descanso')+'</div></div>'+pill(done?'ok':'neutral', done?'Concluído':'Pendente')+'</div>'
+      +   (todayDay&&todayDay.note ? '<div class="day-note" style="margin-top:14px">'+escHtml(todayDay.note)+'</div>' : '')
       +   (todayDay&&todayDay.exercises.length ? ('<div class="exercise-list" style="margin-top:14px">'+todayDay.exercises.map(function(ex){ return '<div class="exercise-row"><span class="ex-name">'+escHtml(ex.name)+'</span><span class="ex-sets tabular">'+ex.sets+'x '+escHtml(String(ex.reps))+'</span></div>'; }).join('')+'</div>') : '')
       +   '<button class="btn block" style="margin-top:16px" id="toggleWorkoutDone">'+(done?'Desmarcar conclusão':'Marcar como concluído')+'</button>'
       + '</div>'
@@ -1015,6 +1137,31 @@
         sel.value=''; qtyInp.value=100; updateFoodPickerPreview(pickerId);
       });
     });
+
+    var photoInput = document.getElementById('photoInput');
+    if(photoInput){
+      photoInput.addEventListener('change', function(){
+        var file = photoInput.files && photoInput.files[0];
+        if(file) analyzePhoto(file);
+      });
+    }
+    view.querySelectorAll('[data-rm-photo-item]').forEach(function(btn){
+      btn.addEventListener('click', function(){ state.photo.items.splice(+btn.getAttribute('data-rm-photo-item'),1); renderAll(); });
+    });
+    var photoDiscard = document.getElementById('photoDiscard');
+    if(photoDiscard){ photoDiscard.addEventListener('click', function(){ resetPhoto(); renderAll(); }); }
+    var photoAdd = document.getElementById('photoAdd');
+    if(photoAdd){
+      photoAdd.addEventListener('click', function(){
+        var items = state.photo.items.slice();
+        resetPhoto();
+        state.photo.status = 'added';
+        items.forEach(function(it){
+          addCustomEntry({ name:it.name+(it.portion?' ('+it.portion+')':''), kcal:it.kcal, p:it.p, c:it.c, g:it.g });
+        });
+        renderAll();
+      });
+    }
 
     view.querySelectorAll('[data-toggle-day]').forEach(function(row){
       row.addEventListener('click', function(){ var id = row.getAttribute('data-toggle-day'); state.expandedDay = state.expandedDay===id ? null : id; renderAll(); });
