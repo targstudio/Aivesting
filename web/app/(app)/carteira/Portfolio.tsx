@@ -628,6 +628,11 @@ function Dashboard({
             {reading && reading.state !== "loading" && (
               <Markdown text={reading.text} className={`text-sm leading-relaxed text-text/90 md:text-[15px] ${reading.state === "error" ? "opacity-80" : ""}`} />
             )}
+            {reading?.state === "done" && (
+              <button onClick={onExplain} className="mt-3 text-xs font-semibold text-accent-text hover:underline">
+                Atualizar análise
+              </button>
+            )}
             {(!reading || reading.state === "error") && (
               <button onClick={onExplain} className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">
                 <Sparkles size={16} /> {reading ? "Tentar de novo" : "Gerar análise da IA"}

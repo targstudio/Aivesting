@@ -104,6 +104,31 @@ def test_reading_is_cached_and_skips_rate_limit(monkeypatch):
     assert c.get("/ia/leitura", params={"contexto": "mercado"}).status_code == 429
 
 
+
+def test_reading_is_kept_until_refresh(monkeypatch):
+    import time
+
+    calls = []
+
+    async def fake_complete(self, task, level, data, instruction):
+        calls.append(task)
+        return f"leitura {len(calls)}"
+
+    monkeypatch.setattr(Insights, "_complete", fake_complete)
+    c = demo_client(anthropic_api_key="k")
+    assert c.get("/ia/leitura", params={"contexto": "macro"}).json()["text"] == "leitura 1"
+    # Horas depois, abrir a tela ainda devolve a leitura guardada, sem chamar a IA.
+    ins: Insights = c.app.state.insights
+    key = ("macro", "iniciante")
+    ins._cache[key] = (time.monotonic() - 6 * 3600, ins._cache[key][1])
+    assert c.get("/ia/leitura", params={"contexto": "macro"}).json()["text"] == "leitura 1"
+    # "Atualizar" gera outra.
+    fresh = c.get("/ia/leitura", params={"contexto": "macro", "atualizar": "true"}).json()
+    assert fresh["text"] == "leitura 2" and not fresh["cached"]
+    # Clique repetido logo em seguida reaproveita a recém-gerada.
+    assert c.get("/ia/leitura", params={"contexto": "macro", "atualizar": "true"}).json()["text"] == "leitura 2"
+    assert len(calls) == 2
+
 def test_payloads_for_each_screen():
     c = demo_client()
     ins: Insights = c.app.state.insights
@@ -168,6 +193,10 @@ def test_asset_explanation_is_cached(monkeypatch):
     for _ in range(2):
         assert c.post(f"/assets/{top}/explain?nivel=avancado").json()["explanation"] == f"explicação de {top}"
     assert len(calls) == 1 and "técnica" in calls[0]
+    # Só "Atualizar" gera outra, e não duas vezes seguidas.
+    first = c.post(f"/assets/{top}/explain?nivel=avancado&atualizar=true").json()
+    assert first["cached"] and first["generated_at"]
+    assert len(calls) == 1
 
 
 def test_cors_accepts_origin_with_trailing_slash():
