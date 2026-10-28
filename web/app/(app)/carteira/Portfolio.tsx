@@ -160,13 +160,8 @@ export function Portfolio() {
     return <Review draft={draft} setDraft={setDraft} hasCurrent={!!stored} onConfirm={confirm} onCancel={() => setDraft(null)} error={error} />;
   }
 
-  return (
-    <div className="flex flex-col gap-6">
-      {notice && (
-        <div className="flex items-center gap-2 rounded-xl border border-positive/30 bg-positive/10 px-4 py-3 text-sm font-medium text-positive">
-          <CheckCircle2 size={18} /> {notice}
-        </div>
-      )}
+  const uploader = (
+    <div id="atualizar" className="scroll-mt-6">
       <Uploader
         compact={!!stored}
         uploading={uploading}
@@ -176,10 +171,40 @@ export function Portfolio() {
         onDelete={remove}
         error={error}
       />
-      {stored && !analysis && <Card className="text-sm text-muted">Analisando a carteira...</Card>}
-      {stored && analysis && (
-        <Dashboard analysis={analysis} reading={reading} onExplain={explain} hasAdvisor={!!advisor} />
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-6">
+      {notice && (
+        <div className="flex items-center gap-2 rounded-xl border border-positive/30 bg-positive/10 px-4 py-3 text-sm font-medium text-positive">
+          <CheckCircle2 size={18} /> {notice}
+        </div>
       )}
+      {!stored && uploader}
+      {stored && !analysis && (
+        <div className="grid gap-4">
+          <div className="h-56 animate-pulse rounded-card bg-nav/90" />
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="h-28 animate-pulse rounded-card bg-track" />
+            ))}
+          </div>
+        </div>
+      )}
+      {stored && analysis && (
+        <Dashboard
+          analysis={analysis}
+          reading={reading}
+          onExplain={explain}
+          hasAdvisor={!!advisor}
+          updatedAt={stored.updatedAt}
+          onUpdate={() => document.getElementById("atualizar")?.scrollIntoView({ behavior: "smooth" })}
+          onEdit={() => setDraft({ holdings: stored.holdings })}
+        />
+      )}
+      {stored && uploader}
+      {stored && analysis && <InfoBanner>{analysis.disclaimer}</InfoBanner>}
     </div>
   );
 }
@@ -506,78 +531,112 @@ function Review({
 
 // ---- Painel da carteira ----
 
+type Reading = { state: "loading" | "done" | "error"; text: string } | null;
+
 function Dashboard({
   analysis: a,
   reading,
   onExplain,
   hasAdvisor,
+  updatedAt,
+  onUpdate,
+  onEdit,
 }: {
   analysis: PortfolioAnalysis;
-  reading: { state: "loading" | "done" | "error"; text: string } | null;
+  reading: Reading;
   onExplain: () => void;
   hasAdvisor: boolean;
+  updatedAt: string;
+  onUpdate: () => void;
+  onEdit: () => void;
 }) {
   const risk = a.risk;
   const chatPortfolio = useMemo(
     () => ({ ...a, positions: a.positions.map(({ logo_url: _l, ...p }) => p), disclaimer: undefined }),
     [a],
   );
+  const high = a.alerts.filter((x) => x.level !== "baixo").length;
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card className="!p-5">
-          <div className="text-sm text-muted">Patrimônio na carteira</div>
-          <div className="tabular mt-1 text-2xl font-bold">{formatBRL(a.total)}</div>
-          <div className="mt-1 text-xs text-muted">{a.positions.length} posições</div>
-        </Card>
-        <Card className="!p-5">
-          <div className="text-sm text-muted">Resultado sobre o preço médio</div>
-          {a.result ? (
-            <>
-              <div className={`tabular mt-1 text-2xl font-bold ${changeColor(a.result.result)}`}>{formatBRL(a.result.result)}</div>
-              <div className={`tabular mt-1 text-xs ${changeColor(a.result.result)}`}>{formatRatio(a.result.result_pct)}</div>
-            </>
-          ) : (
-            <div className="mt-1 text-sm text-muted">Sem preço médio nos dados</div>
-          )}
-        </Card>
-        <Card className="!p-5">
-          <div className="text-sm text-muted">Maior posição</div>
-          {a.concentration && (
-            <>
-              <div className="mt-1 text-2xl font-bold">{a.concentration.largest.ticker ?? a.concentration.largest.name}</div>
-              <div className="tabular mt-1 text-xs text-muted">
-                {pct(a.concentration.largest.pct)} do total · 3 maiores: {pct(a.concentration.top3_pct)}
+      {/* Destaque: patrimônio, resultado e composição */}
+      <section className="overflow-hidden rounded-card bg-nav text-white">
+        <div className="grid gap-6 p-6 md:p-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+          <div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-nav-text">
+              <span>Patrimônio na carteira</span>
+              <span className="text-nav-muted">· atualizada em {new Date(updatedAt).toLocaleDateString("pt-BR")}</span>
+            </div>
+            <div className="tabular mt-2 text-4xl font-bold tracking-tight md:text-5xl">{formatBRL(a.total)}</div>
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+              {a.result && (
+                <span
+                  className={`tabular rounded-full px-3 py-1 font-semibold ${a.result.result >= 0 ? "bg-positive/20 text-[rgb(110_220_160)]" : "bg-negative/25 text-[rgb(255_140_140)]"}`}
+                >
+                  {a.result.result >= 0 ? "+" : "−"}
+                  {formatBRL(Math.abs(a.result.result))} ({formatRatio(a.result.result_pct)}) sobre o preço médio
+                </span>
+              )}
+              <span className="rounded-full bg-white/10 px-3 py-1 text-nav-text">{a.positions.length} posições</span>
+            </div>
+            <div className="mt-6">
+              <div className="flex h-3 overflow-hidden rounded-full bg-white/10">
+                {a.by_class.map((g) => (
+                  <div key={g.key} style={{ width: `${g.pct * 100}%`, background: CLASS_COLOR[g.key] }} title={`${g.label}: ${pct(g.pct)}`} />
+                ))}
               </div>
-            </>
-          )}
-        </Card>
-        <Card className="!p-5">
-          <div className="text-sm text-muted">Diversificação</div>
-          {a.concentration && (
-            <>
-              <div className="tabular mt-1 text-2xl font-bold">{formatNumber(a.concentration.effective_positions)}</div>
-              <div className="mt-1 text-xs text-muted">posições efetivas (com pesos iguais, seria {a.concentration.positions})</div>
-            </>
-          )}
-        </Card>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm">
+                {a.by_class.map((g) => (
+                  <span key={g.key} className="flex items-center gap-2 text-nav-text">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: CLASS_COLOR[g.key] }} />
+                    {g.label}
+                    <strong className="tabular text-white">{pct(g.pct)}</strong>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 self-center">
+            <HeroStat label="Retorno ao ano em 10 anos" value={formatRatio(risk?.cagr)} hint={risk ? `${risk.benchmark} ${formatRatio(risk.benchmark_cagr)} · CDI ${formatRatio(risk.cdi_cagr)}` : "sem histórico no app"} accent />
+            <HeroStat label="Pior ano da carteira" value={risk?.worst_year ? formatRatio(risk.worst_year.return) : "–"} hint={risk?.worst_year ? `em ${risk.worst_year.year}` : ""} />
+            <HeroStat label="Oscilação anual" value={risk?.volatility_annual != null ? pct(risk.volatility_annual) : "–"} hint="desvio dos retornos anuais" />
+            <HeroStat label="Histórico coberto" value={risk ? pct(risk.coverage) : "–"} hint="parte da carteira com dados" />
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-6 py-3 md:px-8">
+          <button onClick={onUpdate} className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-on-primary">
+            <ImagePlus size={16} /> Enviar novos prints
+          </button>
+          <button onClick={onEdit} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-nav-text hover:bg-white/10">
+            <Plus size={16} /> Editar posições
+          </button>
+        </div>
+      </section>
+
+      {/* Indicadores */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Kpi label="Maior posição" value={a.concentration?.largest.ticker ?? a.concentration?.largest.name ?? "–"} hint={a.concentration ? `${pct(a.concentration.largest.pct)} do total` : ""} warn={(a.concentration?.largest.pct ?? 0) > 0.1} />
+        <Kpi label="3 maiores posições" value={a.concentration ? pct(a.concentration.top3_pct) : "–"} hint="do patrimônio" />
+        <Kpi label="Posições efetivas" value={a.concentration ? formatNumber(a.concentration.effective_positions) : "–"} hint={a.concentration ? `de ${a.concentration.positions}; quanto maior, mais diversificada` : ""} />
+        <Kpi label="Pontos de atenção" value={String(high)} hint={high ? "veja abaixo" : "nenhum relevante"} warn={high > 0} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+      {/* Composição e desempenho */}
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
         <Card>
-          <CardHeader title="Divisão por classe" subtitle="Quanto de cada tipo de investimento" />
-          <div className="flex flex-col items-center gap-4">
+          <CardHeader title="Composição" subtitle="Por classe e, nas ações, por setor" />
+          <div className="flex flex-col items-center gap-5 sm:flex-row xl:flex-col 2xl:flex-row">
             <Donut
-              size={190}
+              size={168}
+              thickness={26}
               slices={a.by_class.map((g) => ({ label: `${g.label}: ${pct(g.pct)}`, value: g.value, color: CLASS_COLOR[g.key] }))}
               center={
                 <>
-                  <span className="tabular text-lg font-bold">{formatBRL(a.total)}</span>
-                  <span className="text-xs text-muted">total</span>
+                  <span className="tabular text-base font-bold">{a.by_class.length}</span>
+                  <span className="text-xs text-muted">{a.by_class.length === 1 ? "classe" : "classes"}</span>
                 </>
               }
             />
-            <ul className="w-full space-y-2 text-sm">
+            <ul className="w-full space-y-2.5 text-sm">
               {a.by_class.map((g) => (
                 <li key={g.key} className="flex items-center gap-2">
                   <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: CLASS_COLOR[g.key] }} />
@@ -609,75 +668,155 @@ function Dashboard({
             </div>
           )}
         </Card>
-
-        <div className="flex flex-col gap-6">
-          <section className="rounded-card border border-border bg-gradient-to-br from-surface-2 to-surface p-5 md:p-6">
-            <h2 className="mb-3 flex items-center gap-2.5 font-semibold">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bg text-accent-text">
-                <Sparkles size={16} />
-              </span>
-              A IA organiza sua carteira
-            </h2>
-            {reading?.state === "loading" && (
-              <div className="space-y-2">
-                {[92, 100, 80, 95, 60, 85].map((w, i) => (
-                  <div key={i} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-track" />
-                ))}
-              </div>
-            )}
-            {reading && reading.state !== "loading" && (
-              <Markdown text={reading.text} className={`text-sm leading-relaxed text-text/90 md:text-[15px] ${reading.state === "error" ? "opacity-80" : ""}`} />
-            )}
-            {reading?.state === "done" && (
-              <button onClick={onExplain} className="mt-3 text-xs font-semibold text-accent-text hover:underline">
-                Atualizar análise
-              </button>
-            )}
-            {(!reading || reading.state === "error") && (
-              <button onClick={onExplain} className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">
-                <Sparkles size={16} /> {reading ? "Tentar de novo" : "Gerar análise da IA"}
-              </button>
-            )}
-          </section>
-
-          {a.alerts.length > 0 && (
-            <Card>
-              <CardHeader title="Pontos de atenção" subtitle="Regras do app: até 10% por ativo e até 35% por setor" />
-              <ul className="space-y-2.5 text-sm">
-                {a.alerts.map((x) => (
-                  <li key={x.text} className="flex items-start gap-2.5">
-                    <AlertTriangle
-                      size={16}
-                      className={`mt-0.5 shrink-0 ${x.level === "alto" ? "text-negative" : x.level === "medio" ? "text-accent-text" : "text-muted"}`}
-                    />
-                    {x.text}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          )}
-        </div>
+        {risk ? <PerformanceCard risk={risk} /> : <Card className="text-sm text-muted">Nenhum ativo da carteira tem histórico no app ainda.</Card>}
       </div>
 
-      {risk && <RiskCard risk={risk} />}
+      {/* IA e alertas */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <AiCard reading={reading} onExplain={onExplain} />
+        <Card>
+          <CardHeader title="Pontos de atenção" subtitle="Até 10% por ativo e até 35% por setor" />
+          {a.alerts.length ? (
+            <ul className="space-y-3 text-sm">
+              {a.alerts.map((x) => (
+                <li key={x.text} className="flex items-start gap-2.5">
+                  <AlertTriangle
+                    size={16}
+                    className={`mt-0.5 shrink-0 ${x.level === "alto" ? "text-negative" : x.level === "medio" ? "text-accent-text" : "text-muted"}`}
+                  />
+                  {x.text}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted">Nada fora das regras do app.</p>
+          )}
+        </Card>
+      </div>
 
-      <Card>
-        <CardHeader title="Posições" subtitle="Preço do app quando o ativo está no ranking ou tem cotação; senão, o do print" />
-        <div className="-mx-5 overflow-x-auto px-5 md:-mx-6 md:px-6">
-          <table className="w-full min-w-[820px] text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-xs text-muted">
-                <th className="py-2 pr-3 font-semibold">Ativo</th>
-                <th className="py-2 pr-3 text-right font-semibold">Saldo</th>
-                <th className="py-2 pr-3 text-right font-semibold">Peso</th>
-                <th className="py-2 pr-3 text-right font-semibold">Resultado</th>
-                <th className="py-2 pr-3 text-right font-semibold">Ranking curto prazo</th>
-                <th className="py-2 pr-3 text-right font-semibold">Retorno 10 anos (a.a.)</th>
-                <th className="py-2 text-right font-semibold">Pior queda</th>
-              </tr>
-            </thead>
-            <tbody>
-              {a.positions.map((p, i) => (
+      <PositionsCard positions={a.positions} />
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        {risk && risk.crises.length > 0 && <CrisesCard risk={risk} />}
+        {a.plan ? (
+          <PlanCard plan={a.plan} />
+        ) : (
+          <Card>
+            <CardHeader title="Sua carteira x seu perfil" />
+            <p className="text-sm text-muted">
+              {hasAdvisor ? (
+                "O modo assessor está desligado na API."
+              ) : (
+                <>
+                  Responda o perfil no{" "}
+                  <Link href="/assessor" className="font-semibold text-accent-text underline">
+                    Assessor
+                  </Link>{" "}
+                  e esta área passa a mostrar quanto falta ou sobra em cada classe para chegar ao plano ideal para você.
+                </>
+              )}
+            </p>
+          </Card>
+        )}
+      </div>
+
+      <div>
+        <h2 className="mb-3 text-lg font-bold">Converse sobre a sua carteira</h2>
+        <Chat
+          endpoint="/assessor/chat"
+          extra={{ portfolio: chatPortfolio, plan: a.plan ?? null }}
+          page="/carteira"
+          suggestions={[
+            "Minha carteira está concentrada demais?",
+            "Onde coloco meu próximo aporte?",
+            "Como minha carteira se sairia numa crise?",
+            "O que falta para ela ficar mais equilibrada?",
+          ]}
+          placeholder="Pergunte sobre a sua carteira"
+          footer="Análise automática. Todo investimento tem riscos; rentabilidade passada não garante futura."
+        />
+      </div>
+    </>
+  );
+}
+
+function HeroStat({ label, value, hint, accent }: { label: string; value: string; hint?: string; accent?: boolean }) {
+  return (
+    <div className="rounded-xl bg-white/[0.06] px-4 py-3 ring-1 ring-white/10">
+      <div className="text-xs text-nav-muted">{label}</div>
+      <div className={`tabular mt-1 text-xl font-bold ${accent ? "text-primary" : "text-white"}`}>{value}</div>
+      {hint && <div className="mt-0.5 truncate text-[11px] text-nav-muted">{hint}</div>}
+    </div>
+  );
+}
+
+function Kpi({ label, value, hint, warn }: { label: string; value: string; hint?: string; warn?: boolean }) {
+  return (
+    <Card className="!p-5">
+      <div className="flex items-center justify-between gap-2 text-sm text-muted">
+        {label}
+        {warn && <span className="h-2 w-2 rounded-full bg-negative" aria-label="atenção" />}
+      </div>
+      <div className="tabular mt-1.5 text-2xl font-bold">{value}</div>
+      {hint && <div className="mt-1 text-xs text-muted">{hint}</div>}
+    </Card>
+  );
+}
+
+function AiCard({ reading, onExplain }: { reading: Reading; onExplain: () => void }) {
+  return (
+    <section className="rounded-card border border-border bg-gradient-to-br from-surface-2 to-surface p-5 md:p-6">
+      <h2 className="mb-3 flex items-center gap-2.5 font-semibold">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bg text-accent-text">
+          <Sparkles size={16} />
+        </span>
+        A IA organiza sua carteira
+      </h2>
+      {reading?.state === "loading" && (
+        <div className="space-y-2">
+          {[92, 100, 80, 95, 60, 85].map((w, i) => (
+            <div key={i} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-track" />
+          ))}
+        </div>
+      )}
+      {reading && reading.state !== "loading" && (
+        <Markdown text={reading.text} className={`text-sm leading-relaxed text-text/90 md:text-[15px] ${reading.state === "error" ? "opacity-80" : ""}`} />
+      )}
+      {reading?.state === "done" && (
+        <button onClick={onExplain} className="mt-3 text-xs font-semibold text-accent-text hover:underline">
+          Atualizar análise
+        </button>
+      )}
+      {(!reading || reading.state === "error") && (
+        <button onClick={onExplain} className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">
+          <Sparkles size={16} /> {reading ? "Tentar de novo" : "Gerar análise da IA"}
+        </button>
+      )}
+    </section>
+  );
+}
+
+function PositionsCard({ positions }: { positions: PortfolioAnalysis["positions"] }) {
+  return (
+    <Card>
+      <CardHeader title="Posições" subtitle="Preço do app quando o ativo está no ranking ou tem cotação; senão, o do print" />
+      <div className="-mx-5 overflow-x-auto px-5 md:-mx-6 md:px-6">
+        <table className="w-full min-w-[820px] text-sm">
+          <thead>
+            <tr className="border-b border-border text-left text-xs text-muted">
+              <th className="py-2 pr-3 font-semibold">Ativo</th>
+              <th className="py-2 pr-3 text-right font-semibold">Saldo</th>
+              <th className="py-2 pr-3 font-semibold">Peso</th>
+              <th className="py-2 pr-3 text-right font-semibold">Resultado</th>
+              <th className="py-2 pr-3 text-right font-semibold">Ranking curto prazo</th>
+              <th className="py-2 pr-3 text-right font-semibold">Retorno 10 anos (a.a.)</th>
+              <th className="py-2 text-right font-semibold">Pior queda</th>
+            </tr>
+          </thead>
+          <tbody>
+            {positions.map((p, i) => {
+              const over = p.weight > 0.1 && !["renda_fixa", "caixa"].includes(p.asset_class);
+              return (
                 <tr key={`${p.ticker ?? p.name}-${i}`} className="border-b border-border/70">
                   <td className="py-2.5 pr-3">
                     <div className="flex items-center gap-2.5">
@@ -693,14 +832,18 @@ function Dashboard({
                         <span className="block max-w-[220px] truncate text-xs text-muted">
                           {p.class_label}
                           {p.sector ? ` · ${p.sector}` : ""}
-                          {p.ticker && p.name && p.name !== p.ticker ? ` · ${p.name}` : ""}
                         </span>
                       </div>
                     </div>
                   </td>
                   <td className="tabular py-2.5 pr-3 text-right font-semibold">{formatBRL(p.value)}</td>
-                  <td className={`tabular py-2.5 pr-3 text-right ${p.weight > 0.1 && !["renda_fixa", "caixa"].includes(p.asset_class) ? "font-semibold text-negative" : ""}`}>
-                    {pct(p.weight)}
+                  <td className="py-2.5 pr-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 w-16 rounded-full bg-track">
+                        <div className={`h-1.5 rounded-full ${over ? "bg-negative" : "bg-primary"}`} style={{ width: `${Math.min(100, p.weight * 250)}%` }} />
+                      </div>
+                      <span className={`tabular text-xs ${over ? "font-semibold text-negative" : ""}`}>{pct(p.weight)}</span>
+                    </div>
                   </td>
                   <td className={`tabular py-2.5 pr-3 text-right ${changeColor(p.result ?? 0)}`}>
                     {p.result_pct != null ? formatRatio(p.result_pct) : "–"}
@@ -720,95 +863,28 @@ function Dashboard({
                   </td>
                   <td className="tabular py-2.5 text-right text-negative">{p.risk_10y ? formatRatio(p.risk_10y.max_drawdown) : <span className="text-muted">–</span>}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {a.plan ? (
-        <Card>
-          <CardHeader
-            title="Sua carteira x plano do assessor"
-            subtitle={`Perfil ${a.plan.profile} · ${a.plan.term_label.toLowerCase()} · plano montado com o total da carteira`}
-            action={
-              <Link href="/assessor" className="text-sm font-semibold text-accent-text hover:underline">
-                Ver plano
-              </Link>
-            }
-          />
-          <div className="space-y-4">
-            {a.plan.comparison.map((c) => (
-              <div key={c.key}>
-                <div className="mb-1.5 flex flex-wrap justify-between gap-2 text-sm">
-                  <span className="font-semibold">{c.label}</span>
-                  <span className="tabular text-muted">
-                    hoje {pct(c.current_pct)} · plano {pct(c.target_pct)} ·{" "}
-                    <span className={c.diff_value > 0 ? "text-positive" : c.diff_value < 0 ? "text-negative" : ""}>
-                      {Math.abs(c.diff_value) < 1 ? "no alvo" : `${c.diff_value > 0 ? "faltam" : "sobram"} ${formatBRL(Math.abs(c.diff_value))}`}
-                    </span>
-                  </span>
-                </div>
-                <div className="relative h-2.5 rounded-full bg-track">
-                  <div className="h-2.5 rounded-full bg-chart-2" style={{ width: `${Math.min(100, c.current_pct * 100)}%` }} />
-                  <span className="absolute -top-1 w-1 rounded-full bg-primary" style={{ left: `calc(${Math.min(100, c.target_pct * 100)}% - 2px)`, height: 18 }} title="Plano" />
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="mt-4 text-xs text-muted">Barra escura: sua carteira hoje. Traço amarelo: o plano do assessor para o seu perfil.</p>
-        </Card>
-      ) : (
-        <InfoBanner>
-          {hasAdvisor ? "O modo assessor está desligado na API." : (
-            <>
-              Quer comparar com o que combina com você? Responda o perfil no <Link href="/assessor" className="underline">Assessor</Link> e a
-              carteira passa a mostrar quanto falta ou sobra em cada classe.
-            </>
-          )}
-        </InfoBanner>
-      )}
-
-      <div>
-        <h2 className="mb-3 text-lg font-bold">Converse sobre a sua carteira</h2>
-        <Chat
-          endpoint="/assessor/chat"
-          extra={{ portfolio: chatPortfolio, plan: a.plan ?? null }}
-          page="/carteira"
-          suggestions={[
-            "Minha carteira está concentrada demais?",
-            "Onde coloco meu próximo aporte?",
-            "Como minha carteira se sairia numa crise?",
-            "O que falta para ela ficar mais equilibrada?",
-          ]}
-          placeholder="Pergunte sobre a sua carteira"
-          footer="Análise automática. Todo investimento tem riscos; rentabilidade passada não garante futura."
-        />
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-
-      <InfoBanner>{a.disclaimer}</InfoBanner>
-    </>
+    </Card>
   );
 }
 
-function RiskCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]> }) {
+function PerformanceCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]> }) {
   const bench = new Map(risk.benchmark_annual.map((x) => [x.year, x.return]));
   const cdi = new Map(risk.cdi_annual.map((x) => [x.year, x.return]));
   return (
     <Card>
       <CardHeader
         title="Se você tivesse esta carteira nos últimos 10 anos"
-        subtitle={`Com o histórico de cada ativo no app (${pct(risk.coverage)} da carteira; renda fixa pelo CDI). Dados até ${risk.data_through}.`}
+        subtitle={`Histórico de cada ativo no app (${pct(risk.coverage)} da carteira; renda fixa pelo CDI), dados até ${risk.data_through}`}
       />
-      <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <MiniStat label="Retorno ao ano (carteira)" value={formatRatio(risk.cagr)} color="rgb(var(--chart-1))" />
-        <MiniStat label={`${risk.benchmark} ao ano`} value={formatRatio(risk.benchmark_cagr)} color="rgb(var(--chart-2))" />
-        <MiniStat label="CDI ao ano" value={formatRatio(risk.cdi_cagr)} color="rgb(var(--chart-3))" />
-        <MiniStat
-          label="Pior ano da carteira"
-          value={risk.worst_year ? `${risk.worst_year.year}: ${formatRatio(risk.worst_year.return)}` : "–"}
-          color="rgb(var(--negative))"
-        />
+      <div className="mb-5 grid grid-cols-3 gap-3">
+        <MiniStat label="Sua carteira (a.a.)" value={formatRatio(risk.cagr)} color="rgb(var(--chart-1))" />
+        <MiniStat label={`${risk.benchmark} (a.a.)`} value={formatRatio(risk.benchmark_cagr)} color="rgb(var(--chart-2))" />
+        <MiniStat label="CDI (a.a.)" value={formatRatio(risk.cdi_cagr)} color="rgb(var(--chart-3))" />
       </div>
       <PairedBars
         groups={risk.annual.map((x) => ({
@@ -821,29 +897,80 @@ function RiskCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]> }) {
           { label: "CDI", color: "rgb(var(--chart-3))" },
         ]}
       />
-      {risk.crises.length > 0 && (
-        <div className="mt-6 border-t border-border pt-5">
-          <h3 className="mb-3 text-sm font-semibold">Nas crises (do início ao fundo de cada uma)</h3>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {risk.crises.map((c) => (
-              <div key={c.key} className="rounded-xl border border-border px-4 py-3">
-                <div className="text-sm font-semibold">{c.label}</div>
-                <div className="text-xs text-muted">
-                  {c.start} a {c.end}
-                </div>
-                <div className="mt-2 flex items-baseline justify-between gap-2 text-sm">
-                  <span className={`tabular text-lg font-bold ${changeColor(c.return)}`}>{formatRatio(c.return)}</span>
-                  {c.benchmark != null && <span className="tabular text-xs text-muted">{risk.benchmark} {formatRatio(c.benchmark)}</span>}
-                </div>
-                {c.coverage < risk.coverage - 0.01 && <div className="mt-1 text-[11px] text-muted">com {pct(c.coverage)} da carteira (ativos mais novos ficam de fora)</div>}
+      <p className="mt-3 text-xs text-muted">Simulação com os pesos de hoje, sem aportes nem rebalanceamento. Rentabilidade passada não garante rentabilidade futura.</p>
+    </Card>
+  );
+}
+
+function CrisesCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]> }) {
+  return (
+    <Card>
+      <CardHeader title="Nas crises" subtitle={`Queda da carteira de hoje do início ao fundo de cada crise, comparada ao ${risk.benchmark}`} />
+      <div className="space-y-3">
+        {risk.crises.map((c) => {
+          const worst = Math.min(c.return, c.benchmark ?? 0, -0.01);
+          return (
+            <div key={c.key}>
+              <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2 text-sm">
+                <span className="font-semibold">
+                  {c.label} <span className="text-xs font-normal text-muted">{c.start.slice(0, 4)}</span>
+                </span>
+                <span className="tabular text-xs text-muted">
+                  carteira <strong className={changeColor(c.return)}>{formatRatio(c.return)}</strong>
+                  {c.benchmark != null && <> · {risk.benchmark} {formatRatio(c.benchmark)}</>}
+                </span>
               </div>
-            ))}
+              <div className="space-y-1">
+                <div className="h-2 rounded-full bg-track">
+                  <div className="h-2 rounded-full bg-chart-1" style={{ width: `${Math.min(100, (Math.min(0, c.return) / worst) * 100)}%` }} />
+                </div>
+                {c.benchmark != null && (
+                  <div className="h-1.5 rounded-full bg-track">
+                    <div className="h-1.5 rounded-full bg-chart-2" style={{ width: `${Math.min(100, (Math.min(0, c.benchmark) / worst) * 100)}%` }} />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-4 text-xs text-muted">Barra amarela: sua carteira. Barra cinza: {risk.benchmark}. Ativos mais novos que a crise ficam de fora do cálculo.</p>
+    </Card>
+  );
+}
+
+function PlanCard({ plan }: { plan: NonNullable<PortfolioAnalysis["plan"]> }) {
+  return (
+    <Card>
+      <CardHeader
+        title="Sua carteira x plano do assessor"
+        subtitle={`Perfil ${plan.profile} · ${plan.term_label.toLowerCase()}`}
+        action={
+          <Link href="/assessor" className="text-sm font-semibold text-accent-text hover:underline">
+            Ver plano
+          </Link>
+        }
+      />
+      <div className="space-y-4">
+        {plan.comparison.map((c) => (
+          <div key={c.key}>
+            <div className="mb-1.5 flex flex-wrap justify-between gap-2 text-sm">
+              <span className="font-semibold">{c.label}</span>
+              <span className="tabular text-xs text-muted">
+                hoje {pct(c.current_pct)} · plano {pct(c.target_pct)} ·{" "}
+                <span className={c.diff_value > 0 ? "text-positive" : c.diff_value < 0 ? "text-negative" : ""}>
+                  {Math.abs(c.diff_value) < 1 ? "no alvo" : `${c.diff_value > 0 ? "faltam" : "sobram"} ${formatBRL(Math.abs(c.diff_value))}`}
+                </span>
+              </span>
+            </div>
+            <div className="relative h-2.5 rounded-full bg-track">
+              <div className="h-2.5 rounded-full bg-chart-2" style={{ width: `${Math.min(100, c.current_pct * 100)}%` }} />
+              <span className="absolute -top-1 w-1 rounded-full bg-primary" style={{ left: `calc(${Math.min(100, c.target_pct * 100)}% - 2px)`, height: 18 }} title="Plano" />
+            </div>
           </div>
-        </div>
-      )}
-      <p className="mt-4 text-xs text-muted">
-        Simulação com os pesos de hoje, sem aportes nem rebalanceamento. Rentabilidade passada não garante rentabilidade futura.
-      </p>
+        ))}
+      </div>
+      <p className="mt-4 text-xs text-muted">Barra escura: sua carteira hoje. Traço amarelo: o plano para o seu perfil, com o total da carteira.</p>
     </Card>
   );
 }
