@@ -65,7 +65,8 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
     com botão para perguntar à IA.
 10. **Configurações** (tela `/configuracoes`): nível de linguagem da IA, leitura automática, nome, frequência dos
     alertas, notificações, o estado dos serviços da API e o **consumo de IA** (`/ia/consumo`): chamadas, tokens e custo
-    estimado em US$ e R$ por dia e por função. Com `SUPABASE_URL` e `SUPABASE_SECRET_KEY`, o histórico fica na tabela
+    estimado em US$ e R$ por dia e por função, e o crédito restante na Anthropic (a pessoa informa o saldo do console e
+    o app desconta o gasto desde então, com a previsão de quantos dias dura no ritmo dos últimos 7 dias). Com `SUPABASE_URL` e `SUPABASE_SECRET_KEY`, o histórico fica na tabela
     `ai_usage` (migração `supabase/migrations/0002_ai_usage.sql`); sem eles, conta desde o último reinício da API.
 
 ## Rodando localmente

@@ -66,3 +66,20 @@ def test_endpoint_counts_readings_and_cache(monkeypatch):
     assert body["today"]["calls"] == 1 and body["cache_hits_since_start"] == 1
     assert body["by_feature_30_days"][0]["feature"] == "leitura_ranking"
     assert body["usd_brl"] == 5.42 and body["today"]["cost_brl"] is not None
+
+
+def test_cost_since_a_moment():
+    from datetime import datetime, timedelta, timezone
+
+    from app.ai.usage import UsageEvent, UsageTracker
+
+    t = UsageTracker()
+    now = datetime.now(timezone.utc)
+    for hours, cost in ((5, 1.0), (1, 0.25)):
+        t.events.append(UsageEvent((now - timedelta(hours=hours)).isoformat(), "chat", "claude-opus-5-5", 0, 0, 0, 0, cost))
+    t.started_at = (now - timedelta(hours=6)).isoformat()
+    s = t.summary(since=now - timedelta(hours=2))["since_request"]
+    assert s["cost_usd"] == 0.25 and s["complete"]
+    # Antes de a API ligar e sem banco: o valor pode estar incompleto.
+    assert t.summary(since=now - timedelta(days=1))["since_request"]["complete"] is False
+    assert t.summary()["since_request"] is None

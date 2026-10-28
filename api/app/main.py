@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from dataclasses import asdict
+from datetime import datetime
 
 from typing import Literal
 
@@ -228,11 +229,16 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             raise HTTPException(503, "ANTHROPIC_API_KEY não configurada.")
 
     @app.get("/ia/consumo")
-    async def ai_usage():
-        """Chamadas, tokens e custo estimado da IA (hoje, 7 e 30 dias, por função e por dia)."""
+    async def ai_usage(desde: datetime | None = None):
+        """Chamadas, tokens e custo estimado da IA (hoje, 7 e 30 dias, por função e por dia). Com `desde`, soma também o
+        custo a partir desse momento (o app usa para descontar do saldo de créditos informado pela pessoa)."""
         await usage.load()
         usd = next((i.value for i in await app.state.bcb.indicators() if i.key == "usd_brl"), None)
-        return {**usage.summary(usd), "model": settings.anthropic_model, "ai": bool(settings.anthropic_api_key)}
+        return {
+            **usage.summary(usd, since=desde),
+            "model": settings.anthropic_model,
+            "ai": bool(settings.anthropic_api_key),
+        }
 
     @app.get("/mercado")
     async def market_overview(svc: RankingService = Depends(get_ranking)):

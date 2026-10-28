@@ -333,6 +333,8 @@ export type AiUsage = {
   daily: { day: string; calls: number; cost_usd: number }[];
   cache_hits_since_start: number;
   since: string;
+  since_request: { at: string; cost_usd: number; complete: boolean } | null;
+  avg_daily_usd_7_days: number;
   persisted: boolean;
   usd_brl: number | null;
   model: string;

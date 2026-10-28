@@ -124,7 +124,24 @@ class UsageTracker:
         except Exception:
             log.exception("falha ao ler consumo de IA do banco")
 
-    def summary(self, usd_brl: float | None = None, now: datetime | None = None) -> dict:
+    def _since(self, since: datetime | None) -> dict | None:
+        """Custo a partir de um momento. `complete` é falso quando o histórico guardado não cobre o período inteiro
+        (sem banco, o consumo só existe desde que a API ligou; com banco, até 90 dias)."""
+        if since is None:
+            return None
+        if since.tzinfo is None:
+            since = since.replace(tzinfo=timezone.utc)
+        start = since.astimezone(timezone.utc).isoformat()
+        covered_from = (
+            (datetime.now(timezone.utc) - timedelta(days=KEEP_DAYS)).isoformat() if self.base else self.started_at
+        )
+        return {
+            "at": start,
+            "cost_usd": round(sum(e.cost_usd for e in self.events if e.at >= start), 4),
+            "complete": start >= covered_from,
+        }
+
+    def summary(self, usd_brl: float | None = None, now: datetime | None = None, since: datetime | None = None) -> dict:
         now = now or datetime.now(timezone.utc)
 
         def window(days: int | None, events=None) -> dict:
@@ -167,6 +184,8 @@ class UsageTracker:
             "daily": daily,
             "cache_hits_since_start": self.cache_hits,
             "since": self.events[0].at if self.events else self.started_at,
+            "since_request": self._since(since),
+            "avg_daily_usd_7_days": round(sum(e.cost_usd for e in self.events if e.at >= (now - timedelta(days=7)).isoformat()) / 7, 4),
             "persisted": self.base is not None,
             "usd_brl": usd_brl,
             "prices_usd_per_million": {"input": DEFAULT_PRICE[0], "output": DEFAULT_PRICE[1]},
