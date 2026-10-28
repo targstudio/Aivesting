@@ -2,8 +2,9 @@
 
 import { MessageCircle, RefreshCw, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { ApiNetworkError, apiFetch } from "@/lib/api";
 import { formatTime } from "@/lib/format";
+import { useApiStatus } from "./ApiStatus";
 import { useApp } from "./AppProvider";
 import { Markdown } from "./Markdown";
 
@@ -27,6 +28,8 @@ export function AiInsight({
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [reading, setReading] = useState<Reading | null>(null);
   const [error, setError] = useState("");
+  const [asleep, setAsleep] = useState(false);
+  const api = useApiStatus();
 
   const run = useCallback(async () => {
     setState("loading");
@@ -35,10 +38,19 @@ export function AiInsight({
       setReading(await apiFetch<Reading>(`/ia/leitura?${params}`));
       setState("done");
     } catch (e) {
+      setAsleep(e instanceof ApiNetworkError);
       setError(e instanceof Error ? e.message : "Não foi possível gerar a leitura.");
       setState("error");
     }
   }, [context, prefs.level]);
+
+  // Falhou porque a API estava dormindo: tenta de novo sozinho quando ela acordar.
+  useEffect(() => {
+    if (asleep && api.phase === "online") {
+      setAsleep(false);
+      run();
+    }
+  }, [asleep, api.phase, run]);
 
   useEffect(() => {
     if (ready && prefs.aiAuto) run();
@@ -82,10 +94,12 @@ export function AiInsight({
       {state === "done" && reading && <Markdown text={reading.text} className="text-sm leading-relaxed text-text/90 md:text-[15px]" />}
       {state === "error" && (
         <p className="text-sm text-muted">
-          {error}{" "}
-          <button onClick={run} className="font-semibold underline">
-            Tentar de novo
-          </button>
+          {asleep ? "A API está acordando; a leitura aparece sozinha quando o indicador do topo ficar verde." : error}{" "}
+          {!asleep && (
+            <button onClick={run} className="font-semibold underline">
+              Tentar de novo
+            </button>
+          )}
         </p>
       )}
 

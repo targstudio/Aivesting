@@ -2,7 +2,8 @@
 
 import { ArrowUp, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { ApiNetworkError, apiFetch } from "@/lib/api";
+import { formatClock, useApiStatus } from "@/app/components/ApiStatus";
 import { useApp } from "@/app/components/AppProvider";
 import { Markdown } from "@/app/components/Markdown";
 
@@ -76,15 +77,19 @@ export function Chat({
   const [loading, setLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const sentInitial = useRef(false);
+  const api = useApiStatus();
+  const waking = api.phase === "waking" || api.phase === "checking";
+  // Pergunta que falhou porque a API estava dormindo: vai sozinha quando o indicador ficar verde.
+  const [pending, setPending] = useState<{ text: string; history: Message[] } | null>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [messages, loading]);
 
-  async function send(text: string) {
+  async function send(text: string, history: Message[] = messages) {
     const content = text.trim();
     if (!content || loading) return;
-    const next: Message[] = [...messages, { role: "user", content }];
+    const next: Message[] = [...history, { role: "user", content }];
     setMessages(next);
     setInput("");
     setLoading(true);
@@ -96,11 +101,27 @@ export function Chat({
       setMessages([...next, { role: "assistant", content: body.reply }]);
       setSources((s) => ({ ...s, [next.length]: [...new Set<string>(body.tools_used)] }));
     } catch (e) {
+      if (e instanceof ApiNetworkError) {
+        setPending({ text: content, history });
+        setMessages([
+          ...next,
+          { role: "assistant", content: "A IA está acordando. Sua pergunta vai sozinha assim que o indicador do topo ficar verde." },
+        ]);
+        return;
+      }
       setMessages([...next, { role: "assistant", content: e instanceof Error ? e.message : "Erro inesperado." }]);
     } finally {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (pending && api.phase === "online" && !loading) {
+      setPending(null);
+      send(pending.text, pending.history);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending, api.phase, loading]);
 
   useEffect(() => {
     if (initialPrompt && !sentInitial.current) {
@@ -185,7 +206,13 @@ export function Chat({
           <ArrowUp size={18} />
         </button>
       </form>
-      <p className="mt-2 text-center text-[11px] text-muted">{footer}</p>
+      <p className="mt-2 text-center text-[11px] text-muted">
+        {waking || pending
+          ? `A IA está acordando${api.left > 0 ? ` (${formatClock(api.left)})` : ""}. Você já pode escrever: a pergunta vai quando ficar verde.`
+          : api.phase === "offline"
+            ? "A API não respondeu. Use \"tentar de novo\" no topo."
+            : footer}
+      </p>
     </section>
   );
 }

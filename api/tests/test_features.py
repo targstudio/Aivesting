@@ -180,3 +180,35 @@ def test_cors_accepts_origin_with_trailing_slash():
     with TestClient(app) as c:
         r = c.get("/health", headers={"Origin": "https://site.vercel.app"})
     assert r.headers.get("access-control-allow-origin") == "https://site.vercel.app"
+
+
+def test_ai_errors_come_back_with_cors_and_a_clear_message(monkeypatch):
+    import anthropic
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.ai.assistant import Assistant
+    from app.config import Settings
+    from app.main import create_app
+
+    async def broke(self, *a, **kw):
+        req = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
+        raise anthropic.BadRequestError(
+            "Your credit balance is too low to access the Anthropic API.",
+            response=httpx.Response(400, request=req),
+            body=None,
+        )
+
+    monkeypatch.setattr(Assistant, "reply", broke)
+    app = create_app(
+        Settings(_env_file=None, demo_mode=True, anthropic_api_key="x", web_origin="https://site.app"),
+        start_scheduler=False,
+    )
+    with TestClient(app, raise_server_exceptions=False) as c:
+        r = c.post(
+            "/assistant/chat",
+            json={"messages": [{"role": "user", "content": "oi"}]},
+            headers={"Origin": "https://site.app"},
+        )
+    assert r.status_code == 402 and "créditos" in r.json()["detail"]
+    assert r.headers.get("access-control-allow-origin") == "https://site.app"
