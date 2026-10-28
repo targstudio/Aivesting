@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Bot, Building2, House, Landmark, LineChart, Settings, Trophy, type LucideIcon } from "lucide-react";
+import { Bell, Bot, Building2, Hourglass, House, Landmark, LineChart, Settings, Trophy, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,6 +10,7 @@ export const NAV_ITEMS: Item[] = [
   { href: "/", label: "Início", icon: House },
   { href: "/ranking", label: "Ranking", icon: Trophy },
   { href: "/ranking?classe=fiis", label: "FIIs", icon: Building2 },
+  { href: "/horizontes", label: "Horizontes", icon: Hourglass },
   { href: "/macro", label: "Macro", icon: Landmark },
   { href: "/mercado", label: "Mercado", icon: LineChart, soon: true },
   { href: "/assistente", label: "Assistente IA", icon: Bot },

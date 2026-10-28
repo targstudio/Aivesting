@@ -33,6 +33,7 @@ BCB_SERIES = {"cdi": 4391, "selic": 4189, "ipca_12m": 13522}
 GLOBAL = {"usd_brl": "BRL=X", "sp500": "^GSPC", "us10y": "^TNX"}
 
 START_YEAR = 2000
+PERIOD_START = int(datetime(START_YEAR, 1, 1, tzinfo=timezone.utc).timestamp())
 
 
 def get(client: httpx.Client, url: str, params: dict) -> httpx.Response | None:
@@ -55,7 +56,8 @@ def yahoo_monthly(client: httpx.Client, symbol: str) -> tuple[str | None, dict[s
         resp = get(
             client,
             f"{host}/v8/finance/chart/{symbol}",
-            {"range": "max", "interval": "1mo", "events": "div,split"},
+            # Com range=max o Yahoo troca séries longas para barras trimestrais; o período explícito evita isso.
+            {"period1": PERIOD_START, "period2": int(time.time()), "interval": "1mo", "events": "div,split"},
         )
         if resp is None:
             continue

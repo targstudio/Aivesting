@@ -32,6 +32,8 @@ from .stats import (
 )
 
 MODEL_VERSION = "horizontes-v1"
+# Mínimo de janelas independentes (soma dos pesos 1/H) para exibir uma probabilidade num horizonte.
+MIN_EFFECTIVE_WINDOWS = 3
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 
@@ -85,21 +87,25 @@ def build_class(history: History, asset_class: str, regime_list: list, scenario:
         for target in ("beat_benchmark", "beat_cdi"):
             data = [s for s in samples if getattr(s, target) >= 0]
             validation = walk_forward(samples, target, months, history.first)
+            effective = sum(s.weight for s in data)
             base = (
-                sum(s.weight * getattr(s, target) for s in data) / sum(s.weight for s in data) if data else 0.5
+                sum(s.weight * getattr(s, target) for s in data) / effective
+                if effective >= MIN_EFFECTIVE_WINDOWS
+                else None
             )
             model = None
             if data and validation["validated"]:
                 model = fit_logistic([s.x for s in data], [getattr(s, target) for s in data], [s.weight for s in data])
             models[target] = model
             result[target] = {
-                "base_rate": round(base, 3),
+                "base_rate": round(base, 3) if base is not None else None,
+                "effective_windows": round(effective, 1),
                 "validation": validation,
                 "coefficients": (
                     {f: round(c, 3) for f, c in zip(FEATURES, model.coefs)} if model else None
                 ),
             }
-            log(f"{asset_class} {years}a {target}: base {base:.2f} {validation}")
+            log(f"{asset_class} {years}a {target}: base {base} {validation}")
 
         assets = []
         for ticker in history.tickers(asset_class):
@@ -133,10 +139,12 @@ def build_class(history: History, asset_class: str, regime_list: list, scenario:
         # Com modelo validado, ordena pela chance de superar o índice. Sem ele (ou no empate), pelo retorno
         # ajustado ao risco dos últimos 10 anos (índice de Sharpe contra o CDI).
         sharpe = lambda a: a["sharpe_10y"] if a["sharpe_10y"] is not None else -9  # noqa: E731
-        assets.sort(key=lambda a: (-a["prob_beat_benchmark"], -sharpe(a)))
+        assets.sort(key=lambda a: (-(a["prob_beat_benchmark"] or 0), -sharpe(a)))
         for rank, a in enumerate(assets, start=1):
             a["rank"] = rank
         result["model_used"] = models["beat_benchmark"] is not None
+        # Sem janelas suficientes (ex.: FIIs em 10 anos), o horizonte não tem probabilidade.
+        result["enough_history"] = result["beat_benchmark"]["base_rate"] is not None
         result["assets"] = assets
         horizons[str(years)] = result
 

@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+from ..providers.brapi import logo_url_for
 from .build import DATA_DIR
 from .model import HORIZONS
 
@@ -54,6 +55,7 @@ class LongTermService:
             return None
         return {
             **result,
+            "assets": [{**a, "logo_url": logo_url_for(a["ticker"])} for a in result["assets"]],
             "asset_class": asset_class,
             "benchmark": info["benchmark"],
             "benchmark_is_proxy": info["benchmark_is_proxy"],
@@ -71,6 +73,7 @@ class LongTermService:
         return {
             "ticker": ticker,
             **asset,
+            "logo_url": logo_url_for(ticker),
             "benchmark": info["benchmark"],
             "benchmark_risk": info["benchmark_risk"],
             "benchmark_annual": info["benchmark_annual"],

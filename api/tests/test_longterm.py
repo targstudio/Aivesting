@@ -128,3 +128,11 @@ def test_api_without_calibration(tmp_path):
         create_app(Settings(_env_file=None, longterm_path=str(tmp_path / "nada.json")), start_scheduler=False)
     )
     assert client.get("/horizontes/acoes/1").status_code == 503
+
+
+def test_short_history_has_no_long_horizon_probability():
+    out = build(from_dict(synthetic_history(start_year=2012)))
+    ten = out["classes"]["acoes"]["horizons"]["10"]
+    assert not ten["enough_history"]
+    assert all(a["prob_beat_benchmark"] is None for a in ten["assets"])
+    assert out["classes"]["acoes"]["horizons"]["1"]["enough_history"]
