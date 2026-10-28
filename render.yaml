@@ -1,0 +1,32 @@
+# Blueprint do Render para a API. No Render: New > Blueprint > escolha o repositório Aivesting.
+services:
+  - type: web
+    name: aivesting-api
+    runtime: python
+    rootDir: api
+    region: ohio
+    # O plano gratuito "dorme" sem tráfego e para o recálculo de 5 minutos; o starter fica sempre ligado.
+    plan: starter
+    buildCommand: pip install .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: RANKING_INTERVAL_MINUTES
+        value: "5"
+      - key: AI_REQUESTS_PER_HOUR
+        value: "30"
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: BRAPI_TOKEN
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      # Domínio do site na Vercel, ex.: https://aivesting.vercel.app
+      - key: WEB_ORIGIN
+        sync: false

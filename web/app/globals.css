@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design system (proposta, seção 7): preto como cor principal, bege como destaque, cantos bem arredondados. */
+:root {
+  --primary: 17 17 17;
+  --on-primary: 255 255 255;
+  --background: 247 247 245;
+  --surface: 255 255 255;
+  --border: 228 228 224;
+  --text: 17 17 17;
+  --text-muted: 107 107 107;
+  --accent-bg: 251 241 217;
+  --accent-text: 138 90 18;
+  --track: 232 232 230;
+  --positive: 26 127 75;
+  --negative: 200 53 43;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: 245 245 245;
+    --on-primary: 17 17 17;
+    --background: 10 10 10;
+    --surface: 22 22 22;
+    --border: 45 45 45;
+    --text: 240 240 240;
+    --text-muted: 160 160 160;
+    --accent-bg: 58 46 22;
+    --accent-text: 240 200 130;
+    --track: 38 38 38;
+    --positive: 80 200 130;
+    --negative: 245 110 100;
+  }
+}
+
+body {
+  @apply bg-background font-sans text-text antialiased;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
