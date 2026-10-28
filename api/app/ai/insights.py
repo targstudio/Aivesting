@@ -143,6 +143,21 @@ class Insights:
             return "Não foi possível gerar esta leitura agora."
         return "".join(b.text for b in response.content if b.type == "text").strip()
 
+    async def complete_with(self, system: str, instruction: str) -> str:
+        """Chamada simples com um papel próprio (ex.: o assessor explicando o plano)."""
+        response = await self.client.beta.messages.create(
+            model=self.model,
+            max_tokens=2000,
+            system=system,
+            output_config={"effort": "low"},
+            betas=["server-side-fallback-2026-07-01"],
+            fallbacks="default",
+            messages=[{"role": "user", "content": instruction}],
+        )
+        if response.stop_reason == "refusal":
+            return "Não foi possível gerar esta explicação agora."
+        return "".join(b.text for b in response.content if b.type == "text").strip()
+
     def cached(self, context: str, level: str) -> dict | None:
         hit = self._cache.get((context, level))
         if hit and time.monotonic() - hit[0] < CACHE_SECONDS:

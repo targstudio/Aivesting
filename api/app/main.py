@@ -10,6 +10,8 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from .advisor import QUESTIONS, PlanRequest, build_plan, horizon_for
+from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
 from .ai.insights import LEVELS, Insights, valid_context
@@ -40,6 +42,10 @@ class ChatRequest(BaseModel):
     level: Level = "iniciante"
 
 
+class AdvisorChatRequest(ChatRequest):
+    plan: dict | None = None
+
+
 class AlertsRequest(BaseModel):
     alerts: list[Alert] = Field(max_length=100)
 
@@ -48,6 +54,11 @@ class AlertExplainRequest(BaseModel):
     alert: Alert
     level: Level = "iniciante"
 
+
+ADVISOR_DISCLAIMER = (
+    "Sugestões geradas automaticamente a partir do seu perfil e de dados de mercado. Todo investimento tem riscos; "
+    "rentabilidade passada não garante rentabilidade futura. Avalie custos e impostos antes de investir."
+)
 
 LONGTERM_DISCLAIMER = (
     "Probabilidades estimadas por modelo estatístico com dados desde 2000 e validadas fora da amostra. "
@@ -135,7 +146,74 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "ranking_interval_minutes": settings.ranking_interval_minutes,
             "market_open": market_is_open(settings),
             "longterm": app.state.longterm.data is not None,
+            "advisor": settings.advisor_mode == "public",
         }
+
+    # ---- Modo assessor ----
+
+    def require_advisor() -> None:
+        if settings.advisor_mode != "public":
+            raise HTTPException(403, "O modo assessor está desligado.")
+
+    def advisor_examples(prazo: int, svc: RankingService) -> dict[str, list[dict]]:
+        """Ativos do app para ilustrar ações e FIIs: ranking do horizonte do prazo, ou o de curto prazo."""
+        out = {}
+        for key, cls in (("acoes", "acoes"), ("fiis", "fiis")):
+            horizon = app.state.longterm.horizon(cls, horizon_for(prazo)) if app.state.longterm.data else None
+            if horizon and horizon["assets"]:
+                out[key] = [
+                    {"ticker": a["ticker"], "name": a["name"], "logo_url": a.get("logo_url"),
+                     "note": f"{a['rank']}º no horizonte de {horizon['years']} ano(s)"}
+                    for a in horizon["assets"][:3]
+                ]
+            elif (snap := svc.snapshots.get(cls)) and snap.assets:
+                out[key] = [
+                    {"ticker": a.ticker, "name": a.name, "logo_url": a.logo_url, "note": f"{a.rank}º no ranking de curto prazo"}
+                    for a in snap.assets[:3]
+                ]
+        return out
+
+    @app.get("/assessor/perguntas")
+    async def advisor_questions():
+        require_advisor()
+        return {"perguntas": QUESTIONS}
+
+    @app.post("/assessor/plano")
+    async def advisor_plan(body: PlanRequest, svc: RankingService = Depends(get_ranking)):
+        require_advisor()
+        macro = {i.key: i.value for i in await app.state.bcb.indicators()}
+        plan = build_plan(body, macro, advisor_examples(body.answers.prazo, svc))
+        return {**plan, "disclaimer": ADVISOR_DISCLAIMER}
+
+    @app.post("/assessor/explicar")
+    async def advisor_explain(body: PlanRequest, request: Request, nivel: Level = "iniciante",
+                              svc: RankingService = Depends(get_ranking)):
+        require_advisor()
+        require_ai()
+        ai_rate_limit(request)
+        macro = {i.key: i.value for i in await app.state.bcb.indicators()}
+        plan = build_plan(body, macro, advisor_examples(body.answers.prazo, svc))
+        text = await app.state.insights.complete_with(advisor_system(plan, LEVELS[nivel]), EXPLAIN_TASK)
+        return {"explanation": text, "disclaimer": ADVISOR_DISCLAIMER}
+
+    @app.post("/assessor/chat")
+    async def advisor_chat(body: AdvisorChatRequest, request: Request, svc: RankingService = Depends(get_ranking)):
+        require_advisor()
+        require_ai()
+        if body.messages[-1].role != "user":
+            raise HTTPException(422, "A última mensagem precisa ser do usuário.")
+        ai_rate_limit(request)
+        assistant = Assistant(
+            settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
+            app.state.market,
+        )
+        result = await assistant.reply(
+            [m.model_dump(include={"role", "content"}) for m in body.messages],
+            page=body.page,
+            level=body.level,
+            system=advisor_system(body.plan, LEVELS[body.level]),
+        )
+        return {**result, "disclaimer": ADVISOR_DISCLAIMER}
 
     def require_ai() -> None:
         if not settings.anthropic_api_key:

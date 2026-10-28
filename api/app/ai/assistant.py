@@ -22,7 +22,8 @@ ajustado ao risco dos últimos 10 anos: diga isso com clareza. Lembre que rentab
 
 O app é informativo. Você pode apresentar e comparar dados e explicar o ranking, mas não diga para comprar, vender
 ou manter um ativo, não indique preço-alvo, não monte carteira para a pessoa e não prometa rentabilidade. Se pedirem
-uma recomendação, explique que o app não faz isso e ofereça os dados que ajudam a pessoa a decidir."""
+uma recomendação ou onde aplicar o dinheiro, explique que sugestões personalizadas ficam na tela Assessor do app
+(/assessor), que monta um plano a partir do perfil da pessoa, e ofereça os dados que ajudam a decidir."""
 
 TOOLS = [
     {
@@ -161,13 +162,16 @@ class Assistant:
             return {"indicadores": [asdict(i) for i in await self.macro_source.indicators()]}
         return {"erro": f"Ferramenta desconhecida: {name}"}
 
-    async def reply(self, history: list[dict], page: str | None = None, level: str = "iniciante") -> dict:
+    async def reply(
+        self, history: list[dict], page: str | None = None, level: str = "iniciante", system: str | None = None
+    ) -> dict:
         """`history` é a conversa em texto: [{"role": "user"|"assistant", "content": str}, ...].
 
         `page` é a tela em que a pessoa abriu a IA, para ela entender "este ativo" ou "este ranking".
         """
         messages: list = [{"role": m["role"], "content": m["content"]} for m in history]
-        system = f"{SYSTEM_PROMPT}\n\n{LEVELS.get(level, LEVELS['iniciante'])}"
+        # `system` substitui o papel padrão (ex.: modo assessor); o nível e a tela valem para os dois.
+        system = system or f"{SYSTEM_PROMPT}\n\n{LEVELS.get(level, LEVELS['iniciante'])}"
         if page:
             system += f"\n\nA pessoa está na tela {page!r} do app. Use isso para entender referências como " \
                 "\"este ativo\" ou \"este ranking\"."

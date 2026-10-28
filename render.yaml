@@ -21,6 +21,9 @@ services:
         value: "5"
       - key: AI_REQUESTS_PER_HOUR
         value: "30"
+      # Modo assessor (sugestões de alocação por perfil): "public" ou "off".
+      - key: ADVISOR_MODE
+        value: public
       - key: ADMIN_TOKEN
         generateValue: true
       - key: BRAPI_TOKEN

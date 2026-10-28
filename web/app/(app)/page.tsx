@@ -41,6 +41,17 @@ export default async function Home() {
 
       <AiInsight context="inicio" title="Resumo do dia pela IA" askPrompt="Como está o mercado hoje no Brasil e lá fora?" />
 
+      <Link
+        href="/assessor"
+        className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-card border border-border bg-accent-bg px-6 py-5 text-accent-text md:px-8"
+      >
+        <span>
+          <span className="block text-lg font-bold">Onde colocar o seu dinheiro?</span>
+          <span className="block text-sm">Responda 5 perguntas e o Assessor IA monta um plano entre renda fixa, ações, FIIs e dólar.</span>
+        </span>
+        <span className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">Montar meu plano</span>
+      </Link>
+
       {(macro?.indicators.length || computedAt) && (
       <Card className="mb-8">
         <div className="grid grid-cols-2 gap-6 md:flex md:gap-0 md:divide-x md:divide-border">

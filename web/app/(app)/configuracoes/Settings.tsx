@@ -211,6 +211,11 @@ export function Settings() {
               label="Ranking"
               detail={`Recalculado a cada ${health.ranking_interval_minutes} min no pregão · pregão ${health.market_open ? "aberto" : "fechado"}`}
             />
+            <Status
+              ok={health.advisor}
+              label="Assessor IA"
+              detail={health.advisor ? "Ligado para todos" : "Desligado (ADVISOR_MODE=off)"}
+            />
             <Status ok={health.longterm} label="Horizontes de 1 a 10 anos" detail={health.longterm ? "Modelo calibrado" : "Sem calibração"} />
             <Status
               ok={health.database}

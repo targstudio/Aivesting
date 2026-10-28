@@ -224,6 +224,7 @@ export type Health = {
   ranking_interval_minutes: number;
   market_open: boolean;
   longterm: boolean;
+  advisor: boolean;
 };
 
 export type AssetSummary = Pick<RankedAsset, "ticker" | "name" | "asset_class" | "price" | "change_percent" | "rank" | "probability_outperform" | "logo_url">;
@@ -258,3 +259,46 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   if (!res.ok) throw new Error(typeof body.detail === "string" ? body.detail : `Erro ${res.status}`);
   return body as T;
 }
+
+// ---- Modo assessor ----
+
+export type AdvisorQuestion = { key: string; label: string; options: string[] };
+
+export type AdvisorAnswers = {
+  objetivo: number;
+  prazo: number;
+  reacao_queda: number;
+  experiencia: number;
+  oscilacao: number;
+};
+
+export type AdvisorInput = {
+  answers: AdvisorAnswers;
+  amount: number;
+  monthly_contribution: number;
+  monthly_expenses: number;
+  has_reserve: boolean;
+};
+
+export type AdvisorAllocation = {
+  key: string;
+  label: string;
+  value: number;
+  pct: number;
+  risk: string;
+  why: string;
+  products: string[];
+  examples: { ticker: string; name: string; logo_url?: string | null; note: string }[];
+};
+
+export type AdvisorPlan = {
+  profile: "conservador" | "moderado" | "arrojado";
+  score: number;
+  amount: number;
+  allocation: AdvisorAllocation[];
+  monthly_contribution: { key: string; label: string; value: number }[] | null;
+  variable_income_pct: number;
+  macro: { selic: number | null; ipca_12m: number | null; juro_real: number | null; cdi_estimado: number | null };
+  notes: string[];
+  disclaimer: string;
+};

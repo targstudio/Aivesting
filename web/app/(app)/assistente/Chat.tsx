@@ -30,6 +30,8 @@ function suggestionsFor(page?: string): string[] {
     return ["O que os primeiros do ranking têm em comum?", "Compare as 3 primeiras ações do ranking", "Como o modelo calcula a probabilidade?"];
   if (page.startsWith("/horizontes"))
     return ["Explique o ranking de 10 anos de forma simples", "Por que o modelo não foi validado em alguns horizontes?", "Como as ações se saíram em cenários parecidos com o atual?"];
+  if (page.startsWith("/enciclopedia"))
+    return ["Qual a diferença entre CDB, LCI e LCA?", "Como funciona o Tesouro IPCA+?", "Vale a pena investir em dólar?"];
   if (page.startsWith("/macro"))
     return ["O que a Selic atual significa para quem investe?", "Como a inflação afeta os FIIs?", "O dólar subiu ou caiu?"];
   if (page.startsWith("/alertas"))
@@ -46,7 +48,26 @@ const TOOL_LABELS: Record<string, string> = {
   get_asset_history: "histórico",
 };
 
-export function Chat({ compact = false, page, initialPrompt }: { compact?: boolean; page?: string; initialPrompt?: string }) {
+export function Chat({
+  compact = false,
+  page,
+  initialPrompt,
+  endpoint = "/assistant/chat",
+  extra,
+  suggestions,
+  placeholder = "Pergunte sobre um ativo, o mercado ou o cenário macro",
+  footer = "A IA explica dados; ela não recomenda compra ou venda.",
+}: {
+  compact?: boolean;
+  page?: string;
+  initialPrompt?: string;
+  /** Rota da API (o assessor usa /assessor/chat) e campos extras enviados junto com a conversa. */
+  endpoint?: string;
+  extra?: Record<string, unknown>;
+  suggestions?: string[];
+  placeholder?: string;
+  footer?: string;
+}) {
   const { prefs } = useApp();
   const [messages, setMessages] = useState<Message[]>([]);
   const [sources, setSources] = useState<Record<number, string[]>>({});
@@ -67,9 +88,9 @@ export function Chat({ compact = false, page, initialPrompt }: { compact?: boole
     setInput("");
     setLoading(true);
     try {
-      const body = await apiFetch<{ reply: string; tools_used: string[] }>("/assistant/chat", {
+      const body = await apiFetch<{ reply: string; tools_used: string[] }>(endpoint, {
         method: "POST",
-        body: JSON.stringify({ messages: next, page, level: prefs.level }),
+        body: JSON.stringify({ messages: next, page, level: prefs.level, ...extra }),
       });
       setMessages([...next, { role: "assistant", content: body.reply }]);
       setSources((s) => ({ ...s, [next.length]: [...new Set<string>(body.tools_used)] }));
@@ -104,7 +125,7 @@ export function Chat({ compact = false, page, initialPrompt }: { compact?: boole
             </span>
             <p className="text-muted">Comece com uma destas perguntas ou escreva a sua:</p>
             <div className="flex flex-wrap gap-2">
-              {suggestionsFor(page).map((s) => (
+              {(suggestions ?? suggestionsFor(page)).map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
@@ -150,7 +171,7 @@ export function Chat({ compact = false, page, initialPrompt }: { compact?: boole
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Pergunte sobre um ativo, o mercado ou o cenário macro"
+          placeholder={placeholder}
           maxLength={4000}
           className="w-full bg-transparent text-sm outline-none placeholder:text-muted"
         />
@@ -163,7 +184,7 @@ export function Chat({ compact = false, page, initialPrompt }: { compact?: boole
           <ArrowUp size={18} />
         </button>
       </form>
-      <p className="mt-2 text-center text-[11px] text-muted">A IA explica dados; ela não recomenda compra ou venda.</p>
+      <p className="mt-2 text-center text-[11px] text-muted">{footer}</p>
     </section>
   );
 }
