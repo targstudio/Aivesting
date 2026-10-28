@@ -1,0 +1,6881 @@
+{
+ "model_version": "horizontes-v1",
+ "generated_at": "2026-10-28T17:27:24+00:00",
+ "data_source": "Yahoo Finance (preço ajustado por proventos) e Banco Central (SGS 4391, 4189, 13522)",
+ "data_fetched_at": "2026-10-28T17:27:21+00:00",
+ "data_from": "2000-01",
+ "data_through": "2026-10",
+ "split_adjustments": {
+  "B3SA3": [
+   "2011-05"
+  ],
+  "GGBR4": [
+   "2000-05",
+   "2003-05"
+  ],
+  "LREN3": [
+   "2005-06",
+   "2005-07"
+  ],
+  "RADL3": [
+   "2000-06",
+   "2006-11"
+  ],
+  "SUZB3": [
+   "2007-01",
+   "2007-05"
+  ],
+  "XPML11": [
+   "2026-01"
+  ]
+ },
+ "scenario": {
+  "month": "2026-10",
+  "key": "queda|favoravel",
+  "label": "Selic caindo e bolsa americana em tendência de alta",
+  "similar_months": 93,
+  "indicators": {
+   "selic": {
+    "label": "Selic",
+    "unit": "% a.a.",
+    "value": 13.65,
+    "month": "2026-10",
+    "change_12m": -1.25,
+    "return_12m": null
+   },
+   "ipca_12m": {
+    "label": "IPCA 12 meses",
+    "unit": "%",
+    "value": 4.58,
+    "month": "2026-09",
+    "change_12m": -0.59,
+    "return_12m": null
+   },
+   "usd_brl": {
+    "label": "Dólar",
+    "unit": "R$",
+    "value": 5.3813,
+    "month": "2026-10",
+    "change_12m": null,
+    "return_12m": -0.0001
+   },
+   "sp500": {
+    "label": "S&P 500",
+    "unit": "pts",
+    "value": 7735.5601,
+    "month": "2026-10",
+    "change_12m": null,
+    "return_12m": 0.1309
+   },
+   "us10y": {
+    "label": "Juro de 10 anos dos EUA",
+    "unit": "% a.a.",
+    "value": 5.016,
+    "month": "2026-10",
+    "change_12m": 0.915,
+    "return_12m": null
+   }
+  }
+ },
+ "crises": [
+  {
+   "key": "2008",
+   "label": "Crise financeira global",
+   "start": "2008-05",
+   "end": "2009-02",
+   "description": "Quebra do Lehman Brothers e recessão mundial."
+  },
+  {
+   "key": "2015",
+   "label": "Recessão brasileira",
+   "start": "2014-08",
+   "end": "2016-01",
+   "description": "PIB caiu cerca de 7% em dois anos; impeachment."
+  },
+  {
+   "key": "2018",
+   "label": "Greve dos caminhoneiros",
+   "start": "2018-02",
+   "end": "2018-06",
+   "description": "Paralisação do transporte e incerteza eleitoral."
+  },
+  {
+   "key": "2020",
+   "label": "Pandemia de Covid-19",
+   "start": "2020-01",
+   "end": "2020-03",
+   "description": "Queda mais rápida da história da bolsa."
+  },
+  {
+   "key": "2021",
+   "label": "Alta dos juros",
+   "start": "2021-06",
+   "end": "2022-06",
+   "description": "Selic subiu de 2% para mais de 13% ao ano."
+  },
+  {
+   "key": "2024",
+   "label": "Estresse fiscal",
+   "start": "2024-08",
+   "end": "2024-12",
+   "description": "Dúvidas sobre as contas públicas; dólar acima de R$ 6."
+  }
+ ],
+ "cdi_risk": {
+  "months": 120,
+  "total_return": 1.4403,
+  "cagr": 0.0933,
+  "volatility": 0.0113,
+  "max_drawdown": 0.0,
+  "sharpe": 0.0,
+  "cdi_cagr": 0.0933,
+  "worst_12m": 0.0214,
+  "best_12m": 0.1483
+ },
+ "cdi_annual": [
+  {
+   "year": 2016,
+   "return": 0.1399,
+   "partial": false
+  },
+  {
+   "year": 2017,
+   "return": 0.0993,
+   "partial": false
+  },
+  {
+   "year": 2018,
+   "return": 0.0641,
+   "partial": false
+  },
+  {
+   "year": 2019,
+   "return": 0.0595,
+   "partial": false
+  },
+  {
+   "year": 2020,
+   "return": 0.0275,
+   "partial": false
+  },
+  {
+   "year": 2021,
+   "return": 0.0444,
+   "partial": false
+  },
+  {
+   "year": 2022,
+   "return": 0.1238,
+   "partial": false
+  },
+  {
+   "year": 2023,
+   "return": 0.1303,
+   "partial": false
+  },
+  {
+   "year": 2024,
+   "return": 0.1089,
+   "partial": false
+  },
+  {
+   "year": 2025,
+   "return": 0.1433,
+   "partial": false
+  },
+  {
+   "year": 2026,
+   "return": 0.1152,
+   "partial": true
+  }
+ ],
+ "classes": {
+  "acoes": {
+   "benchmark": "Ibovespa",
+   "benchmark_is_proxy": false,
+   "benchmark_risk": {
+    "months": 120,
+    "total_return": 1.6399,
+    "cagr": 0.1019,
+    "volatility": 0.2062,
+    "max_drawdown": -0.3686,
+    "sharpe": 0.04,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.2347,
+    "best_12m": 0.5973
+   },
+   "benchmark_annual": [
+    {
+     "year": 2016,
+     "return": 0.3893,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.2686,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.1503,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.3158,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.0317,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1214,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0497,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2195,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.1036,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.3395,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.0637,
+     "partial": true
+    }
+   ],
+   "benchmark_crises": [
+    {
+     "key": "2008",
+     "return": -0.474,
+     "recovery_months": 103,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.3407,
+     "recovery_months": 9,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1488,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.3581,
+     "recovery_months": 9,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.2229,
+     "recovery_months": 17,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1156,
+     "recovery_months": 5,
+     "recovered": true
+    }
+   ],
+   "benchmark_in_scenario": {
+    "months": 93,
+    "avg_annual": 0.252
+   },
+   "horizons": {
+    "1": {
+     "years": 1,
+     "months": 12,
+     "samples": 3646,
+     "beat_benchmark": {
+      "base_rate": 0.582,
+      "effective_windows": 303.8,
+      "validation": {
+       "oos_samples": 3322,
+       "oos_effective": 276.8,
+       "brier": 0.2558,
+       "brier_base_rate": 0.2475,
+       "skill": -0.0336,
+       "auc": 0.468,
+       "hit_rate_top": 0.537,
+       "hit_rate_bottom": 0.599,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.556,
+      "effective_windows": 303.8,
+      "validation": {
+       "oos_samples": 3322,
+       "oos_effective": 276.8,
+       "brier": 0.265,
+       "brier_base_rate": 0.2626,
+       "skill": -0.0092,
+       "auc": 0.507,
+       "hit_rate_top": 0.535,
+       "hit_rate_bottom": 0.532,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "PRIO3",
+       "name": "Prio S.A.",
+       "history": {
+        "windows": 181,
+        "median": 0.2901,
+        "p10": -0.7092,
+        "p90": 1.6096,
+        "beat_cdi_freq": 0.564,
+        "beat_benchmark_freq": 0.558
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 1.1,
+       "rank": 1
+      },
+      {
+       "ticker": "PETR4",
+       "name": "Petróleo Brasileiro S.A. - Petrobras",
+       "history": {
+        "windows": 310,
+        "median": 0.1991,
+        "p10": -0.258,
+        "p90": 0.7466,
+        "beat_cdi_freq": 0.539,
+        "beat_benchmark_freq": 0.561
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.51,
+       "rank": 2
+      },
+      {
+       "ticker": "WEGE3",
+       "name": "WEG S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.2406,
+        "p10": -0.1178,
+        "p90": 0.981,
+        "beat_cdi_freq": 0.687,
+        "beat_benchmark_freq": 0.645
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.47,
+       "rank": 3
+      },
+      {
+       "ticker": "VALE3",
+       "name": "Vale S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.1558,
+        "p10": -0.2271,
+        "p90": 0.8231,
+        "beat_cdi_freq": 0.558,
+        "beat_benchmark_freq": 0.548
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.33,
+       "rank": 4
+      },
+      {
+       "ticker": "EQTL3",
+       "name": "Equatorial S.A.",
+       "history": {
+        "windows": 211,
+        "median": 0.2254,
+        "p10": -0.0431,
+        "p90": 0.5461,
+        "beat_cdi_freq": 0.706,
+        "beat_benchmark_freq": 0.678
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 5
+      },
+      {
+       "ticker": "GGBR4",
+       "name": "Gerdau S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.1553,
+        "p10": -0.2928,
+        "p90": 0.8022,
+        "beat_cdi_freq": 0.529,
+        "beat_benchmark_freq": 0.577
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 6
+      },
+      {
+       "ticker": "B3SA3",
+       "name": "B3 S.A. - Brasil, Bolsa, Balcão",
+       "history": {
+        "windows": 217,
+        "median": 0.1357,
+        "p10": -0.2518,
+        "p90": 0.6076,
+        "beat_cdi_freq": 0.535,
+        "beat_benchmark_freq": 0.562
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 7
+      },
+      {
+       "ticker": "ITUB4",
+       "name": "Itaú Unibanco Holding S.A.",
+       "history": {
+        "windows": 299,
+        "median": 0.1884,
+        "p10": -0.1847,
+        "p90": 0.5458,
+        "beat_cdi_freq": 0.599,
+        "beat_benchmark_freq": 0.656
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 8
+      },
+      {
+       "ticker": "RENT3",
+       "name": "Localiza Rent a Car S.A.",
+       "history": {
+        "windows": 246,
+        "median": 0.1477,
+        "p10": -0.2668,
+        "p90": 0.8638,
+        "beat_cdi_freq": 0.569,
+        "beat_benchmark_freq": 0.679
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.07,
+       "rank": 9
+      },
+      {
+       "ticker": "SUZB3",
+       "name": "Suzano S.A.",
+       "history": {
+        "windows": 255,
+        "median": 0.0053,
+        "p10": -0.1309,
+        "p90": 0.3631,
+        "beat_cdi_freq": 0.235,
+        "beat_benchmark_freq": 0.467
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": 0.05,
+       "rank": 10
+      },
+      {
+       "ticker": "BBAS3",
+       "name": "Banco do Brasil S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.1883,
+        "p10": -0.2175,
+        "p90": 0.7374,
+        "beat_cdi_freq": 0.6,
+        "beat_benchmark_freq": 0.655
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": -0.05,
+       "rank": 11
+      },
+      {
+       "ticker": "BBDC4",
+       "name": "Banco Bradesco S.A.",
+       "history": {
+        "windows": 214,
+        "median": 0.0596,
+        "p10": -0.2801,
+        "p90": 0.4264,
+        "beat_cdi_freq": 0.453,
+        "beat_benchmark_freq": 0.542
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": -0.15,
+       "rank": 12
+      },
+      {
+       "ticker": "RADL3",
+       "name": "Raia Drogasil S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.1561,
+        "p10": -0.1816,
+        "p90": 0.8977,
+        "beat_cdi_freq": 0.529,
+        "beat_benchmark_freq": 0.539
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": -0.22,
+       "rank": 13
+      },
+      {
+       "ticker": "ABEV3",
+       "name": "Ambev S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.1551,
+        "p10": -0.2288,
+        "p90": 0.6636,
+        "beat_cdi_freq": 0.519,
+        "beat_benchmark_freq": 0.561
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 14
+      },
+      {
+       "ticker": "LREN3",
+       "name": "Lojas Renner S.A.",
+       "history": {
+        "windows": 310,
+        "median": 0.0783,
+        "p10": -0.2568,
+        "p90": 0.9567,
+        "beat_cdi_freq": 0.484,
+        "beat_benchmark_freq": 0.526
+       },
+       "prob_beat_benchmark": 0.582,
+       "prob_beat_cdi": 0.556,
+       "top_factors": [],
+       "sharpe_10y": -0.33,
+       "rank": 15
+      }
+     ]
+    },
+    "3": {
+     "years": 3,
+     "months": 36,
+     "samples": 3286,
+     "beat_benchmark": {
+      "base_rate": 0.653,
+      "effective_windows": 91.3,
+      "validation": {
+       "oos_samples": 2454,
+       "oos_effective": 68.2,
+       "brier": 0.256,
+       "brier_base_rate": 0.2355,
+       "skill": -0.0867,
+       "auc": 0.436,
+       "hit_rate_top": 0.613,
+       "hit_rate_bottom": 0.707,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.582,
+      "effective_windows": 91.3,
+      "validation": {
+       "oos_samples": 2454,
+       "oos_effective": 68.2,
+       "brier": 0.2763,
+       "brier_base_rate": 0.2706,
+       "skill": -0.0208,
+       "auc": 0.405,
+       "hit_rate_top": 0.413,
+       "hit_rate_bottom": 0.628,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "PRIO3",
+       "name": "Prio S.A.",
+       "history": {
+        "windows": 157,
+        "median": 0.3476,
+        "p10": -0.6511,
+        "p90": 1.2488,
+        "beat_cdi_freq": 0.611,
+        "beat_benchmark_freq": 0.631
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 1.1,
+       "rank": 1
+      },
+      {
+       "ticker": "PETR4",
+       "name": "Petróleo Brasileiro S.A. - Petrobras",
+       "history": {
+        "windows": 286,
+        "median": 0.1712,
+        "p10": -0.1434,
+        "p90": 0.518,
+        "beat_cdi_freq": 0.587,
+        "beat_benchmark_freq": 0.619
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.51,
+       "rank": 2
+      },
+      {
+       "ticker": "WEGE3",
+       "name": "WEG S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.2217,
+        "p10": 0.0519,
+        "p90": 0.575,
+        "beat_cdi_freq": 0.815,
+        "beat_benchmark_freq": 0.794
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.47,
+       "rank": 3
+      },
+      {
+       "ticker": "VALE3",
+       "name": "Vale S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.1669,
+        "p10": -0.1268,
+        "p90": 0.5143,
+        "beat_cdi_freq": 0.57,
+        "beat_benchmark_freq": 0.584
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.33,
+       "rank": 4
+      },
+      {
+       "ticker": "EQTL3",
+       "name": "Equatorial S.A.",
+       "history": {
+        "windows": 187,
+        "median": 0.211,
+        "p10": 0.0789,
+        "p90": 0.3504,
+        "beat_cdi_freq": 0.829,
+        "beat_benchmark_freq": 0.914
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 5
+      },
+      {
+       "ticker": "GGBR4",
+       "name": "Gerdau S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.1222,
+        "p10": -0.1493,
+        "p90": 0.5675,
+        "beat_cdi_freq": 0.521,
+        "beat_benchmark_freq": 0.549
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 6
+      },
+      {
+       "ticker": "B3SA3",
+       "name": "B3 S.A. - Brasil, Bolsa, Balcão",
+       "history": {
+        "windows": 193,
+        "median": 0.0933,
+        "p10": -0.0756,
+        "p90": 0.3924,
+        "beat_cdi_freq": 0.482,
+        "beat_benchmark_freq": 0.689
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 7
+      },
+      {
+       "ticker": "ITUB4",
+       "name": "Itaú Unibanco Holding S.A.",
+       "history": {
+        "windows": 275,
+        "median": 0.14,
+        "p10": -0.0169,
+        "p90": 0.3973,
+        "beat_cdi_freq": 0.575,
+        "beat_benchmark_freq": 0.72
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 8
+      },
+      {
+       "ticker": "RENT3",
+       "name": "Localiza Rent a Car S.A.",
+       "history": {
+        "windows": 222,
+        "median": 0.134,
+        "p10": -0.084,
+        "p90": 0.5339,
+        "beat_cdi_freq": 0.568,
+        "beat_benchmark_freq": 0.707
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.07,
+       "rank": 9
+      },
+      {
+       "ticker": "SUZB3",
+       "name": "Suzano S.A.",
+       "history": {
+        "windows": 231,
+        "median": 0.0466,
+        "p10": 0.0002,
+        "p90": 0.2552,
+        "beat_cdi_freq": 0.325,
+        "beat_benchmark_freq": 0.498
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": 0.05,
+       "rank": 10
+      },
+      {
+       "ticker": "BBAS3",
+       "name": "Banco do Brasil S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.1526,
+        "p10": -0.0213,
+        "p90": 0.5072,
+        "beat_cdi_freq": 0.594,
+        "beat_benchmark_freq": 0.752
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": -0.05,
+       "rank": 11
+      },
+      {
+       "ticker": "BBDC4",
+       "name": "Banco Bradesco S.A.",
+       "history": {
+        "windows": 190,
+        "median": 0.0436,
+        "p10": -0.1019,
+        "p90": 0.2289,
+        "beat_cdi_freq": 0.379,
+        "beat_benchmark_freq": 0.521
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": -0.15,
+       "rank": 12
+      },
+      {
+       "ticker": "RADL3",
+       "name": "Raia Drogasil S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.2012,
+        "p10": 0.0293,
+        "p90": 0.5598,
+        "beat_cdi_freq": 0.657,
+        "beat_benchmark_freq": 0.706
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": -0.22,
+       "rank": 13
+      },
+      {
+       "ticker": "ABEV3",
+       "name": "Ambev S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.1139,
+        "p10": -0.037,
+        "p90": 0.4271,
+        "beat_cdi_freq": 0.455,
+        "beat_benchmark_freq": 0.458
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 14
+      },
+      {
+       "ticker": "LREN3",
+       "name": "Lojas Renner S.A.",
+       "history": {
+        "windows": 286,
+        "median": 0.1405,
+        "p10": -0.1524,
+        "p90": 0.6515,
+        "beat_cdi_freq": 0.58,
+        "beat_benchmark_freq": 0.608
+       },
+       "prob_beat_benchmark": 0.653,
+       "prob_beat_cdi": 0.582,
+       "top_factors": [],
+       "sharpe_10y": -0.33,
+       "rank": 15
+      }
+     ]
+    },
+    "5": {
+     "years": 5,
+     "months": 60,
+     "samples": 2926,
+     "beat_benchmark": {
+      "base_rate": 0.694,
+      "effective_windows": 48.8,
+      "validation": {
+       "oos_samples": 1410,
+       "oos_effective": 23.5,
+       "brier": 0.2313,
+       "brier_base_rate": 0.2343,
+       "skill": 0.0126,
+       "auc": 0.54,
+       "hit_rate_top": 0.759,
+       "hit_rate_bottom": 0.678,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.648,
+      "effective_windows": 48.8,
+      "validation": {
+       "oos_samples": 1410,
+       "oos_effective": 23.5,
+       "brier": 0.2154,
+       "brier_base_rate": 0.2226,
+       "skill": 0.0323,
+       "auc": 0.573,
+       "hit_rate_top": 0.813,
+       "hit_rate_bottom": 0.681,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "PRIO3",
+       "name": "Prio S.A.",
+       "history": {
+        "windows": 133,
+        "median": 0.4196,
+        "p10": -0.5134,
+        "p90": 1.1615,
+        "beat_cdi_freq": 0.737,
+        "beat_benchmark_freq": 0.729
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 1.1,
+       "rank": 1
+      },
+      {
+       "ticker": "PETR4",
+       "name": "Petróleo Brasileiro S.A. - Petrobras",
+       "history": {
+        "windows": 262,
+        "median": 0.1954,
+        "p10": -0.1083,
+        "p90": 0.3857,
+        "beat_cdi_freq": 0.584,
+        "beat_benchmark_freq": 0.55
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.51,
+       "rank": 2
+      },
+      {
+       "ticker": "WEGE3",
+       "name": "WEG S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.2305,
+        "p10": 0.0825,
+        "p90": 0.4863,
+        "beat_cdi_freq": 0.87,
+        "beat_benchmark_freq": 0.897
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.47,
+       "rank": 3
+      },
+      {
+       "ticker": "VALE3",
+       "name": "Vale S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.1604,
+        "p10": -0.0922,
+        "p90": 0.4698,
+        "beat_cdi_freq": 0.645,
+        "beat_benchmark_freq": 0.695
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.33,
+       "rank": 4
+      },
+      {
+       "ticker": "EQTL3",
+       "name": "Equatorial S.A.",
+       "history": {
+        "windows": 163,
+        "median": 0.2205,
+        "p10": 0.1218,
+        "p90": 0.3456,
+        "beat_cdi_freq": 0.945,
+        "beat_benchmark_freq": 1.0
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 5
+      },
+      {
+       "ticker": "GGBR4",
+       "name": "Gerdau S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.137,
+        "p10": -0.0924,
+        "p90": 0.5503,
+        "beat_cdi_freq": 0.538,
+        "beat_benchmark_freq": 0.534
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 6
+      },
+      {
+       "ticker": "B3SA3",
+       "name": "B3 S.A. - Brasil, Bolsa, Balcão",
+       "history": {
+        "windows": 169,
+        "median": 0.145,
+        "p10": -0.028,
+        "p90": 0.332,
+        "beat_cdi_freq": 0.604,
+        "beat_benchmark_freq": 0.769
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 7
+      },
+      {
+       "ticker": "ITUB4",
+       "name": "Itaú Unibanco Holding S.A.",
+       "history": {
+        "windows": 251,
+        "median": 0.1466,
+        "p10": 0.0243,
+        "p90": 0.3003,
+        "beat_cdi_freq": 0.625,
+        "beat_benchmark_freq": 0.637
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 8
+      },
+      {
+       "ticker": "RENT3",
+       "name": "Localiza Rent a Car S.A.",
+       "history": {
+        "windows": 198,
+        "median": 0.1718,
+        "p10": 0.0012,
+        "p90": 0.3949,
+        "beat_cdi_freq": 0.727,
+        "beat_benchmark_freq": 0.854
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.07,
+       "rank": 9
+      },
+      {
+       "ticker": "SUZB3",
+       "name": "Suzano S.A.",
+       "history": {
+        "windows": 207,
+        "median": 0.0626,
+        "p10": 0.0069,
+        "p90": 0.2122,
+        "beat_cdi_freq": 0.353,
+        "beat_benchmark_freq": 0.599
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": 0.05,
+       "rank": 10
+      },
+      {
+       "ticker": "BBAS3",
+       "name": "Banco do Brasil S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.1412,
+        "p10": 0.0266,
+        "p90": 0.4331,
+        "beat_cdi_freq": 0.752,
+        "beat_benchmark_freq": 0.878
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": -0.05,
+       "rank": 11
+      },
+      {
+       "ticker": "BBDC4",
+       "name": "Banco Bradesco S.A.",
+       "history": {
+        "windows": 166,
+        "median": 0.0667,
+        "p10": -0.0697,
+        "p90": 0.1797,
+        "beat_cdi_freq": 0.386,
+        "beat_benchmark_freq": 0.44
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": -0.15,
+       "rank": 12
+      },
+      {
+       "ticker": "RADL3",
+       "name": "Raia Drogasil S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.2785,
+        "p10": 0.062,
+        "p90": 0.467,
+        "beat_cdi_freq": 0.802,
+        "beat_benchmark_freq": 0.748
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": -0.22,
+       "rank": 13
+      },
+      {
+       "ticker": "ABEV3",
+       "name": "Ambev S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.1316,
+        "p10": -0.0279,
+        "p90": 0.328,
+        "beat_cdi_freq": 0.477,
+        "beat_benchmark_freq": 0.412
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 14
+      },
+      {
+       "ticker": "LREN3",
+       "name": "Lojas Renner S.A.",
+       "history": {
+        "windows": 262,
+        "median": 0.2129,
+        "p10": -0.1193,
+        "p90": 0.4517,
+        "beat_cdi_freq": 0.756,
+        "beat_benchmark_freq": 0.744
+       },
+       "prob_beat_benchmark": 0.694,
+       "prob_beat_cdi": 0.648,
+       "top_factors": [],
+       "sharpe_10y": -0.33,
+       "rank": 15
+      }
+     ]
+    },
+    "10": {
+     "years": 10,
+     "months": 120,
+     "samples": 2026,
+     "beat_benchmark": {
+      "base_rate": 0.784,
+      "effective_windows": 16.9,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.715,
+      "effective_windows": 16.9,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "PRIO3",
+       "name": "Prio S.A.",
+       "history": {
+        "windows": 73,
+        "median": 0.4317,
+        "p10": -0.0448,
+        "p90": 0.6931,
+        "beat_cdi_freq": 0.767,
+        "beat_benchmark_freq": 0.795
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 1.1,
+       "rank": 1
+      },
+      {
+       "ticker": "PETR4",
+       "name": "Petróleo Brasileiro S.A. - Petrobras",
+       "history": {
+        "windows": 202,
+        "median": 0.1079,
+        "p10": -0.0395,
+        "p90": 0.251,
+        "beat_cdi_freq": 0.46,
+        "beat_benchmark_freq": 0.401
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.51,
+       "rank": 2
+      },
+      {
+       "ticker": "WEGE3",
+       "name": "WEG S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.2551,
+        "p10": 0.1623,
+        "p90": 0.3191,
+        "beat_cdi_freq": 1.0,
+        "beat_benchmark_freq": 1.0
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.47,
+       "rank": 3
+      },
+      {
+       "ticker": "VALE3",
+       "name": "Vale S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.1306,
+        "p10": -0.0002,
+        "p90": 0.2836,
+        "beat_cdi_freq": 0.589,
+        "beat_benchmark_freq": 0.703
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.33,
+       "rank": 4
+      },
+      {
+       "ticker": "EQTL3",
+       "name": "Equatorial S.A.",
+       "history": {
+        "windows": 103,
+        "median": 0.2388,
+        "p10": 0.1965,
+        "p90": 0.285,
+        "beat_cdi_freq": 1.0,
+        "beat_benchmark_freq": 1.0
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 5
+      },
+      {
+       "ticker": "GGBR4",
+       "name": "Gerdau S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.0912,
+        "p10": -0.0481,
+        "p90": 0.2798,
+        "beat_cdi_freq": 0.48,
+        "beat_benchmark_freq": 0.535
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.18,
+       "rank": 6
+      },
+      {
+       "ticker": "B3SA3",
+       "name": "B3 S.A. - Brasil, Bolsa, Balcão",
+       "history": {
+        "windows": 109,
+        "median": 0.1755,
+        "p10": 0.1222,
+        "p90": 0.213,
+        "beat_cdi_freq": 0.899,
+        "beat_benchmark_freq": 0.972
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 7
+      },
+      {
+       "ticker": "ITUB4",
+       "name": "Itaú Unibanco Holding S.A.",
+       "history": {
+        "windows": 191,
+        "median": 0.1259,
+        "p10": 0.088,
+        "p90": 0.1881,
+        "beat_cdi_freq": 0.817,
+        "beat_benchmark_freq": 0.995
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.1,
+       "rank": 8
+      },
+      {
+       "ticker": "RENT3",
+       "name": "Localiza Rent a Car S.A.",
+       "history": {
+        "windows": 138,
+        "median": 0.2082,
+        "p10": 0.1226,
+        "p90": 0.2653,
+        "beat_cdi_freq": 0.92,
+        "beat_benchmark_freq": 1.0
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.07,
+       "rank": 9
+      },
+      {
+       "ticker": "SUZB3",
+       "name": "Suzano S.A.",
+       "history": {
+        "windows": 147,
+        "median": 0.1047,
+        "p10": 0.033,
+        "p90": 0.1333,
+        "beat_cdi_freq": 0.633,
+        "beat_benchmark_freq": 0.735
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": 0.05,
+       "rank": 10
+      },
+      {
+       "ticker": "BBAS3",
+       "name": "Banco do Brasil S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.1396,
+        "p10": 0.0672,
+        "p90": 0.268,
+        "beat_cdi_freq": 0.718,
+        "beat_benchmark_freq": 0.995
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": -0.05,
+       "rank": 11
+      },
+      {
+       "ticker": "BBDC4",
+       "name": "Banco Bradesco S.A.",
+       "history": {
+        "windows": 106,
+        "median": 0.0867,
+        "p10": 0.0419,
+        "p90": 0.1208,
+        "beat_cdi_freq": 0.434,
+        "beat_benchmark_freq": 0.481
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": -0.15,
+       "rank": 12
+      },
+      {
+       "ticker": "RADL3",
+       "name": "Raia Drogasil S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.3134,
+        "p10": 0.1483,
+        "p90": 0.4171,
+        "beat_cdi_freq": 0.95,
+        "beat_benchmark_freq": 0.916
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": -0.22,
+       "rank": 13
+      },
+      {
+       "ticker": "ABEV3",
+       "name": "Ambev S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.1859,
+        "p10": 0.0122,
+        "p90": 0.2752,
+        "beat_cdi_freq": 0.703,
+        "beat_benchmark_freq": 0.723
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 14
+      },
+      {
+       "ticker": "LREN3",
+       "name": "Lojas Renner S.A.",
+       "history": {
+        "windows": 202,
+        "median": 0.2063,
+        "p10": 0.0457,
+        "p90": 0.3388,
+        "beat_cdi_freq": 0.777,
+        "beat_benchmark_freq": 0.787
+       },
+       "prob_beat_benchmark": 0.784,
+       "prob_beat_cdi": 0.715,
+       "top_factors": [],
+       "sharpe_10y": -0.33,
+       "rank": 15
+      }
+     ]
+    }
+   }
+  },
+  "fiis": {
+   "benchmark": "média dos FIIs do app",
+   "benchmark_is_proxy": true,
+   "benchmark_risk": {
+    "months": 120,
+    "total_return": 0.8363,
+    "cagr": 0.0627,
+    "volatility": 0.1069,
+    "max_drawdown": -0.2548,
+    "sharpe": -0.29,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.1326,
+    "best_12m": 0.3309
+   },
+   "benchmark_annual": [
+    {
+     "year": 2016,
+     "return": 0.0923,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.1584,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.0156,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.3309,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1326,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.0706,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0558,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2005,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.071,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.2301,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.0039,
+     "partial": true
+    }
+   ],
+   "benchmark_crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.1748,
+     "recovery_months": 12,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.0394,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1788,
+     "recovery_months": 39,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.0126,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0852,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "benchmark_in_scenario": {
+    "months": 52,
+    "avg_annual": 0.0542
+   },
+   "horizons": {
+    "1": {
+     "years": 1,
+     "months": 12,
+     "samples": 902,
+     "beat_benchmark": {
+      "base_rate": 0.499,
+      "effective_windows": 75.2,
+      "validation": {
+       "oos_samples": 692,
+       "oos_effective": 57.7,
+       "brier": 0.2708,
+       "brier_base_rate": 0.2505,
+       "skill": -0.0808,
+       "auc": 0.515,
+       "hit_rate_top": 0.57,
+       "hit_rate_bottom": 0.551,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.377,
+      "effective_windows": 75.2,
+      "validation": {
+       "oos_samples": 692,
+       "oos_effective": 57.7,
+       "brier": 0.2581,
+       "brier_base_rate": 0.2398,
+       "skill": -0.0763,
+       "auc": 0.499,
+       "hit_rate_top": 0.367,
+       "hit_rate_bottom": 0.362,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "BTLG11",
+       "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 135,
+        "median": 0.065,
+        "p10": -0.2255,
+        "p90": 0.3494,
+        "beat_cdi_freq": 0.393,
+        "beat_benchmark_freq": 0.467
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": 0.09,
+       "rank": 1
+      },
+      {
+       "ticker": "HGLG11",
+       "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 176,
+        "median": 0.0461,
+        "p10": -0.0919,
+        "p90": 0.2089,
+        "beat_cdi_freq": 0.301,
+        "beat_benchmark_freq": 0.472
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.13,
+       "rank": 2
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 135,
+        "median": 0.062,
+        "p10": -0.0663,
+        "p90": 0.2073,
+        "beat_cdi_freq": 0.356,
+        "beat_benchmark_freq": 0.519
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 3
+      },
+      {
+       "ticker": "HGRU11",
+       "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 88,
+        "median": 0.1003,
+        "p10": -0.085,
+        "p90": 0.2276,
+        "beat_cdi_freq": 0.489,
+        "beat_benchmark_freq": 0.636
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.24,
+       "rank": 4
+      },
+      {
+       "ticker": "VISC11",
+       "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
+       "history": {
+        "windows": 96,
+        "median": 0.0593,
+        "p10": -0.1103,
+        "p90": 0.2745,
+        "beat_cdi_freq": 0.365,
+        "beat_benchmark_freq": 0.417
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 5
+      },
+      {
+       "ticker": "XPML11",
+       "name": "Xp Malls Fundo Investimentos Imobiliarios",
+       "history": {
+        "windows": 65,
+        "median": 0.077,
+        "p10": -0.087,
+        "p90": 0.2472,
+        "beat_cdi_freq": 0.385,
+        "beat_benchmark_freq": 0.477
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.34,
+       "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 135,
+        "median": 0.0786,
+        "p10": -0.118,
+        "p90": 0.268,
+        "beat_cdi_freq": 0.437,
+        "beat_benchmark_freq": 0.563
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
+      },
+      {
+       "ticker": "VILG11",
+       "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 80,
+        "median": 0.0198,
+        "p10": -0.1589,
+        "p90": 0.2475,
+        "beat_cdi_freq": 0.312,
+        "beat_benchmark_freq": 0.412
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.37,
+       "rank": 8
+      },
+      {
+       "ticker": "CPTS11",
+       "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 97,
+        "median": 0.0486,
+        "p10": -0.1719,
+        "p90": 0.1586,
+        "beat_cdi_freq": 0.165,
+        "beat_benchmark_freq": 0.454
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.49,
+       "rank": 9
+      },
+      {
+       "ticker": "KNCR11",
+       "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
+       "history": {
+        "windows": 135,
+        "median": 0.0591,
+        "p10": -0.0857,
+        "p90": 0.1825,
+        "beat_cdi_freq": 0.341,
+        "beat_benchmark_freq": 0.511
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.56,
+       "rank": 10
+      },
+      {
+       "ticker": "XPLG11",
+       "name": "Xp Log Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 65,
+        "median": 0.0516,
+        "p10": -0.1719,
+        "p90": 0.2412,
+        "beat_cdi_freq": 0.277,
+        "beat_benchmark_freq": 0.308
+       },
+       "prob_beat_benchmark": 0.499,
+       "prob_beat_cdi": 0.377,
+       "top_factors": [],
+       "sharpe_10y": -0.71,
+       "rank": 11
+      }
+     ]
+    },
+    "3": {
+     "years": 3,
+     "months": 36,
+     "samples": 638,
+     "beat_benchmark": {
+      "base_rate": 0.506,
+      "effective_windows": 17.7,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.215,
+      "effective_windows": 17.7,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "BTLG11",
+       "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 111,
+        "median": 0.0791,
+        "p10": -0.0508,
+        "p90": 0.1906,
+        "beat_cdi_freq": 0.351,
+        "beat_benchmark_freq": 0.568
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": 0.09,
+       "rank": 1
+      },
+      {
+       "ticker": "HGLG11",
+       "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 152,
+        "median": 0.0553,
+        "p10": -0.0383,
+        "p90": 0.1251,
+        "beat_cdi_freq": 0.263,
+        "beat_benchmark_freq": 0.559
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.13,
+       "rank": 2
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 111,
+        "median": 0.0645,
+        "p10": -0.0075,
+        "p90": 0.1189,
+        "beat_cdi_freq": 0.135,
+        "beat_benchmark_freq": 0.523
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 3
+      },
+      {
+       "ticker": "HGRU11",
+       "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 64,
+        "median": 0.0756,
+        "p10": 0.0183,
+        "p90": 0.119,
+        "beat_cdi_freq": 0.094,
+        "beat_benchmark_freq": 0.906
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.24,
+       "rank": 4
+      },
+      {
+       "ticker": "VISC11",
+       "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
+       "history": {
+        "windows": 72,
+        "median": 0.0619,
+        "p10": -0.0268,
+        "p90": 0.1062,
+        "beat_cdi_freq": 0.056,
+        "beat_benchmark_freq": 0.417
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 5
+      },
+      {
+       "ticker": "XPML11",
+       "name": "Xp Malls Fundo Investimentos Imobiliarios",
+       "history": {
+        "windows": 41,
+        "median": 0.1091,
+        "p10": 0.06,
+        "p90": 0.1428,
+        "beat_cdi_freq": 0.317,
+        "beat_benchmark_freq": 0.951
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.34,
+       "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 111,
+        "median": 0.0586,
+        "p10": -0.037,
+        "p90": 0.1312,
+        "beat_cdi_freq": 0.153,
+        "beat_benchmark_freq": 0.387
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
+      },
+      {
+       "ticker": "VILG11",
+       "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 56,
+        "median": -0.0204,
+        "p10": -0.0461,
+        "p90": 0.0796,
+        "beat_cdi_freq": 0.036,
+        "beat_benchmark_freq": 0.071
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.37,
+       "rank": 8
+      },
+      {
+       "ticker": "CPTS11",
+       "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 73,
+        "median": 0.0151,
+        "p10": -0.0137,
+        "p90": 0.0623,
+        "beat_cdi_freq": 0.014,
+        "beat_benchmark_freq": 0.301
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.49,
+       "rank": 9
+      },
+      {
+       "ticker": "KNCR11",
+       "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
+       "history": {
+        "windows": 111,
+        "median": 0.0011,
+        "p10": -0.0424,
+        "p90": 0.1542,
+        "beat_cdi_freq": 0.369,
+        "beat_benchmark_freq": 0.486
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.56,
+       "rank": 10
+      },
+      {
+       "ticker": "XPLG11",
+       "name": "Xp Log Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 41,
+        "median": 0.054,
+        "p10": 0.0035,
+        "p90": 0.1126,
+        "beat_cdi_freq": 0.024,
+        "beat_benchmark_freq": 0.195
+       },
+       "prob_beat_benchmark": 0.506,
+       "prob_beat_cdi": 0.215,
+       "top_factors": [],
+       "sharpe_10y": -0.71,
+       "rank": 11
+      }
+     ]
+    },
+    "5": {
+     "years": 5,
+     "months": 60,
+     "samples": 388,
+     "beat_benchmark": {
+      "base_rate": 0.482,
+      "effective_windows": 6.5,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": 0.17,
+      "effective_windows": 6.5,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": true,
+     "assets": [
+      {
+       "ticker": "BTLG11",
+       "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 87,
+        "median": 0.0677,
+        "p10": 0.0283,
+        "p90": 0.1449,
+        "beat_cdi_freq": 0.425,
+        "beat_benchmark_freq": 0.644
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": 0.09,
+       "rank": 1
+      },
+      {
+       "ticker": "HGLG11",
+       "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 128,
+        "median": 0.0612,
+        "p10": 0.0005,
+        "p90": 0.1019,
+        "beat_cdi_freq": 0.305,
+        "beat_benchmark_freq": 0.852
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.13,
+       "rank": 2
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 87,
+        "median": 0.0468,
+        "p10": 0.0202,
+        "p90": 0.0876,
+        "beat_cdi_freq": 0.011,
+        "beat_benchmark_freq": 0.414
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 3
+      },
+      {
+       "ticker": "HGRU11",
+       "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 40,
+        "median": 0.0759,
+        "p10": 0.0548,
+        "p90": 0.0931,
+        "beat_cdi_freq": 0.175,
+        "beat_benchmark_freq": 0.975
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.24,
+       "rank": 4
+      },
+      {
+       "ticker": "VISC11",
+       "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
+       "history": {
+        "windows": 48,
+        "median": 0.0584,
+        "p10": 0.0031,
+        "p90": 0.0738,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.354
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 5
+      },
+      {
+       "ticker": "XPML11",
+       "name": "Xp Malls Fundo Investimentos Imobiliarios",
+       "history": {
+        "windows": 17,
+        "median": 0.0837,
+        "p10": 0.0665,
+        "p90": 0.0912,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 1.0
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.34,
+       "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 87,
+        "median": 0.0404,
+        "p10": -0.0198,
+        "p90": 0.0931,
+        "beat_cdi_freq": 0.069,
+        "beat_benchmark_freq": 0.299
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
+      },
+      {
+       "ticker": "VILG11",
+       "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 32,
+        "median": -0.0064,
+        "p10": -0.0447,
+        "p90": 0.045,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.0
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.37,
+       "rank": 8
+      },
+      {
+       "ticker": "CPTS11",
+       "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 49,
+        "median": 0.0307,
+        "p10": -0.0155,
+        "p90": 0.0403,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.082
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.49,
+       "rank": 9
+      },
+      {
+       "ticker": "KNCR11",
+       "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
+       "history": {
+        "windows": 87,
+        "median": 0.0131,
+        "p10": -0.0328,
+        "p90": 0.1404,
+        "beat_cdi_freq": 0.23,
+        "beat_benchmark_freq": 0.368
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.56,
+       "rank": 10
+      },
+      {
+       "ticker": "XPLG11",
+       "name": "Xp Log Fundo Investimento Imobiliario FII",
+       "history": {
+        "windows": 17,
+        "median": 0.0383,
+        "p10": 0.0066,
+        "p90": 0.0566,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.0
+       },
+       "prob_beat_benchmark": 0.482,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.71,
+       "rank": 11
+      }
+     ]
+    },
+    "10": {
+     "years": 10,
+     "months": 120,
+     "samples": 15,
+     "beat_benchmark": {
+      "base_rate": null,
+      "effective_windows": 0.1,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "beat_cdi": {
+      "base_rate": null,
+      "effective_windows": 0.1,
+      "validation": {
+       "oos_samples": 0,
+       "validated": false
+      },
+      "coefficients": null
+     },
+     "model_used": false,
+     "enough_history": false,
+     "assets": [
+      {
+       "ticker": "BTLG11",
+       "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 27,
+        "median": 0.0689,
+        "p10": 0.028,
+        "p90": 0.1144,
+        "beat_cdi_freq": 0.37,
+        "beat_benchmark_freq": 0.556
+       },
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": 0.09,
+       "rank": 1
+      },
+      {
+       "ticker": "HGLG11",
+       "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
+       "history": {
+        "windows": 68,
+        "median": 0.0615,
+        "p10": 0.0341,
+        "p90": 0.0811,
+        "beat_cdi_freq": 0.029,
+        "beat_benchmark_freq": 0.985
+       },
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.13,
+       "rank": 2
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 27,
+        "median": 0.0585,
+        "p10": 0.0486,
+        "p90": 0.0706,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.407
+       },
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 3
+      },
+      {
+       "ticker": "HGRU11",
+       "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.24,
+       "rank": 4
+      },
+      {
+       "ticker": "VISC11",
+       "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.3,
+       "rank": 5
+      },
+      {
+       "ticker": "XPML11",
+       "name": "Xp Malls Fundo Investimentos Imobiliarios",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.34,
+       "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 27,
+        "median": 0.0526,
+        "p10": 0.0386,
+        "p90": 0.0715,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.259
+       },
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
+      },
+      {
+       "ticker": "VILG11",
+       "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.37,
+       "rank": 8
+      },
+      {
+       "ticker": "CPTS11",
+       "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.49,
+       "rank": 9
+      },
+      {
+       "ticker": "KNCR11",
+       "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
+       "history": {
+        "windows": 27,
+        "median": 0.0423,
+        "p10": 0.0336,
+        "p90": 0.0544,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.0
+       },
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.56,
+       "rank": 10
+      },
+      {
+       "ticker": "XPLG11",
+       "name": "Xp Log Fundo Investimento Imobiliario FII",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.71,
+       "rank": 11
+      }
+     ]
+    }
+   }
+  }
+ },
+ "assets": {
+  "ABEV3": {
+   "name": "Ambev S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.2243,
+    "cagr": 0.0204,
+    "volatility": 0.2392,
+    "max_drawdown": -0.5023,
+    "sharpe": -0.3,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.3699,
+    "best_12m": 0.4834
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": -0.0477,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.3341,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": -0.2537,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.2458,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1396,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.0313,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": -0.0113,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": -0.005,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0978,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.269,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.1092,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.1667,
+     "recovery_months": 3,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": 0.2703,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1757,
+     "recovery_months": 92,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.3322,
+     "recovery_months": 14,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.1844,
+     "recovery_months": 34,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0368,
+     "recovery_months": 2,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.4015
+   },
+   "horizons": {
+    "1": {
+     "rank": 14,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.1551,
+      "p10": -0.2288,
+      "p90": 0.6636,
+      "beat_cdi_freq": 0.519,
+      "beat_benchmark_freq": 0.561
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 14,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.1139,
+      "p10": -0.037,
+      "p90": 0.4271,
+      "beat_cdi_freq": 0.455,
+      "beat_benchmark_freq": 0.458
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 14,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.1316,
+      "p10": -0.0279,
+      "p90": 0.328,
+      "beat_cdi_freq": 0.477,
+      "beat_benchmark_freq": 0.412
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 14,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.1859,
+      "p10": 0.0122,
+      "p90": 0.2752,
+      "beat_cdi_freq": 0.703,
+      "beat_benchmark_freq": 0.723
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "B3SA3": {
+   "name": "B3 S.A. - Brasil, Bolsa, Balcão",
+   "asset_class": "acoes",
+   "first_month": "2007-10",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 2.3519,
+    "cagr": 0.1286,
+    "volatility": 0.35,
+    "max_drawdown": -0.4815,
+    "sharpe": 0.1,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.4283,
+    "best_12m": 1.1192
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.5627,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.4096,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.213,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.6362,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.5026,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.4283,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.2256,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.1357,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.2667,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.3768,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.1104,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.7766,
+     "recovery_months": 97,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.1778,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1899,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.2429,
+     "recovery_months": 3,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.3211,
+     "recovery_months": 41,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1791,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 60,
+    "avg_annual": 0.2008
+   },
+   "horizons": {
+    "1": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 217,
+      "median": 0.1357,
+      "p10": -0.2518,
+      "p90": 0.6076,
+      "beat_cdi_freq": 0.535,
+      "beat_benchmark_freq": 0.562
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 193,
+      "median": 0.0933,
+      "p10": -0.0756,
+      "p90": 0.3924,
+      "beat_cdi_freq": 0.482,
+      "beat_benchmark_freq": 0.689
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 169,
+      "median": 0.145,
+      "p10": -0.028,
+      "p90": 0.332,
+      "beat_cdi_freq": 0.604,
+      "beat_benchmark_freq": 0.769
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 109,
+      "median": 0.1755,
+      "p10": 0.1222,
+      "p90": 0.213,
+      "beat_cdi_freq": 0.899,
+      "beat_benchmark_freq": 0.972
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "BBAS3": {
+   "name": "Banco do Brasil S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 1.1133,
+    "cagr": 0.0777,
+    "volatility": 0.3469,
+    "max_drawdown": -0.4645,
+    "sharpe": -0.05,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.3972,
+    "best_12m": 0.9996
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.9941,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.1685,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.5388,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.1965,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.2358,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1989,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.3496,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.7349,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0541,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": -0.0494,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.2107,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.5744,
+     "recovery_months": 17,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.5536,
+     "recovery_months": 12,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.3025,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.4173,
+     "recovery_months": 29,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.1391,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1121,
+     "recovery_months": 1,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.3114
+   },
+   "horizons": {
+    "1": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.1883,
+      "p10": -0.2175,
+      "p90": 0.7374,
+      "beat_cdi_freq": 0.6,
+      "beat_benchmark_freq": 0.655
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.1526,
+      "p10": -0.0213,
+      "p90": 0.5072,
+      "beat_cdi_freq": 0.594,
+      "beat_benchmark_freq": 0.752
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.1412,
+      "p10": 0.0266,
+      "p90": 0.4331,
+      "beat_cdi_freq": 0.752,
+      "beat_benchmark_freq": 0.878
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.1396,
+      "p10": 0.0672,
+      "p90": 0.268,
+      "beat_cdi_freq": 0.718,
+      "beat_benchmark_freq": 0.995
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "BBDC4": {
+   "name": "Banco Bradesco S.A.",
+   "asset_class": "acoes",
+   "first_month": "2008-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.5255,
+    "cagr": 0.0431,
+    "volatility": 0.3326,
+    "max_drawdown": -0.4492,
+    "sharpe": -0.15,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.4018,
+    "best_12m": 1.0548
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.7369,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.3345,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.2896,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.1886,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1522,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1866,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": -0.113,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2562,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.2812,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.7654,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.1284,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.4653,
+     "recovery_months": 102,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.4253,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.2351,
+     "recovery_months": 5,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.3665,
+     "recovery_months": 14,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.2236,
+     "recovery_months": 39,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.2468,
+     "recovery_months": 5,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 59,
+    "avg_annual": 0.1449
+   },
+   "horizons": {
+    "1": {
+     "rank": 12,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 214,
+      "median": 0.0596,
+      "p10": -0.2801,
+      "p90": 0.4264,
+      "beat_cdi_freq": 0.453,
+      "beat_benchmark_freq": 0.542
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 12,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 190,
+      "median": 0.0436,
+      "p10": -0.1019,
+      "p90": 0.2289,
+      "beat_cdi_freq": 0.379,
+      "beat_benchmark_freq": 0.521
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 12,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 166,
+      "median": 0.0667,
+      "p10": -0.0697,
+      "p90": 0.1797,
+      "beat_cdi_freq": 0.386,
+      "beat_benchmark_freq": 0.44
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 12,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 106,
+      "median": 0.0867,
+      "p10": 0.0419,
+      "p90": 0.1208,
+      "beat_cdi_freq": 0.434,
+      "beat_benchmark_freq": 0.481
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "BTLG11": {
+   "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
+   "asset_class": "fiis",
+   "first_month": "2014-08",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 1.8566,
+    "cagr": 0.1107,
+    "volatility": 0.1828,
+    "max_drawdown": -0.2812,
+    "sharpe": 0.09,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.2014,
+    "best_12m": 0.6326
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": -0.0722,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.3451,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": -0.0256,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.6112,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.0894,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.041,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0056,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.1421,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0066,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.2029,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.0238,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.4349,
+     "recovery_months": 40,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.0235,
+     "recovery_months": 5,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.185,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.0373,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0557,
+     "recovery_months": 3,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": 0.0899
+   },
+   "horizons": {
+    "1": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 135,
+      "median": 0.065,
+      "p10": -0.2255,
+      "p90": 0.3494,
+      "beat_cdi_freq": 0.393,
+      "beat_benchmark_freq": 0.467
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 111,
+      "median": 0.0791,
+      "p10": -0.0508,
+      "p90": 0.1906,
+      "beat_cdi_freq": 0.351,
+      "beat_benchmark_freq": 0.568
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 87,
+      "median": 0.0677,
+      "p10": 0.0283,
+      "p90": 0.1449,
+      "beat_cdi_freq": 0.425,
+      "beat_benchmark_freq": 0.644
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 1,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": {
+      "windows": 27,
+      "median": 0.0689,
+      "p10": 0.028,
+      "p90": 0.1144,
+      "beat_cdi_freq": 0.37,
+      "beat_benchmark_freq": 0.556
+     },
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "CPTS11": {
+   "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
+   "asset_class": "fiis",
+   "first_month": "2017-10",
+   "risk_10y": {
+    "months": 108,
+    "total_return": 0.2141,
+    "cagr": 0.0218,
+    "volatility": 0.1426,
+    "max_drawdown": -0.3643,
+    "sharpe": -0.49,
+    "cdi_cagr": 0.0914,
+    "worst_12m": -0.3298,
+    "best_12m": 0.5153
+   },
+   "annual": [
+    {
+     "year": 2018,
+     "return": 0.0325,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.1296,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.0992,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.0,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0794,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.0895,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.2667,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.3068,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.0091,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2018",
+     "return": 0.0085,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1694,
+     "recovery_months": 28,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.0328,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.3088,
+     "recovery_months": null,
+     "recovered": false
+    }
+   ],
+   "in_scenario": {
+    "months": 30,
+    "avg_annual": 0.0491
+   },
+   "horizons": {
+    "1": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 97,
+      "median": 0.0486,
+      "p10": -0.1719,
+      "p90": 0.1586,
+      "beat_cdi_freq": 0.165,
+      "beat_benchmark_freq": 0.454
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 73,
+      "median": 0.0151,
+      "p10": -0.0137,
+      "p90": 0.0623,
+      "beat_cdi_freq": 0.014,
+      "beat_benchmark_freq": 0.301
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 49,
+      "median": 0.0307,
+      "p10": -0.0155,
+      "p90": 0.0403,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.082
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 9,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": null,
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "EQTL3": {
+   "name": "Equatorial S.A.",
+   "asset_class": "acoes",
+   "first_month": "2008-04",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 2.6878,
+    "cagr": 0.1394,
+    "volatility": 0.2582,
+    "max_drawdown": -0.2863,
+    "sharpe": 0.18,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.2211,
+    "best_12m": 0.7657
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.6232,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.2196,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.1554,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.5461,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.0294,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.005,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.2254,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.3406,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.2211,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.4984,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.1114,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.2069,
+     "recovery_months": 3,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": 0.4292,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1946,
+     "recovery_months": 5,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.2617,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.0556,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1988,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 59,
+    "avg_annual": 0.2272
+   },
+   "horizons": {
+    "1": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 211,
+      "median": 0.2254,
+      "p10": -0.0431,
+      "p90": 0.5461,
+      "beat_cdi_freq": 0.706,
+      "beat_benchmark_freq": 0.678
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 187,
+      "median": 0.211,
+      "p10": 0.0789,
+      "p90": 0.3504,
+      "beat_cdi_freq": 0.829,
+      "beat_benchmark_freq": 0.914
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 163,
+      "median": 0.2205,
+      "p10": 0.1218,
+      "p90": 0.3456,
+      "beat_cdi_freq": 0.945,
+      "beat_benchmark_freq": 1.0
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 103,
+      "median": 0.2388,
+      "p10": 0.1965,
+      "p90": 0.285,
+      "beat_cdi_freq": 1.0,
+      "beat_benchmark_freq": 1.0
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "GGBR4": {
+   "name": "Gerdau S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 3.3996,
+    "cagr": 0.1597,
+    "volatility": 0.3658,
+    "max_drawdown": -0.4979,
+    "sharpe": 0.18,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.3261,
+    "best_12m": 2.0585
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 1.3333,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.1517,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.226,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.3767,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.2399,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.2532,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.2263,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": -0.0936,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0458,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.1655,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.2005,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.3409,
+     "recovery_months": 8,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.7129,
+     "recovery_months": 10,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1576,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.4979,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.1421,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": 0.0064,
+     "recovery_months": 0,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.4756
+   },
+   "horizons": {
+    "1": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.1553,
+      "p10": -0.2928,
+      "p90": 0.8022,
+      "beat_cdi_freq": 0.529,
+      "beat_benchmark_freq": 0.577
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.1222,
+      "p10": -0.1493,
+      "p90": 0.5675,
+      "beat_cdi_freq": 0.521,
+      "beat_benchmark_freq": 0.549
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.137,
+      "p10": -0.0924,
+      "p90": 0.5503,
+      "beat_cdi_freq": 0.538,
+      "beat_benchmark_freq": 0.534
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.0912,
+      "p10": -0.0481,
+      "p90": 0.2798,
+      "beat_cdi_freq": 0.48,
+      "beat_benchmark_freq": 0.535
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "HGLG11": {
+   "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
+   "asset_class": "fiis",
+   "first_month": "2011-03",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.9897,
+    "cagr": 0.0712,
+    "volatility": 0.1643,
+    "max_drawdown": -0.2333,
+    "sharpe": -0.13,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.122,
+    "best_12m": 0.4725
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.1045,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.2374,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.0424,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.4725,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.122,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.0577,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0434,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.0922,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": 0.0459,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.098,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.007,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.207,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.0884,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1747,
+     "recovery_months": 39,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.0006,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0038,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 52,
+    "avg_annual": 0.0872
+   },
+   "horizons": {
+    "1": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 176,
+      "median": 0.0461,
+      "p10": -0.0919,
+      "p90": 0.2089,
+      "beat_cdi_freq": 0.301,
+      "beat_benchmark_freq": 0.472
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 152,
+      "median": 0.0553,
+      "p10": -0.0383,
+      "p90": 0.1251,
+      "beat_cdi_freq": 0.263,
+      "beat_benchmark_freq": 0.559
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 128,
+      "median": 0.0612,
+      "p10": 0.0005,
+      "p90": 0.1019,
+      "beat_cdi_freq": 0.305,
+      "beat_benchmark_freq": 0.852
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": {
+      "windows": 68,
+      "median": 0.0615,
+      "p10": 0.0341,
+      "p90": 0.0811,
+      "beat_cdi_freq": 0.029,
+      "beat_benchmark_freq": 0.985
+     },
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "HGRU11": {
+   "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
+   "asset_class": "fiis",
+   "first_month": "2018-07",
+   "risk_10y": {
+    "months": 99,
+    "total_return": 0.6303,
+    "cagr": 0.061,
+    "volatility": 0.1355,
+    "max_drawdown": -0.1966,
+    "sharpe": -0.24,
+    "cdi_cagr": 0.0938,
+    "worst_12m": -0.1587,
+    "best_12m": 0.3135
+   },
+   "annual": [
+    {
+     "year": 2019,
+     "return": 0.2767,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.0343,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.0846,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.1002,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2583,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0757,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.1786,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.023,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2018",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2020",
+     "return": -0.1764,
+     "recovery_months": 29,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.0362,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0485,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 22,
+    "avg_annual": 0.1575
+   },
+   "horizons": {
+    "1": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 88,
+      "median": 0.1003,
+      "p10": -0.085,
+      "p90": 0.2276,
+      "beat_cdi_freq": 0.489,
+      "beat_benchmark_freq": 0.636
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 64,
+      "median": 0.0756,
+      "p10": 0.0183,
+      "p90": 0.119,
+      "beat_cdi_freq": 0.094,
+      "beat_benchmark_freq": 0.906
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 40,
+      "median": 0.0759,
+      "p10": 0.0548,
+      "p90": 0.0931,
+      "beat_cdi_freq": 0.175,
+      "beat_benchmark_freq": 0.975
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 4,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": null,
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "ITUB4": {
+   "name": "Itaú Unibanco Holding S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-12",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 2.1327,
+    "cagr": 0.121,
+    "volatility": 0.2839,
+    "max_drawdown": -0.3906,
+    "sharpe": 0.1,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.3317,
+    "best_12m": 0.798
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.4997,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.3057,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.3351,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.1293,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1116,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.314,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.2418,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.4231,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0293,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.6422,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.0353,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.4485,
+     "recovery_months": 9,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.2861,
+     "recovery_months": 7,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1983,
+     "recovery_months": 5,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.2743,
+     "recovery_months": 9,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.221,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1466,
+     "recovery_months": 3,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.2873
+   },
+   "horizons": {
+    "1": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 299,
+      "median": 0.1884,
+      "p10": -0.1847,
+      "p90": 0.5458,
+      "beat_cdi_freq": 0.599,
+      "beat_benchmark_freq": 0.656
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 275,
+      "median": 0.14,
+      "p10": -0.0169,
+      "p90": 0.3973,
+      "beat_cdi_freq": 0.575,
+      "beat_benchmark_freq": 0.72
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 251,
+      "median": 0.1466,
+      "p10": 0.0243,
+      "p90": 0.3003,
+      "beat_cdi_freq": 0.625,
+      "beat_benchmark_freq": 0.637
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 191,
+      "median": 0.1259,
+      "p10": 0.088,
+      "p90": 0.1881,
+      "beat_cdi_freq": 0.817,
+      "beat_benchmark_freq": 0.995
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "KNCR11": {
+   "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
+   "asset_class": "fiis",
+   "first_month": "2014-08",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.635,
+    "cagr": 0.0504,
+    "volatility": 0.0764,
+    "max_drawdown": -0.2495,
+    "sharpe": -0.56,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.1768,
+    "best_12m": 0.2466
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.0427,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": -0.0812,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.0293,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": -0.0022,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1768,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.1706,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0665,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2128,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": 0.1046,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.1967,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.0832,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.005,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": 0.013,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1401,
+     "recovery_months": 27,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.1672,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": 0.0142,
+     "recovery_months": 0,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": 0.0127
+   },
+   "horizons": {
+    "1": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 135,
+      "median": 0.0591,
+      "p10": -0.0857,
+      "p90": 0.1825,
+      "beat_cdi_freq": 0.341,
+      "beat_benchmark_freq": 0.511
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 111,
+      "median": 0.0011,
+      "p10": -0.0424,
+      "p90": 0.1542,
+      "beat_cdi_freq": 0.369,
+      "beat_benchmark_freq": 0.486
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 87,
+      "median": 0.0131,
+      "p10": -0.0328,
+      "p90": 0.1404,
+      "beat_cdi_freq": 0.23,
+      "beat_benchmark_freq": 0.368
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 10,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": {
+      "windows": 27,
+      "median": 0.0423,
+      "p10": 0.0336,
+      "p90": 0.0544,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.0
+     },
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "KNRI11": {
+   "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+   "asset_class": "fiis",
+   "first_month": "2014-08",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.463,
+    "cagr": 0.0388,
+    "volatility": 0.158,
+    "max_drawdown": -0.356,
+    "sharpe": -0.35,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.1986,
+    "best_12m": 0.3772
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.3244,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.1589,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": -0.1111,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.3554,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1809,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1252,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0439,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2789,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.1058,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.223,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.033,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.1367,
+     "recovery_months": 3,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1508,
+     "recovery_months": 16,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1521,
+     "recovery_months": 42,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.0339,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0853,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": -0.034
+   },
+   "horizons": {
+    "1": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 135,
+      "median": 0.0786,
+      "p10": -0.118,
+      "p90": 0.268,
+      "beat_cdi_freq": 0.437,
+      "beat_benchmark_freq": 0.563
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 111,
+      "median": 0.0586,
+      "p10": -0.037,
+      "p90": 0.1312,
+      "beat_cdi_freq": 0.153,
+      "beat_benchmark_freq": 0.387
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 7,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 87,
+      "median": 0.0404,
+      "p10": -0.0198,
+      "p90": 0.0931,
+      "beat_cdi_freq": 0.069,
+      "beat_benchmark_freq": 0.299
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 7,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": {
+      "windows": 27,
+      "median": 0.0526,
+      "p10": 0.0386,
+      "p90": 0.0715,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.259
+     },
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "LREN3": {
+   "name": "Lojas Renner S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": -0.3206,
+    "cagr": -0.0379,
+    "volatility": 0.3932,
+    "max_drawdown": -0.7473,
+    "sharpe": -0.33,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.5863,
+    "best_12m": 0.9951
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.3835,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.7082,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.211,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.4764,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.219,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.3691,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": -0.138,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": -0.1122,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.1996,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.1735,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.2706,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.6455,
+     "recovery_months": 10,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": 0.182,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1417,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.4147,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2021",
+     "return": -0.4251,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2024",
+     "return": -0.2116,
+     "recovery_months": 5,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.3999
+   },
+   "horizons": {
+    "1": {
+     "rank": 15,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.0783,
+      "p10": -0.2568,
+      "p90": 0.9567,
+      "beat_cdi_freq": 0.484,
+      "beat_benchmark_freq": 0.526
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 15,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.1405,
+      "p10": -0.1524,
+      "p90": 0.6515,
+      "beat_cdi_freq": 0.58,
+      "beat_benchmark_freq": 0.608
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 15,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.2129,
+      "p10": -0.1193,
+      "p90": 0.4517,
+      "beat_cdi_freq": 0.756,
+      "beat_benchmark_freq": 0.744
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 15,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.2063,
+      "p10": 0.0457,
+      "p90": 0.3388,
+      "beat_cdi_freq": 0.777,
+      "beat_benchmark_freq": 0.787
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "MXRF11": {
+   "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+   "asset_class": "fiis",
+   "first_month": "2014-08",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.8044,
+    "cagr": 0.0608,
+    "volatility": 0.1396,
+    "max_drawdown": -0.347,
+    "sharpe": -0.23,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.2571,
+    "best_12m": 0.3789
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.0546,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.0805,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.0768,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.3789,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.2571,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.0458,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0951,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2093,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0044,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.1528,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.045,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.0462,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": 0.0125,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1301,
+     "recovery_months": 37,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.0249,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0401,
+     "recovery_months": 5,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": 0.035
+   },
+   "horizons": {
+    "1": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 135,
+      "median": 0.062,
+      "p10": -0.0663,
+      "p90": 0.2073,
+      "beat_cdi_freq": 0.356,
+      "beat_benchmark_freq": 0.519
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 111,
+      "median": 0.0645,
+      "p10": -0.0075,
+      "p90": 0.1189,
+      "beat_cdi_freq": 0.135,
+      "beat_benchmark_freq": 0.523
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 87,
+      "median": 0.0468,
+      "p10": 0.0202,
+      "p90": 0.0876,
+      "beat_cdi_freq": 0.011,
+      "beat_benchmark_freq": 0.414
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 3,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": {
+      "windows": 27,
+      "median": 0.0585,
+      "p10": 0.0486,
+      "p90": 0.0706,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.407
+     },
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "PETR4": {
+   "name": "Petróleo Brasileiro S.A. - Petrobras",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 10.883,
+    "cagr": 0.2808,
+    "volatility": 0.3676,
+    "max_drawdown": -0.5364,
+    "sharpe": 0.51,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.4849,
+    "best_12m": 1.095
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 1.2194,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.0827,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.4696,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.3749,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.0609,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.2373,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.3769,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.9681,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": 0.1909,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": -0.0516,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.8172,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.4612,
+     "recovery_months": 155,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.7928,
+     "recovery_months": 33,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1974,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.5083,
+     "recovery_months": 15,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.3771,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0077,
+     "recovery_months": 1,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.2448
+   },
+   "horizons": {
+    "1": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.1991,
+      "p10": -0.258,
+      "p90": 0.7466,
+      "beat_cdi_freq": 0.539,
+      "beat_benchmark_freq": 0.561
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.1712,
+      "p10": -0.1434,
+      "p90": 0.518,
+      "beat_cdi_freq": 0.587,
+      "beat_benchmark_freq": 0.619
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.1954,
+      "p10": -0.1083,
+      "p90": 0.3857,
+      "beat_cdi_freq": 0.584,
+      "beat_benchmark_freq": 0.55
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 2,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.1079,
+      "p10": -0.0395,
+      "p90": 0.251,
+      "beat_cdi_freq": 0.46,
+      "beat_benchmark_freq": 0.401
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "PRIO3": {
+   "name": "Prio S.A.",
+   "asset_class": "acoes",
+   "first_month": "2010-10",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 224.4552,
+    "cagr": 0.7191,
+    "volatility": 0.5692,
+    "max_drawdown": -0.6516,
+    "sharpe": 1.1,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.2977,
+    "best_12m": 4.5257
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.778,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 2.7557,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.2127,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 2.3327,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 1.1231,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.476,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.7958,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2396,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.1281,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.0316,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": 0.739,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": -0.895,
+     "recovery_months": 23,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.0345,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.6516,
+     "recovery_months": 8,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": 0.1283,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1428,
+     "recovery_months": 13,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 52,
+    "avg_annual": 0.9025
+   },
+   "horizons": {
+    "1": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 181,
+      "median": 0.2901,
+      "p10": -0.7092,
+      "p90": 1.6096,
+      "beat_cdi_freq": 0.564,
+      "beat_benchmark_freq": 0.558
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 157,
+      "median": 0.3476,
+      "p10": -0.6511,
+      "p90": 1.2488,
+      "beat_cdi_freq": 0.611,
+      "beat_benchmark_freq": 0.631
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 133,
+      "median": 0.4196,
+      "p10": -0.5134,
+      "p90": 1.1615,
+      "beat_cdi_freq": 0.737,
+      "beat_benchmark_freq": 0.729
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 1,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 73,
+      "median": 0.4317,
+      "p10": -0.0448,
+      "p90": 0.6931,
+      "beat_cdi_freq": 0.767,
+      "beat_benchmark_freq": 0.795
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "RADL3": {
+   "name": "Raia Drogasil S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 0.3223,
+    "cagr": 0.0283,
+    "volatility": 0.2969,
+    "max_drawdown": -0.5303,
+    "sharpe": -0.22,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.5023,
+    "best_12m": 1.0195
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.7421,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.5133,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": -0.3717,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.969,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.1278,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.0203,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": -0.0129,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.3037,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.2417,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.1125,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.3199,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.3808,
+     "recovery_months": 3,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": 0.9376,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.1422,
+     "recovery_months": 13,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.179,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.2161,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1954,
+     "recovery_months": null,
+     "recovered": false
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.4171
+   },
+   "horizons": {
+    "1": {
+     "rank": 13,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.1561,
+      "p10": -0.1816,
+      "p90": 0.8977,
+      "beat_cdi_freq": 0.529,
+      "beat_benchmark_freq": 0.539
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 13,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.2012,
+      "p10": 0.0293,
+      "p90": 0.5598,
+      "beat_cdi_freq": 0.657,
+      "beat_benchmark_freq": 0.706
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 13,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.2785,
+      "p10": 0.062,
+      "p90": 0.467,
+      "beat_cdi_freq": 0.802,
+      "beat_benchmark_freq": 0.748
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 13,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.3134,
+      "p10": 0.1483,
+      "p90": 0.4171,
+      "beat_cdi_freq": 0.95,
+      "beat_benchmark_freq": 0.916
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "RENT3": {
+   "name": "Localiza Rent a Car S.A.",
+   "asset_class": "acoes",
+   "first_month": "2005-05",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 2.1385,
+    "cagr": 0.1212,
+    "volatility": 0.3849,
+    "max_drawdown": -0.5703,
+    "sharpe": 0.07,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.4734,
+    "best_12m": 1.286
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.418,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 1.0606,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.363,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.6903,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.4653,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.2255,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0292,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.23,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.4734,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.4232,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.2938,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.6229,
+     "recovery_months": 16,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.4332,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.0806,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.5084,
+     "recovery_months": 6,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.1714,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.2038,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 82,
+    "avg_annual": 0.4982
+   },
+   "horizons": {
+    "1": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 246,
+      "median": 0.1477,
+      "p10": -0.2668,
+      "p90": 0.8638,
+      "beat_cdi_freq": 0.569,
+      "beat_benchmark_freq": 0.679
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 222,
+      "median": 0.134,
+      "p10": -0.084,
+      "p90": 0.5339,
+      "beat_cdi_freq": 0.568,
+      "beat_benchmark_freq": 0.707
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 198,
+      "median": 0.1718,
+      "p10": 0.0012,
+      "p90": 0.3949,
+      "beat_cdi_freq": 0.727,
+      "beat_benchmark_freq": 0.854
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 9,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 138,
+      "median": 0.2082,
+      "p10": 0.1226,
+      "p90": 0.2653,
+      "beat_cdi_freq": 0.92,
+      "beat_benchmark_freq": 1.0
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "SUZB3": {
+   "name": "Suzano S.A.",
+   "asset_class": "acoes",
+   "first_month": "2004-08",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 1.8643,
+    "cagr": 0.111,
+    "volatility": 0.3463,
+    "max_drawdown": -0.4231,
+    "sharpe": 0.05,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.3786,
+    "best_12m": 1.439
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.0131,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": -0.0565,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 1.0473,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.0534,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.4753,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.0246,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": -0.147,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.1802,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": 0.1468,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": -0.1492,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.052,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": 0.0,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": 0.0117,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": 1.0776,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.0978,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.1496,
+     "recovery_months": 18,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": 0.1599,
+     "recovery_months": 0,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 82,
+    "avg_annual": 0.3045
+   },
+   "horizons": {
+    "1": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 255,
+      "median": 0.0053,
+      "p10": -0.1309,
+      "p90": 0.3631,
+      "beat_cdi_freq": 0.235,
+      "beat_benchmark_freq": 0.467
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 231,
+      "median": 0.0466,
+      "p10": 0.0002,
+      "p90": 0.2552,
+      "beat_cdi_freq": 0.325,
+      "beat_benchmark_freq": 0.498
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 207,
+      "median": 0.0626,
+      "p10": 0.0069,
+      "p90": 0.2122,
+      "beat_cdi_freq": 0.353,
+      "beat_benchmark_freq": 0.599
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 10,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 147,
+      "median": 0.1047,
+      "p10": 0.033,
+      "p90": 0.1333,
+      "beat_cdi_freq": 0.633,
+      "beat_benchmark_freq": 0.735
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "VALE3": {
+   "name": "Vale S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 4.7973,
+    "cagr": 0.1921,
+    "volatility": 0.3023,
+    "max_drawdown": -0.3208,
+    "sharpe": 0.33,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.2648,
+    "best_12m": 1.6459
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.9824,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.6374,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": 0.3181,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.0728,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 0.7093,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": 0.0594,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.237,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": -0.0573,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.228,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.493,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.1205,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.5161,
+     "recovery_months": 110,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": -0.636,
+     "recovery_months": 10,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": 0.1133,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1402,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.2251,
+     "recovery_months": 7,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0763,
+     "recovery_months": 8,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.393
+   },
+   "horizons": {
+    "1": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.1558,
+      "p10": -0.2271,
+      "p90": 0.8231,
+      "beat_cdi_freq": 0.558,
+      "beat_benchmark_freq": 0.548
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.1669,
+      "p10": -0.1268,
+      "p90": 0.5143,
+      "beat_cdi_freq": 0.57,
+      "beat_benchmark_freq": 0.584
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.1604,
+      "p10": -0.0922,
+      "p90": 0.4698,
+      "beat_cdi_freq": 0.645,
+      "beat_benchmark_freq": 0.695
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 4,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.1306,
+      "p10": -0.0002,
+      "p90": 0.2836,
+      "beat_cdi_freq": 0.589,
+      "beat_benchmark_freq": 0.703
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "VILG11": {
+   "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
+   "asset_class": "fiis",
+   "first_month": "2019-03",
+   "risk_10y": {
+    "months": 91,
+    "total_return": 0.1899,
+    "cagr": 0.0232,
+    "volatility": 0.1997,
+    "max_drawdown": -0.4158,
+    "sharpe": -0.37,
+    "cdi_cagr": 0.0965,
+    "worst_12m": -0.2885,
+    "best_12m": 0.575
+   },
+   "annual": [
+    {
+     "year": 2020,
+     "return": -0.1562,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1684,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": -0.0024,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.0776,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.1828,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.4729,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.0236,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2018",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2020",
+     "return": -0.1999,
+     "recovery_months": 70,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.1117,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1264,
+     "recovery_months": 3,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 22,
+    "avg_annual": 0.031
+   },
+   "horizons": {
+    "1": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 80,
+      "median": 0.0198,
+      "p10": -0.1589,
+      "p90": 0.2475,
+      "beat_cdi_freq": 0.312,
+      "beat_benchmark_freq": 0.412
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 56,
+      "median": -0.0204,
+      "p10": -0.0461,
+      "p90": 0.0796,
+      "beat_cdi_freq": 0.036,
+      "beat_benchmark_freq": 0.071
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 8,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 32,
+      "median": -0.0064,
+      "p10": -0.0447,
+      "p90": 0.045,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.0
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 8,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": null,
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "VISC11": {
+   "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
+   "asset_class": "fiis",
+   "first_month": "2017-11",
+   "risk_10y": {
+    "months": 107,
+    "total_return": 0.5124,
+    "cagr": 0.0475,
+    "volatility": 0.1484,
+    "max_drawdown": -0.3164,
+    "sharpe": -0.3,
+    "cdi_cagr": 0.0916,
+    "worst_12m": -0.1715,
+    "best_12m": 0.3255
+   },
+   "annual": [
+    {
+     "year": 2018,
+     "return": 0.0384,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 0.2935,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": -0.1715,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1059,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0842,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.2833,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.138,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.2254,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.0134,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2018",
+     "return": -0.0942,
+     "recovery_months": 13,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.2834,
+     "recovery_months": 44,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.043,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.1123,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 29,
+    "avg_annual": 0.0695
+   },
+   "horizons": {
+    "1": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 96,
+      "median": 0.0593,
+      "p10": -0.1103,
+      "p90": 0.2745,
+      "beat_cdi_freq": 0.365,
+      "beat_benchmark_freq": 0.417
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 72,
+      "median": 0.0619,
+      "p10": -0.0268,
+      "p90": 0.1062,
+      "beat_cdi_freq": 0.056,
+      "beat_benchmark_freq": 0.417
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 5,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 48,
+      "median": 0.0584,
+      "p10": 0.0031,
+      "p90": 0.0738,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.354
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 5,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": null,
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "WEGE3": {
+   "name": "WEG S.A.",
+   "asset_class": "acoes",
+   "first_month": "2000-01",
+   "risk_10y": {
+    "months": 120,
+    "total_return": 7.4526,
+    "cagr": 0.2379,
+    "volatility": 0.3059,
+    "max_drawdown": -0.3825,
+    "sharpe": 0.47,
+    "cdi_cagr": 0.0933,
+    "worst_12m": -0.3141,
+    "best_12m": 1.9995
+   },
+   "annual": [
+    {
+     "year": 2016,
+     "return": 0.0634,
+     "partial": false
+    },
+    {
+     "year": 2017,
+     "return": 0.5853,
+     "partial": false
+    },
+    {
+     "year": 2018,
+     "return": -0.0374,
+     "partial": false
+    },
+    {
+     "year": 2019,
+     "return": 1.007,
+     "partial": false
+    },
+    {
+     "year": 2020,
+     "return": 1.2028,
+     "partial": false
+    },
+    {
+     "year": 2021,
+     "return": -0.1162,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.1846,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": -0.026,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": 0.4553,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": -0.0304,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.0167,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": -0.4247,
+     "recovery_months": 20,
+     "recovered": true
+    },
+    {
+     "key": "2015",
+     "return": 0.138,
+     "recovery_months": 0,
+     "recovered": true
+    },
+    {
+     "key": "2018",
+     "return": -0.0923,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2020",
+     "return": -0.1445,
+     "recovery_months": 1,
+     "recovered": true
+    },
+    {
+     "key": "2021",
+     "return": -0.2026,
+     "recovery_months": 4,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0229,
+     "recovery_months": 1,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.8733
+   },
+   "horizons": {
+    "1": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.582,
+     "prob_beat_cdi": 0.556,
+     "history": {
+      "windows": 310,
+      "median": 0.2406,
+      "p10": -0.1178,
+      "p90": 0.981,
+      "beat_cdi_freq": 0.687,
+      "beat_benchmark_freq": 0.645
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "3": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.653,
+     "prob_beat_cdi": 0.582,
+     "history": {
+      "windows": 286,
+      "median": 0.2217,
+      "p10": 0.0519,
+      "p90": 0.575,
+      "beat_cdi_freq": 0.815,
+      "beat_benchmark_freq": 0.794
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "5": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.694,
+     "prob_beat_cdi": 0.648,
+     "history": {
+      "windows": 262,
+      "median": 0.2305,
+      "p10": 0.0825,
+      "p90": 0.4863,
+      "beat_cdi_freq": 0.87,
+      "beat_benchmark_freq": 0.897
+     },
+     "top_factors": [],
+     "total": 15
+    },
+    "10": {
+     "rank": 3,
+     "prob_beat_benchmark": 0.784,
+     "prob_beat_cdi": 0.715,
+     "history": {
+      "windows": 202,
+      "median": 0.2551,
+      "p10": 0.1623,
+      "p90": 0.3191,
+      "beat_cdi_freq": 1.0,
+      "beat_benchmark_freq": 1.0
+     },
+     "top_factors": [],
+     "total": 15
+    }
+   }
+  },
+  "XPLG11": {
+   "name": "Xp Log Fundo Investimento Imobiliario FII",
+   "asset_class": "fiis",
+   "first_month": "2020-06",
+   "risk_10y": {
+    "months": 76,
+    "total_return": 0.0512,
+    "cagr": 0.0079,
+    "volatility": 0.1379,
+    "max_drawdown": -0.3272,
+    "sharpe": -0.71,
+    "cdi_cagr": 0.1061,
+    "worst_12m": -0.2893,
+    "best_12m": 0.3319
+   },
+   "annual": [
+    {
+     "year": 2021,
+     "return": -0.1742,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0308,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.192,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.0608,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.2428,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.0698,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2018",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2020",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2021",
+     "return": -0.0952,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0591,
+     "recovery_months": 3,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 17,
+    "avg_annual": -0.0118
+   },
+   "horizons": {
+    "1": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 65,
+      "median": 0.0516,
+      "p10": -0.1719,
+      "p90": 0.2412,
+      "beat_cdi_freq": 0.277,
+      "beat_benchmark_freq": 0.308
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 41,
+      "median": 0.054,
+      "p10": 0.0035,
+      "p90": 0.1126,
+      "beat_cdi_freq": 0.024,
+      "beat_benchmark_freq": 0.195
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 11,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 17,
+      "median": 0.0383,
+      "p10": 0.0066,
+      "p90": 0.0566,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 0.0
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 11,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": null,
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  },
+  "XPML11": {
+   "name": "Xp Malls Fundo Investimentos Imobiliarios",
+   "asset_class": "fiis",
+   "first_month": "2020-06",
+   "risk_10y": {
+    "months": 76,
+    "total_return": 0.4703,
+    "cagr": 0.0628,
+    "volatility": 0.126,
+    "max_drawdown": -0.2333,
+    "sharpe": -0.34,
+    "cdi_cagr": 0.1061,
+    "worst_12m": -0.1893,
+    "best_12m": 0.3553
+   },
+   "annual": [
+    {
+     "year": 2021,
+     "return": -0.1482,
+     "partial": false
+    },
+    {
+     "year": 2022,
+     "return": 0.0373,
+     "partial": false
+    },
+    {
+     "year": 2023,
+     "return": 0.3553,
+     "partial": false
+    },
+    {
+     "year": 2024,
+     "return": -0.076,
+     "partial": false
+    },
+    {
+     "year": 2025,
+     "return": 0.2321,
+     "partial": false
+    },
+    {
+     "year": 2026,
+     "return": -0.04,
+     "partial": true
+    }
+   ],
+   "crises": [
+    {
+     "key": "2008",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2015",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2018",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2020",
+     "return": null,
+     "recovery_months": null,
+     "recovered": false
+    },
+    {
+     "key": "2021",
+     "return": -0.0565,
+     "recovery_months": 2,
+     "recovered": true
+    },
+    {
+     "key": "2024",
+     "return": -0.0966,
+     "recovery_months": 4,
+     "recovered": true
+    }
+   ],
+   "in_scenario": {
+    "months": 17,
+    "avg_annual": 0.1421
+   },
+   "horizons": {
+    "1": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.499,
+     "prob_beat_cdi": 0.377,
+     "history": {
+      "windows": 65,
+      "median": 0.077,
+      "p10": -0.087,
+      "p90": 0.2472,
+      "beat_cdi_freq": 0.385,
+      "beat_benchmark_freq": 0.477
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "3": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.506,
+     "prob_beat_cdi": 0.215,
+     "history": {
+      "windows": 41,
+      "median": 0.1091,
+      "p10": 0.06,
+      "p90": 0.1428,
+      "beat_cdi_freq": 0.317,
+      "beat_benchmark_freq": 0.951
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "5": {
+     "rank": 6,
+     "prob_beat_benchmark": 0.482,
+     "prob_beat_cdi": 0.17,
+     "history": {
+      "windows": 17,
+      "median": 0.0837,
+      "p10": 0.0665,
+      "p90": 0.0912,
+      "beat_cdi_freq": 0.0,
+      "beat_benchmark_freq": 1.0
+     },
+     "top_factors": [],
+     "total": 11
+    },
+    "10": {
+     "rank": 6,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
+     "history": null,
+     "top_factors": [],
+     "total": 11
+    }
+   }
+  }
+ }
+}

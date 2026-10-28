@@ -1,29 +1,41 @@
 import { notFound } from "next/navigation";
+import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { Breadcrumbs, Card, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
-import { getAsset } from "@/lib/api";
+import { getAsset, getAssetHistory } from "@/lib/api";
 import { changeColor, formatBRL, formatPercent, formatProbability, formatTime } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
-  const detail = await getAsset(ticker);
-  if (!detail) notFound();
-  const { asset } = detail;
+  const [detail, history] = await Promise.all([getAsset(ticker), getAssetHistory(ticker)]);
+  if (!detail && !history) notFound();
+  const head = detail?.asset ?? history!;
 
   return (
     <>
       <Breadcrumbs
         items={[
-          { label: "Ranking", href: asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" },
-          { label: asset.ticker },
+          { label: "Ranking", href: head.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" },
+          { label: head.ticker },
         ]}
       />
       <div className="flex items-center gap-4">
-        <AssetLogo ticker={asset.ticker} src={asset.logo_url} size={64} />
-        <PageTitle title={asset.ticker} subtitle={asset.name} />
+        <AssetLogo ticker={head.ticker} src={head.logo_url} size={64} />
+        <PageTitle title={head.ticker} subtitle={head.name} />
       </div>
-      <InfoBanner>{detail.disclaimer}</InfoBanner>
+      <InfoBanner>{detail?.disclaimer ?? history!.disclaimer}</InfoBanner>
+      {detail && <LiveSection detail={detail} />}
+      {history && <AssetHistorySection h={history} />}
+    </>
+  );
+}
+
+function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof getAsset>>> }) {
+  const { asset } = detail;
+  return (
+    <>
+      <h2 className="mb-3 text-lg font-bold">Curto prazo · recalculado a cada 5 minutos</h2>
 
       <Card className="mb-6">
         <div className="grid grid-cols-2 gap-6 md:flex md:gap-0 md:divide-x md:divide-border">

@@ -1,0 +1,51 @@
+# Baixa o histórico mensal (Yahoo Finance e Banco Central) e recalibra o modelo de horizontes
+# (1, 3, 5 e 10 anos). Roda todo mês, sob demanda e em PRs que mudam o modelo, e grava o resultado
+# em api/data/ no próprio branch.
+name: Calibrar horizontes
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 2 * *"
+  pull_request:
+    paths:
+      - api/app/longterm/**
+      - api/scripts/fetch_history.py
+      - .github/workflows/calibrate.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calibrate-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calibrate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Baixar histórico
+        run: python scripts/fetch_history.py
+      - name: Calibrar modelo
+        run: python -m app.longterm.build
+      - name: Gravar no branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898338+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "Sem mudanças."
+          else
+            git commit -m "Atualiza histórico e calibração do modelo de horizontes"
+            git push
+          fi
