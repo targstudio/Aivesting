@@ -47,9 +47,10 @@ def build_payload(
 
 
 class Explainer:
-    def __init__(self, api_key: str, model: str):
+    def __init__(self, api_key: str, model: str, usage=None):
         self.client = anthropic.AsyncAnthropic(api_key=api_key)
         self.model = model
+        self.usage = usage
 
     async def explain(
         self, asset: RankedAsset, snapshot: RankingSnapshot, macro: list[MacroIndicator], level_note: str = ""
@@ -70,6 +71,8 @@ class Explainer:
                 }
             ],
         )
+        if self.usage:
+            self.usage.record("explicacao_ativo", response)
         if response.stop_reason == "refusal":
             return "Não foi possível gerar a explicação para este ativo agora."
         return "".join(b.text for b in response.content if b.type == "text").strip()

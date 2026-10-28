@@ -50,6 +50,10 @@ class Settings(BaseSettings):
     # Resultado calibrado do modelo de horizontes (1, 3, 5 e 10 anos). Vazio = api/data/longterm.json.
     longterm_path: str = ""
 
+    # Modo assessor (perfil do investidor e sugestão de alocação): "public" liga para todos, "off" desliga.
+    # Sugestão personalizada é consultoria (Resolução CVM 19): desligue se não houver consultor registrado responsável.
+    advisor_mode: str = "public"
+
     # Usa dados sintéticos (sem brapi nem BCB). Útil para desenvolvimento e demonstração.
     demo_mode: bool = False
 

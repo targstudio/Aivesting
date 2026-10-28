@@ -224,6 +224,7 @@ export type Health = {
   ranking_interval_minutes: number;
   market_open: boolean;
   longterm: boolean;
+  advisor: boolean;
 };
 
 export type AssetSummary = Pick<RankedAsset, "ticker" | "name" | "asset_class" | "price" | "change_percent" | "rank" | "probability_outperform" | "logo_url">;
@@ -258,3 +259,82 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   if (!res.ok) throw new Error(typeof body.detail === "string" ? body.detail : `Erro ${res.status}`);
   return body as T;
 }
+
+// ---- Modo assessor ----
+
+export type AdvisorQuestion = { key: string; label: string; options: string[] };
+
+export type AdvisorAnswers = {
+  objetivo: number;
+  prazo: number;
+  reacao_queda: number;
+  experiencia: number;
+  oscilacao: number;
+};
+
+export type AdvisorInput = {
+  answers: AdvisorAnswers;
+  amount: number;
+  monthly_contribution: number;
+  monthly_expenses: number;
+  has_reserve: boolean;
+  months?: number;
+};
+
+export type AdvisorTerm = "curto" | "medio" | "longo";
+
+export type AdvisorPick = {
+  ticker: string;
+  name: string;
+  logo_url?: string | null;
+  probability?: number | null;
+  note: string;
+  value?: number;
+};
+
+export type AdvisorAllocation = {
+  key: string;
+  label: string;
+  value: number;
+  pct: number;
+  risk: string;
+  why: string;
+  products: string[];
+  picks: Partial<Record<AdvisorTerm, AdvisorPick[]>>;
+  suggested: AdvisorPick[];
+  suggested_rest: number | null;
+};
+
+export type AdvisorPlan = {
+  profile: "conservador" | "moderado" | "arrojado";
+  score: number;
+  months: number | null;
+  term: AdvisorTerm;
+  term_label: string;
+  terms: Record<AdvisorTerm, string>;
+  amount: number;
+  allocation: AdvisorAllocation[];
+  monthly_contribution: { key: string; label: string; value: number }[] | null;
+  variable_income_pct: number;
+  macro: { selic: number | null; ipca_12m: number | null; juro_real: number | null; cdi_estimado: number | null };
+  notes: string[];
+  disclaimer: string;
+};
+
+// ---- Consumo de IA ----
+
+export type UsageWindow = { calls: number; input_tokens: number; output_tokens: number; cost_usd: number; cost_brl: number | null };
+
+export type AiUsage = {
+  today: UsageWindow;
+  last_7_days: UsageWindow;
+  last_30_days: UsageWindow;
+  by_feature_30_days: (UsageWindow & { feature: string; label: string })[];
+  daily: { day: string; calls: number; cost_usd: number }[];
+  cache_hits_since_start: number;
+  since: string;
+  persisted: boolean;
+  usd_brl: number | null;
+  model: string;
+  ai: boolean;
+};

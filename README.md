@@ -4,7 +4,8 @@ App de análise do mercado financeiro com IA nativa. Ranqueia ações e FIIs da 
 estimada de superar o índice de referência (Ibovespa, IFIX), recalculando a cada 5 minutos durante o
 pregão, e usa IA para explicar cada posição com base em dados micro e macroeconômicos.
 
-> Conteúdo informativo. O app não recomenda compra ou venda. Antes de abrir o ranking ao público é
+> As telas de dados são informativas. O modo Assessor sugere alocação a partir do perfil (consultoria, Resolução CVM 19)
+> e pode ser desligado com `ADVISOR_MODE=off`. Antes de abrir o ranking ao público é
 > preciso um analista CNPI responsável (Resolução CVM 20). Veja a proposta do produto para os detalhes.
 
 ![Início](docs/screenshots/home.png)
@@ -53,8 +54,19 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
    abaixo, alta ou queda no dia, entrar no top N e probabilidade acima de X. Enquanto não há login, os alertas ficam
    no navegador e são conferidos a cada 1, 5 ou 15 minutos com o app aberto, com notificação do navegador opcional. A IA
    explica por que cada alerta disparou.
+11. **Assessor** (`api/app/advisor.py`, `/assessor/*`, tela `/assessor`): questionário de perfil (conservador,
+    moderado, arrojado), plano de alocação por regras transparentes (reserva de emergência primeiro, pesos por perfil,
+    mais IPCA+ quando o juro real passa de 6%), explicação da IA e chat do assessor. A pessoa informa quanto quer investir
+    e por quantos meses; para ações e FIIs o plano lista os primeiros do app em curto (ranking de 5 min), médio (ranking
+    de 3 anos) e longo prazo (ranking de 10 anos) e divide o valor da classe entre os ativos do prazo dela, com no
+    máximo 10% do total em cada ativo.
+    Ligado por `ADVISOR_MODE=public`; use `off` para desligar. Sugestão personalizada é consultoria (Resolução CVM 19).
+12. **Enciclopédia** (tela `/enciclopedia`): renda fixa, renda variável, dólar, ouro, cripto e conceitos, cada verbete
+    com botão para perguntar à IA.
 10. **Configurações** (tela `/configuracoes`): nível de linguagem da IA, leitura automática, nome, frequência dos
-    alertas, notificações e o estado dos serviços da API.
+    alertas, notificações, o estado dos serviços da API e o **consumo de IA** (`/ia/consumo`): chamadas, tokens e custo
+    estimado em US$ e R$ por dia e por função. Com `SUPABASE_URL` e `SUPABASE_SECRET_KEY`, o histórico fica na tabela
+    `ai_usage` (migração `supabase/migrations/0002_ai_usage.sql`); sem eles, conta desde o último reinício da API.
 
 ## Rodando localmente
 
