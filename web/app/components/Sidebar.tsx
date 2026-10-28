@@ -1,18 +1,18 @@
 "use client";
 
-import { Bell, BookOpen, Bot, BriefcaseBusiness, Building2, Hourglass, House, Landmark, LineChart, Settings, Trophy, type LucideIcon } from "lucide-react";
+import { Bell, BookOpen, Bot, BriefcaseBusiness, Building2, Hourglass, House, Landmark, LineChart, Settings, Trophy, WalletCards, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 
-type Item = { href: string; label: string; icon: LucideIcon; mobile?: boolean };
+type Item = { href: string; label: string; icon: LucideIcon; mobile?: boolean; short?: string };
 
 /** Menu dividido em seções, como no painel de referência. */
 export const NAV_SECTIONS: { title?: string; items: Item[] }[] = [
   {
     items: [
       { href: "/", label: "Início", icon: House, mobile: true },
-      { href: "/mercado", label: "Mercado", icon: LineChart, mobile: true },
+      { href: "/mercado", label: "Mercado", icon: LineChart },
       { href: "/ranking", label: "Ranking", icon: Trophy, mobile: true },
       { href: "/ranking?classe=fiis", label: "FIIs", icon: Building2 },
       { href: "/horizontes", label: "Horizontes", icon: Hourglass },
@@ -22,6 +22,7 @@ export const NAV_SECTIONS: { title?: string; items: Item[] }[] = [
   {
     title: "Inteligência",
     items: [
+      { href: "/carteira", label: "Minha carteira", short: "Carteira", icon: WalletCards, mobile: true },
       { href: "/assessor", label: "Assessor", icon: BriefcaseBusiness, mobile: true },
       { href: "/assistente", label: "Assistente IA", icon: Bot },
       { href: "/enciclopedia", label: "Enciclopédia", icon: BookOpen },
@@ -82,14 +83,14 @@ export function Sidebar() {
       </div>
       {/* Mobile: barra inferior com os itens principais */}
       <nav className="fixed inset-x-0 bottom-0 z-20 flex justify-around bg-nav py-2 md:hidden">
-        {NAV_ITEMS.filter((i) => i.mobile).map(({ href, label, icon: Icon }) => (
+        {NAV_ITEMS.filter((i) => i.mobile).map(({ href, label, short, icon: Icon }) => (
           <Link
             key={href}
             href={href}
             className={`flex flex-col items-center gap-1 px-2 text-[11px] ${isActive(pathname, href) ? "font-semibold text-primary" : "text-nav-muted"}`}
           >
             <Icon size={20} strokeWidth={1.75} />
-            {label}
+            {short ?? label}
           </Link>
         ))}
       </nav>

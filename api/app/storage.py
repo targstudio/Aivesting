@@ -50,3 +50,37 @@ class SupabaseStore:
         ]
         resp = await self.client.post(f"{self.base}/ranking_entries", headers=self.headers, json=entries)
         resp.raise_for_status()
+
+
+class PortfolioStore:
+    """Carteiras importadas (tabela portfolios). Sem login, cada carteira tem um id aleatório que só o navegador da
+    pessoa conhece; a tabela não tem política de leitura pública e só o backend (service role) acessa."""
+
+    def __init__(self, url: str, secret_key: str, client: httpx.AsyncClient | None = None):
+        self.base = f"{url.rstrip('/')}/rest/v1/portfolios"
+        self.headers = {
+            "apikey": secret_key,
+            "Authorization": f"Bearer {secret_key}",
+            "Content-Type": "application/json",
+        }
+        self.client = client or httpx.AsyncClient(timeout=20)
+
+    async def get(self, portfolio_id: str) -> dict | None:
+        resp = await self.client.get(
+            self.base, headers=self.headers, params={"id": f"eq.{portfolio_id}", "select": "holdings,updated_at"}
+        )
+        resp.raise_for_status()
+        rows = resp.json()
+        return rows[0] if rows else None
+
+    async def save(self, portfolio_id: str, holdings: list[dict], updated_at: str) -> None:
+        resp = await self.client.post(
+            self.base,
+            headers={**self.headers, "Prefer": "resolution=merge-duplicates"},
+            json={"id": portfolio_id, "holdings": holdings, "updated_at": updated_at},
+        )
+        resp.raise_for_status()
+
+    async def delete(self, portfolio_id: str) -> None:
+        resp = await self.client.delete(self.base, headers=self.headers, params={"id": f"eq.{portfolio_id}"})
+        resp.raise_for_status()

@@ -16,6 +16,8 @@ import {
   type AdvisorTerm,
 } from "@/lib/api";
 import { formatBRL, formatNumber } from "@/lib/format";
+import { loadPortfolio } from "@/lib/portfolio";
+import type { PortfolioAnalysis } from "@/lib/api";
 import { Chat } from "../assistente/Chat";
 import { Markdown } from "@/app/components/Markdown";
 import { Donut } from "@/app/components/charts";
@@ -77,6 +79,16 @@ export function Advisor() {
   const [input, setInput] = useState<AdvisorInput | null>(null);
   const [plan, setPlan] = useState<AdvisorPlan | null>(null);
   const [explanation, setExplanation] = useState<{ state: "loading" | "done" | "error"; text: string } | null>(null);
+  // Carteira importada na tela Minha carteira: o assessor considera o que a pessoa já tem.
+  const [portfolio, setPortfolio] = useState<PortfolioAnalysis | null>(null);
+
+  useEffect(() => {
+    const stored = loadPortfolio();
+    if (!stored?.holdings.length) return;
+    apiFetch<PortfolioAnalysis>("/carteira/analise", { method: "POST", body: JSON.stringify({ holdings: stored.holdings }) })
+      .then(setPortfolio)
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     apiFetch<{ perguntas: AdvisorQuestion[] }>("/assessor/perguntas")
@@ -192,6 +204,15 @@ export function Advisor() {
           <h2 className="mb-5 text-lg font-bold">Seu dinheiro</h2>
           <div className="flex flex-col gap-4">
             <MoneyField label="Quanto quer investir agora" value={amount} onChange={setAmount} required />
+            {portfolio && portfolio.total > 0 && (
+              <button
+                type="button"
+                onClick={() => setAmount(formatNumber(portfolio.total))}
+                className="-mt-2 w-fit text-left text-xs font-semibold text-accent-text hover:underline"
+              >
+                Usar o total da minha carteira ({formatBRL(portfolio.total)})
+              </button>
+            )}
             <div className="flex flex-col gap-2 text-sm font-semibold">
               <label htmlFor="months">Por quantos meses o dinheiro pode ficar aplicado?</label>
               <span className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 focus-within:border-primary">
@@ -363,11 +384,23 @@ export function Advisor() {
             </Card>
           )}
 
+          {portfolio && portfolio.total > 0 ? (
+            <InfoBanner>
+              O assessor conhece a carteira que você importou ({formatBRL(portfolio.total)} em {portfolio.positions.length} posições). Veja
+              quanto falta ou sobra em cada classe em <Link href="/carteira" className="underline">Minha carteira</Link>.
+            </InfoBanner>
+          ) : (
+            <InfoBanner>
+              Já investe? Importe os prints da sua corretora em <Link href="/carteira" className="underline">Minha carteira</Link> para o
+              assessor comparar o que você tem com este plano.
+            </InfoBanner>
+          )}
+
           <div>
             <h2 className="mb-3 text-lg font-bold">Converse com o assessor</h2>
             <Chat
               endpoint="/assessor/chat"
-              extra={{ plan }}
+              extra={{ plan, portfolio: portfolio && { ...portfolio, disclaimer: undefined } }}
               page="/assessor"
               suggestions={[
                 "Por onde eu começo na prática?",
@@ -375,6 +408,7 @@ export function Advisor() {
                 "Qual CDB ou Tesouro escolher para a parte de renda fixa?",
                 "Vale a pena ter dólar agora?",
                 "Quais FIIs combinam com o meu perfil?",
+                ...(portfolio ? ["Como aproximo minha carteira atual deste plano?"] : []),
               ]}
               placeholder="Pergunte ao assessor sobre o seu plano"
               footer="Sugestões automáticas. Todo investimento tem riscos; rentabilidade passada não garante futura."

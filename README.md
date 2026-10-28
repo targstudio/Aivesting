@@ -61,6 +61,16 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
     de 3 anos) e longo prazo (ranking de 10 anos) e divide o valor da classe entre os ativos do prazo dela, com no
     máximo 10% do total em cada ativo.
     Ligado por `ADVISOR_MODE=public`; use `off` para desligar. Sugestão personalizada é consultoria (Resolução CVM 19).
+13. **Minha carteira** (`api/app/portfolio.py`, `api/app/ai/portfolio_ai.py`, `/carteira/*`, tela `/carteira`): a pessoa
+    envia prints da corretora (até 6 por vez, ou cola com Ctrl+V) e a Claude lê ativo, classe, quantidade, preço médio, preço
+    e saldo (`POST /carteira/ler`, saída em JSON com schema). Os prints vão só para a IA e não são gravados. A pessoa confere e
+    corrige numa tabela (o app avisa se a soma não bate com o total do print), e a carteira é salva no navegador e na tabela
+    `portfolios` do Supabase (migração `0003_portfolios.sql`), por um id aleatório enquanto não há login. A análise
+    (`POST /carteira/analise`) mostra divisão por classe e por setor, concentração (maior posição, 3 maiores, posições
+    efetivas), alertas (ativo acima de 10%, setor acima de 35%, falta de renda fixa ou exterior), resultado sobre o preço
+    médio, posição no ranking e histórico de 10 anos de cada ativo, e como a carteira de hoje teria ido ano a ano e nas crises.
+    Com o perfil do Assessor preenchido, compara a carteira com o plano e mostra quanto falta ou sobra em cada classe; o chat
+    do assessor recebe a carteira. A leitura da IA (`POST /carteira/explicar`) fica guardada até a carteira mudar.
 12. **Enciclopédia** (tela `/enciclopedia`): renda fixa, renda variável, dólar, ouro, cripto e conceitos, cada verbete
     com botão para perguntar à IA.
 10. **Configurações** (tela `/configuracoes`): nível de linguagem da IA, leitura automática, nome, frequência dos
