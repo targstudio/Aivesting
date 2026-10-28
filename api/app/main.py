@@ -16,6 +16,7 @@ from .config import Settings, get_settings
 from .providers.bcb import BcbClient
 from .providers.brapi import BrapiProvider
 from .providers.demo import DemoMacro, DemoProvider
+from .providers.yahoo import YahooProvider
 from .ranking.service import CLASSES, RankingService
 from .storage import SupabaseStore
 
@@ -39,7 +40,11 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     if settings.demo_mode:
         provider, bcb = DemoProvider(), DemoMacro()
     else:
-        provider = BrapiProvider(settings.brapi_base_url, settings.brapi_token)
+        provider = (
+            YahooProvider()
+            if settings.data_provider == "yahoo"
+            else BrapiProvider(settings.brapi_base_url, settings.brapi_token)
+        )
         bcb = BcbClient(settings.bcb_base_url)
     store = (
         SupabaseStore(settings.supabase_url, settings.supabase_secret_key)

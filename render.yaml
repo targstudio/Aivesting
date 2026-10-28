@@ -5,14 +5,18 @@ services:
     runtime: python
     rootDir: api
     region: ohio
-    # O plano gratuito "dorme" sem tráfego e para o recálculo de 5 minutos; o starter fica sempre ligado.
-    plan: starter
+    # O plano gratuito "dorme" após 15 min sem tráfego: um ping externo em /health a cada 5 min
+    # (ex.: cron-job.org) o mantém acordado. Troque para "starter" para não depender do ping.
+    plan: free
     buildCommand: pip install .
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.7"
+      # "yahoo" é gratuito (uso não comercial); "brapi" exige token e plano pago para o universo todo.
+      - key: DATA_PROVIDER
+        value: yahoo
       - key: RANKING_INTERVAL_MINUTES
         value: "5"
       - key: AI_REQUESTS_PER_HOUR

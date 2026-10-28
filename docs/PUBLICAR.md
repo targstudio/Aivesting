@@ -5,12 +5,15 @@ O app tem três partes, cada uma num serviço:
 | Parte | Serviço | Custo aproximado |
 |---|---|---|
 | Site (`web/`) | Vercel | grátis no plano Hobby |
-| API (`api/`) | Render | plano Starter, cerca de US$ 7 por mês (o gratuito dorme e para o recálculo de 5 min) |
+| API (`api/`) | Render | grátis, com um ping a cada 5 minutos para não dormir (ou Starter, cerca de US$ 7 por mês) |
 | Banco (`supabase/`) | Supabase | grátis |
 
 Chaves necessárias:
 
-- **brapi**: crie uma conta em brapi.dev e copie o token. O plano gratuito tem limite de requisições; com 28 ativos a cada 5 minutos, provavelmente será preciso um plano pago.
+- **Cotações**: por padrão a API usa o Yahoo Finance (`DATA_PROVIDER=yahoo`), gratuito e sem chave, mas
+  sem licença para uso comercial: serve para testes e validação. Para lançar ao público, use
+  `DATA_PROVIDER=brapi` com um plano pago da brapi (o gratuito só traz histórico completo de poucos ativos
+  de teste) ou um feed licenciado.
 - **Anthropic**: crie uma chave em console.anthropic.com (é cobrado por uso).
 - **Supabase**: no painel do projeto, *Project Settings > API Keys*: a URL do projeto e uma chave secreta (`sb_secret_...`). A chave secreta fica só na API, nunca no site.
 
@@ -24,6 +27,9 @@ Rode `supabase/migrations/0001_init.sql` no *SQL Editor* do projeto (ou com a CL
 2. O Render lê o `render.yaml` e pede os valores de `BRAPI_TOKEN`, `ANTHROPIC_API_KEY`, `SUPABASE_URL`,
    `SUPABASE_SECRET_KEY` e `WEB_ORIGIN` (preencha este depois do passo 3).
 3. Depois do deploy, abra `https://<sua-api>.onrender.com/health`. Deve mostrar `"database": true` e `"ai": true`.
+4. No plano gratuito, crie uma conta em cron-job.org e um job que chame
+   `https://<sua-api>.onrender.com/health` a cada 5 minutos. Sem isso o Render desliga a API depois de 15
+   minutos sem visitas e o ranking para de ser recalculado.
 
 ## 3. Site (Vercel)
 

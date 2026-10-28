@@ -16,6 +16,9 @@ DEFAULT_FIIS = [
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
+    # Fonte de cotações: "brapi" (precisa de token; plano pago para o universo todo) ou
+    # "yahoo" (gratuito, sem chave, uso não comercial).
+    data_provider: str = "brapi"
     brapi_token: str = ""
     brapi_base_url: str = "https://brapi.dev/api"
     bcb_base_url: str = "https://api.bcb.gov.br/dados/serie"
