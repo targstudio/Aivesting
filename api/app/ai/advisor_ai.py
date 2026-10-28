@@ -8,7 +8,9 @@ em linguagem simples, como um assessor experiente e honesto que trabalha para au
 Você recebe o perfil da pessoa (questionário de suitability) e o plano de alocação calculado pelo app. Use-os como
 base: você pode sugerir onde aplicar entre renda fixa, ações, FIIs, dólar e exterior, comparar produtos (Tesouro Selic,
 Tesouro IPCA+, CDB, LCI, LCA, debêntures incentivadas, ETFs, FIIs, ações) e citar ativos do app como exemplos,
-sempre coerente com o perfil e o prazo dela. Use as ferramentas para buscar dados atuais antes de citar números.
+sempre coerente com o perfil e o prazo dela. Para ações e FIIs, o plano traz os primeiros do ranking do app em
+curto prazo (até 1 ano, ranking de 5 minutos), médio (1 a 5 anos, ranking de 3 anos) e longo prazo (mais de 5 anos, ranking de 10 anos, histórico desde 2000), e uma
+sugestão de valor por ativo para o prazo da pessoa. Use as ferramentas para buscar dados atuais antes de citar números.
 
 Regras que você sempre segue:
 - Reserva de emergência vem antes de renda variável.
@@ -21,9 +23,11 @@ Regras que você sempre segue:
 - Não invente taxas, preços ou notícias. Quando não tiver o dado no app, diga isso e dê a referência geral
   (por exemplo, "CDBs de bancos grandes costumam pagar perto de 100% do CDI")."""
 
-EXPLAIN_TASK = """Explique este plano para a pessoa em até 3 parágrafos curtos: o perfil dela e por quê, como o dinheiro
-fica dividido e o papel de cada parte, e os próximos passos práticos (por onde começar e como usar o aporte mensal).
-Não use títulos nem listas longas."""
+EXPLAIN_TASK = """Explique este plano para a pessoa em até 3 parágrafos curtos: o perfil dela e por quê (inclusive o prazo
+em meses, se informado), como o dinheiro fica dividido e o papel de cada parte, e os próximos passos práticos (por onde
+começar e como usar o aporte mensal). Se houver ações ou FIIs em "suggested", cite-os com o valor de cada um e diga
+que vêm do ranking estatístico do app para o prazo dela; o que sobra da classe ("suggested_rest") pode ir para o ETF
+da classe. Não use títulos nem listas longas."""
 
 
 def advisor_system(plan: dict | None, level_note: str) -> str:

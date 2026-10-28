@@ -73,7 +73,10 @@ def _slim_ranking(snapshot, limit: int) -> dict:
 
 
 class Insights:
-    def __init__(self, api_key: str, model: str, ranking: RankingService, macro_source, longterm, market: MarketService):
+    def __init__(
+        self, api_key: str, model: str, ranking: RankingService, macro_source, longterm, market: MarketService, usage=None
+    ):
+        self.usage = usage
         self.client = anthropic.AsyncAnthropic(api_key=api_key) if api_key else None
         self.model = model
         self.ranking = ranking
@@ -139,11 +142,13 @@ class Insights:
             fallbacks="default",
             messages=[{"role": "user", "content": f"{instruction}\n\n" + json.dumps(data, ensure_ascii=False, default=str)}],
         )
+        if self.usage:
+            self.usage.record(f"leitura_{task}", response)
         if response.stop_reason == "refusal":
             return "Não foi possível gerar esta leitura agora."
         return "".join(b.text for b in response.content if b.type == "text").strip()
 
-    async def complete_with(self, system: str, instruction: str) -> str:
+    async def complete_with(self, system: str, instruction: str, feature: str = "assessor_plano") -> str:
         """Chamada simples com um papel próprio (ex.: o assessor explicando o plano)."""
         response = await self.client.beta.messages.create(
             model=self.model,
@@ -154,6 +159,8 @@ class Insights:
             fallbacks="default",
             messages=[{"role": "user", "content": instruction}],
         )
+        if self.usage:
+            self.usage.record(feature, response)
         if response.stop_reason == "refusal":
             return "Não foi possível gerar esta explicação agora."
         return "".join(b.text for b in response.content if b.type == "text").strip()
@@ -161,6 +168,8 @@ class Insights:
     def cached(self, context: str, level: str) -> dict | None:
         hit = self._cache.get((context, level))
         if hit and time.monotonic() - hit[0] < CACHE_SECONDS:
+            if self.usage:
+                self.usage.hit()
             return {**hit[1], "cached": True}
         return None
 

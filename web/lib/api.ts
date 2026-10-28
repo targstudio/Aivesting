@@ -278,6 +278,18 @@ export type AdvisorInput = {
   monthly_contribution: number;
   monthly_expenses: number;
   has_reserve: boolean;
+  months?: number;
+};
+
+export type AdvisorTerm = "curto" | "medio" | "longo";
+
+export type AdvisorPick = {
+  ticker: string;
+  name: string;
+  logo_url?: string | null;
+  probability?: number | null;
+  note: string;
+  value?: number;
 };
 
 export type AdvisorAllocation = {
@@ -288,12 +300,18 @@ export type AdvisorAllocation = {
   risk: string;
   why: string;
   products: string[];
-  examples: { ticker: string; name: string; logo_url?: string | null; note: string }[];
+  picks: Partial<Record<AdvisorTerm, AdvisorPick[]>>;
+  suggested: AdvisorPick[];
+  suggested_rest: number | null;
 };
 
 export type AdvisorPlan = {
   profile: "conservador" | "moderado" | "arrojado";
   score: number;
+  months: number | null;
+  term: AdvisorTerm;
+  term_label: string;
+  terms: Record<AdvisorTerm, string>;
   amount: number;
   allocation: AdvisorAllocation[];
   monthly_contribution: { key: string; label: string; value: number }[] | null;
@@ -301,4 +319,22 @@ export type AdvisorPlan = {
   macro: { selic: number | null; ipca_12m: number | null; juro_real: number | null; cdi_estimado: number | null };
   notes: string[];
   disclaimer: string;
+};
+
+// ---- Consumo de IA ----
+
+export type UsageWindow = { calls: number; input_tokens: number; output_tokens: number; cost_usd: number; cost_brl: number | null };
+
+export type AiUsage = {
+  today: UsageWindow;
+  last_7_days: UsageWindow;
+  last_30_days: UsageWindow;
+  by_feature_30_days: (UsageWindow & { feature: string; label: string })[];
+  daily: { day: string; calls: number; cost_usd: number }[];
+  cache_hits_since_start: number;
+  since: string;
+  persisted: boolean;
+  usd_brl: number | null;
+  model: string;
+  ai: boolean;
 };

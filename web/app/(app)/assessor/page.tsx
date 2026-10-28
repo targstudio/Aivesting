@@ -8,7 +8,7 @@ export default function AdvisorPage() {
       <PageTitle
         eyebrow="Assessor IA"
         title="Onde colocar o seu dinheiro"
-        subtitle="Responda 5 perguntas, diga quanto quer investir e receba um plano entre renda fixa, ações, FIIs e dólar, explicado pela IA."
+        subtitle="Diga quanto quer investir e por quantos meses, responda 4 perguntas e receba um plano entre renda fixa, ações, FIIs e dólar, com ativos sugeridos para curto, médio e longo prazo."
       />
       <Advisor />
     </>

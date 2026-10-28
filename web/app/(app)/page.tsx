@@ -47,7 +47,7 @@ export default async function Home() {
       >
         <span>
           <span className="block text-lg font-bold">Onde colocar o seu dinheiro?</span>
-          <span className="block text-sm">Responda 5 perguntas e o Assessor IA monta um plano entre renda fixa, ações, FIIs e dólar.</span>
+          <span className="block text-sm">Diga quanto quer investir e por quantos meses: o Assessor IA monta o plano e sugere ações e FIIs para o seu prazo.</span>
         </span>
         <span className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">Montar meu plano</span>
       </Link>

@@ -56,12 +56,17 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
    explica por que cada alerta disparou.
 11. **Assessor** (`api/app/advisor.py`, `/assessor/*`, tela `/assessor`): questionário de perfil (conservador,
     moderado, arrojado), plano de alocação por regras transparentes (reserva de emergência primeiro, pesos por perfil,
-    mais IPCA+ quando o juro real passa de 6%), destaques do app para ações e FIIs, explicação da IA e chat do assessor.
+    mais IPCA+ quando o juro real passa de 6%), explicação da IA e chat do assessor. A pessoa informa quanto quer investir
+    e por quantos meses; para ações e FIIs o plano lista os primeiros do app em curto (ranking de 5 min), médio (ranking
+    de 3 anos) e longo prazo (ranking de 10 anos) e divide o valor da classe entre os ativos do prazo dela, com no
+    máximo 10% do total em cada ativo.
     Ligado por `ADVISOR_MODE=public`; use `off` para desligar. Sugestão personalizada é consultoria (Resolução CVM 19).
 12. **Enciclopédia** (tela `/enciclopedia`): renda fixa, renda variável, dólar, ouro, cripto e conceitos, cada verbete
     com botão para perguntar à IA.
 10. **Configurações** (tela `/configuracoes`): nível de linguagem da IA, leitura automática, nome, frequência dos
-    alertas, notificações e o estado dos serviços da API.
+    alertas, notificações, o estado dos serviços da API e o **consumo de IA** (`/ia/consumo`): chamadas, tokens e custo
+    estimado em US$ e R$ por dia e por função. Com `SUPABASE_URL` e `SUPABASE_SECRET_KEY`, o histórico fica na tabela
+    `ai_usage` (migração `supabase/migrations/0002_ai_usage.sql`); sem eles, conta desde o último reinício da API.
 
 ## Rodando localmente
 

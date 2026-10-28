@@ -101,7 +101,12 @@ TOOLS = [
 
 
 class Assistant:
-    def __init__(self, api_key: str, model: str, ranking: RankingService, macro_source, longterm=None, market=None):
+    def __init__(
+        self, api_key: str, model: str, ranking: RankingService, macro_source, longterm=None, market=None,
+        usage=None, feature: str = "chat",
+    ):
+        self.usage = usage
+        self.feature = feature
         self.client = anthropic.AsyncAnthropic(api_key=api_key)
         self.model = model
         self.ranking = ranking
@@ -187,6 +192,8 @@ class Assistant:
                 fallbacks="default",
                 messages=messages,
             )
+            if self.usage:
+                self.usage.record(self.feature, response)
             if response.stop_reason == "refusal":
                 return {"reply": "Não consigo responder a isso por aqui.", "tools_used": tools_used}
             if response.stop_reason != "tool_use":

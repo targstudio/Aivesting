@@ -6,7 +6,15 @@ import { useCallback, useEffect, useState } from "react";
 import { useApp } from "@/app/components/AppProvider";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { Card, InfoBanner } from "@/app/components/ui";
-import { apiFetch, type AdvisorAnswers, type AdvisorInput, type AdvisorPlan, type AdvisorQuestion } from "@/lib/api";
+import {
+  apiFetch,
+  type AdvisorAllocation,
+  type AdvisorAnswers,
+  type AdvisorInput,
+  type AdvisorPlan,
+  type AdvisorQuestion,
+  type AdvisorTerm,
+} from "@/lib/api";
 import { formatBRL, formatNumber } from "@/lib/format";
 import { Chat } from "../assistente/Chat";
 
@@ -37,6 +45,18 @@ function loadSaved(): AdvisorInput | null {
   }
 }
 
+const MONTH_PRESETS = [6, 12, 24, 36, 60, 120];
+
+/** Mesmo corte da API: menos de 12 meses, 12 a 35, 36 a 59, 60 ou mais. */
+function prazoFromMonths(m: number) {
+  return m < 12 ? 0 : m < 36 ? 1 : m < 60 ? 2 : 3;
+}
+
+function monthsLabel(m: number) {
+  if (m % 12 === 0) return m === 12 ? "1 ano" : `${m / 12} anos`;
+  return `${m} meses`;
+}
+
 function parseMoney(v: string) {
   const n = Number(v.replace(/[^\d,]/g, "").replace(",", "."));
   return Number.isFinite(n) ? n : 0;
@@ -51,6 +71,7 @@ export function Advisor() {
   const [contribution, setContribution] = useState("");
   const [expenses, setExpenses] = useState("");
   const [hasReserve, setHasReserve] = useState(false);
+  const [months, setMonths] = useState("");
   const [input, setInput] = useState<AdvisorInput | null>(null);
   const [plan, setPlan] = useState<AdvisorPlan | null>(null);
   const [explanation, setExplanation] = useState<{ state: "loading" | "done" | "error"; text: string } | null>(null);
@@ -94,13 +115,17 @@ export function Advisor() {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!questions) return;
-    if (questions.some((q) => answers[q.key as keyof AdvisorAnswers] == null)) return setError("Responda todas as perguntas.");
+    const term = Math.round(Number(months));
+    if (!Number.isFinite(term) || term < 1 || term > 600) return setError("Informe por quantos meses o dinheiro pode ficar aplicado.");
+    const full = { ...answers, prazo: prazoFromMonths(term) };
+    if (questions.some((q) => full[q.key as keyof AdvisorAnswers] == null)) return setError("Responda todas as perguntas.");
     const value = parseMoney(amount);
     if (value <= 0) return setError("Informe quanto quer investir.");
     setError("");
     const inp: AdvisorInput = {
-      answers: answers as AdvisorAnswers,
+      answers: full as AdvisorAnswers,
       amount: value,
+      months: term,
       monthly_contribution: parseMoney(contribution),
       monthly_expenses: parseMoney(expenses),
       has_reserve: hasReserve,
@@ -118,6 +143,7 @@ export function Advisor() {
       setContribution(input.monthly_contribution ? formatNumber(input.monthly_contribution) : "");
       setExpenses(input.monthly_expenses ? formatNumber(input.monthly_expenses) : "");
       setHasReserve(input.has_reserve);
+      setMonths(input.months ? String(input.months) : "");
     }
     setInput(null);
     setPlan(null);
@@ -134,7 +160,7 @@ export function Advisor() {
           <h2 className="mb-1 text-lg font-bold">Seu perfil de investidor</h2>
           <p className="mb-6 text-sm text-muted">As respostas definem quanto risco o plano pode ter. Ficam só neste navegador.</p>
           <div className="flex flex-col gap-7">
-            {(questions ?? []).map((q, qi) => (
+            {(questions ?? []).filter((q) => q.key !== "prazo").map((q, qi) => (
               <fieldset key={q.key}>
                 <legend className="mb-3 font-semibold">
                   {qi + 1}. {q.label}
@@ -164,6 +190,35 @@ export function Advisor() {
           <h2 className="mb-5 text-lg font-bold">Seu dinheiro</h2>
           <div className="flex flex-col gap-4">
             <MoneyField label="Quanto quer investir agora" value={amount} onChange={setAmount} required />
+            <div className="flex flex-col gap-2 text-sm font-semibold">
+              <label htmlFor="months">Por quantos meses o dinheiro pode ficar aplicado?</label>
+              <span className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 focus-within:border-primary">
+                <input
+                  id="months"
+                  inputMode="numeric"
+                  value={months}
+                  required
+                  onChange={(e) => setMonths(e.target.value.replace(/\D/g, "").slice(0, 3))}
+                  placeholder="Ex.: 24"
+                  className="w-full bg-transparent font-normal outline-none"
+                />
+                <span className="text-muted">meses</span>
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {MONTH_PRESETS.map((m) => (
+                  <button
+                    type="button"
+                    key={m}
+                    onClick={() => setMonths(String(m))}
+                    className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
+                      months === String(m) ? "bg-primary text-on-primary" : "bg-track text-text"
+                    }`}
+                  >
+                    {monthsLabel(m)}
+                  </button>
+                ))}
+              </div>
+            </div>
             <MoneyField label="Quanto consegue investir por mês (opcional)" value={contribution} onChange={setContribution} />
             <MoneyField label="Quanto gasta por mês (para a reserva)" value={expenses} onChange={setExpenses} />
             <label className="flex items-center gap-3 text-sm">
@@ -208,6 +263,11 @@ export function Advisor() {
               </div>
               <div className="text-3xl font-bold capitalize">{plan.profile}</div>
               <p className="mt-2 text-sm text-muted">{PROFILE_TEXT[plan.profile]}</p>
+              {plan.months && (
+                <div className="mt-3 inline-flex rounded-full bg-accent-bg px-3 py-1 text-xs font-semibold text-accent-text">
+                  {monthsLabel(plan.months)} · {plan.term_label.toLowerCase()}
+                </div>
+              )}
               <div className="mt-6 text-sm">
                 <div className="tabular text-2xl font-bold">{formatBRL(plan.amount)}</div>
                 <div className="text-muted">
@@ -277,20 +337,7 @@ export function Advisor() {
                     <li key={p}>• {p}</li>
                   ))}
                 </ul>
-                {a.examples.length > 0 && (
-                  <>
-                    <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">Destaques do app</div>
-                    <div className="mt-2 flex flex-col gap-2">
-                      {a.examples.map((x) => (
-                        <Link key={x.ticker} href={`/ativo/${x.ticker}`} className="flex items-center gap-2 text-sm hover:opacity-80">
-                          <AssetLogo ticker={x.ticker} src={x.logo_url} size={28} />
-                          <span className="font-semibold">{x.ticker}</span>
-                          <span className="truncate text-xs text-muted">{x.note}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </>
-                )}
+                <Picks allocation={a} plan={plan} />
               </Card>
             ))}
           </div>
@@ -317,6 +364,7 @@ export function Advisor() {
               page="/assessor"
               suggestions={[
                 "Por onde eu começo na prática?",
+                "Por que essas ações para o meu prazo?",
                 "Qual CDB ou Tesouro escolher para a parte de renda fixa?",
                 "Vale a pena ter dólar agora?",
                 "Quais FIIs combinam com o meu perfil?",
@@ -359,5 +407,54 @@ function MoneyField({
         />
       </span>
     </label>
+  );
+}
+
+/** Ações ou FIIs do app para curto, médio e longo prazo, com o valor sugerido por ativo no prazo da pessoa. */
+function Picks({ allocation: a, plan }: { allocation: AdvisorAllocation; plan: AdvisorPlan }) {
+  const terms = (Object.keys(plan.terms) as AdvisorTerm[]).filter((t) => a.picks[t]?.length);
+  const [term, setTerm] = useState<AdvisorTerm>(terms.includes(plan.term) ? plan.term : terms[0]);
+  if (!terms.length) return null;
+  const isMine = term === plan.term && a.suggested.length > 0;
+  const list = isMine ? a.suggested : (a.picks[term] ?? []).slice(0, 5);
+  return (
+    <div className="mt-4 border-t border-border pt-4">
+      <div className="text-xs font-semibold uppercase tracking-wide text-muted">Ativos sugeridos</div>
+      <div className="mt-2 flex flex-wrap gap-1.5" role="tablist">
+        {terms.map((t) => (
+          <button
+            key={t}
+            role="tab"
+            aria-selected={term === t}
+            onClick={() => setTerm(t)}
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${term === t ? "bg-primary text-on-primary" : "bg-track text-text"}`}
+          >
+            {t === "curto" ? "Curto" : t === "medio" ? "Médio" : "Longo"}
+            {t === plan.term ? " · seu prazo" : ""}
+          </button>
+        ))}
+      </div>
+      <p className="mt-2 text-xs text-muted">{plan.terms[term]}</p>
+      <div className="mt-2 flex flex-col gap-2">
+        {list.map((x) => (
+          <Link key={x.ticker} href={`/ativo/${x.ticker}`} className="flex items-center gap-2 text-sm hover:opacity-80">
+            <AssetLogo ticker={x.ticker} src={x.logo_url} size={28} />
+            <span className="min-w-0 flex-1">
+              <span className="font-semibold">{x.ticker}</span>
+              <span className="block truncate text-xs text-muted">{x.note}</span>
+            </span>
+            {isMine && x.value != null && <span className="tabular font-semibold">{formatBRL(x.value)}</span>}
+          </Link>
+        ))}
+      </div>
+      {isMine && a.suggested_rest != null && a.suggested_rest > 1 && (
+        <p className="mt-2 text-xs text-muted">
+          {formatBRL(a.suggested_rest)} restantes no ETF da classe, para não passar de 10% do total em um único ativo.
+        </p>
+      )}
+      {!isMine && term !== plan.term && (
+        <p className="mt-2 text-xs text-muted">Para outro prazo: só para comparar, sem valor sugerido.</p>
+      )}
+    </div>
   );
 }

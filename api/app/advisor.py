@@ -101,11 +101,48 @@ class PlanRequest(BaseModel):
     monthly_contribution: float = Field(default=0, ge=0, le=1e9)
     monthly_expenses: float = Field(default=0, ge=0, le=1e9)
     has_reserve: bool = False
+    # Por quantos meses o dinheiro pode ficar aplicado. Quando informado, substitui a resposta de prazo do questionário.
+    months: int | None = Field(default=None, ge=1, le=600)
+
+    def effective_answers(self) -> ProfileAnswers:
+        if self.months is None:
+            return self.answers
+        return self.answers.model_copy(update={"prazo": prazo_from_months(self.months)})
 
 
-def build_plan(req: PlanRequest, macro: dict[str, float], examples: dict[str, list[dict]] | None = None) -> dict:
-    """`macro` tem selic e ipca_12m em % a.a.; `examples` traz ativos do app para ações e FIIs."""
-    profile, score = classify(req.answers)
+def prazo_from_months(months: int) -> int:
+    return 0 if months < 12 else 1 if months < 36 else 2 if months < 60 else 3
+
+
+# Horizontes das sugestões de ativos: curto usa o ranking de 5 minutos; médio e longo, o histórico desde 2000.
+# Médio usa o ranking de 3 anos; longo, o de 10 anos.
+TERMS = {"curto": "Curto prazo (até 1 ano)", "medio": "Médio prazo (1 a 5 anos)", "longo": "Longo prazo (mais de 5 anos)"}
+
+
+def term_for(prazo: int) -> str:
+    return "curto" if prazo == 0 else "medio" if prazo <= 2 else "longo"
+
+
+MAX_PER_ASSET = 0.10  # nenhum ativo individual passa de 10% do total investido
+
+
+def split_picks(picks: list[dict], class_value: float, total: float) -> list[dict]:
+    """Divide o valor da classe entre os primeiros ativos, com no máximo 10% do total em cada um."""
+    if not picks or class_value <= 0:
+        return []
+    cap = total * MAX_PER_ASSET
+    n = min(len(picks), max(3, -(-int(class_value) // max(int(cap), 1))))
+    each = class_value / n
+    if each > cap:  # não há ativos suficientes: o resto fica no ETF/fundo da classe
+        each = cap
+    return [{**p, "value": round(each, 2)} for p in picks[:n]]
+
+
+def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[str, list[dict]]] | None = None) -> dict:
+    """`macro` tem selic e ipca_12m em % a.a.; `picks` traz, para ações e FIIs, os primeiros ativos do app em cada
+    prazo ({"acoes": {"curto": [...], "medio": [...], "longo": [...]}})."""
+    answers = req.effective_answers()
+    profile, score = classify(answers)
     weights = dict(WEIGHTS[profile])
     notes: list[str] = []
 
@@ -139,9 +176,12 @@ def build_plan(req: PlanRequest, macro: dict[str, float], examples: dict[str, li
             allocations.append((key, rest * pct / 100))
 
     cdi = round(selic - 0.1, 2) if selic is not None else None
+    term = term_for(answers.prazo)
     items = []
     for key, value in allocations:
         info = CLASSES[key]
+        class_picks = (picks or {}).get(key, {})
+        chosen = split_picks(class_picks.get(term, []), value, req.amount)
         items.append({
             "key": key,
             "label": info["label"],
@@ -150,7 +190,9 @@ def build_plan(req: PlanRequest, macro: dict[str, float], examples: dict[str, li
             "risk": info["risk"],
             "why": info["why"],
             "products": info["products"],
-            "examples": (examples or {}).get(key, []),
+            "picks": {t: class_picks.get(t, []) for t in TERMS if class_picks.get(t)},
+            "suggested": chosen,
+            "suggested_rest": round(value - sum(c["value"] for c in chosen), 2) if chosen else None,
         })
     contribution = None
     if req.monthly_contribution:
@@ -161,6 +203,10 @@ def build_plan(req: PlanRequest, macro: dict[str, float], examples: dict[str, li
     return {
         "profile": profile,
         "score": score,
+        "months": req.months,
+        "term": term,
+        "term_label": TERMS[term],
+        "terms": TERMS,
         "amount": req.amount,
         "allocation": items,
         "monthly_contribution": contribution,
@@ -169,6 +215,3 @@ def build_plan(req: PlanRequest, macro: dict[str, float], examples: dict[str, li
         "notes": notes,
     }
 
-
-def horizon_for(prazo: int) -> int:
-    return {0: 1, 1: 1, 2: 3, 3: 10}[prazo]

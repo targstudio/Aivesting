@@ -45,7 +45,11 @@ def test_endpoints_and_switch():
     body = {"answers": AGGRESSIVE, "amount": 50_000, "has_reserve": True}
     plan = c.post("/assessor/plano", json=body).json()
     acoes = next(i for i in plan["allocation"] if i["key"] == "acoes")
-    assert len(acoes["examples"]) == 3 and plan["disclaimer"]
+    assert plan["term"] == "longo" and set(acoes["picks"]) == {"curto", "medio", "longo"}
+    assert acoes["suggested"] and all(s["value"] <= 5_000 for s in acoes["suggested"]) and plan["disclaimer"]
+    assert abs(sum(s["value"] for s in acoes["suggested"]) + acoes["suggested_rest"] - acoes["value"]) < 0.05
+    short = c.post("/assessor/plano", json={**body, "months": 6}).json()
+    assert short["term"] == "curto" and short["profile"] == "conservador"
     assert c.post("/assessor/plano", json={**body, "amount": -1}).status_code == 422
     assert c.post("/assessor/explicar", json=body).status_code == 503
 
@@ -66,3 +70,17 @@ def test_advisor_explain_uses_plan(monkeypatch):
     body = {"answers": CONSERVATIVE, "amount": 20_000}
     assert c.post("/assessor/explicar", json=body).json()["explanation"] == "seu plano"
     assert '"profile": "conservador"' in seen["system"] and "Reserva de emergência vem antes" in seen["system"]
+
+
+def test_split_picks_respects_cap():
+    from app.advisor import split_picks
+
+    picks = [{"ticker": t} for t in ("A", "B", "C", "D", "E")]
+    # R$ 30 mil em ações de R$ 100 mil: 3 ativos de R$ 10 mil (teto de 10%).
+    assert [p["value"] for p in split_picks(picks, 30_000, 100_000)] == [10_000] * 3
+    # R$ 80 mil em ações: 5 ativos no teto, R$ 30 mil sobram para o ETF da classe.
+    out = split_picks(picks, 80_000, 100_000)
+    assert len(out) == 5 and all(p["value"] == 10_000 for p in out)
+    # Valor pequeno: divide entre 3.
+    assert len(split_picks(picks, 3_000, 100_000)) == 3
+    assert split_picks([], 1000, 1000) == []

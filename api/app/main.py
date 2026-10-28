@@ -10,11 +10,12 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from .advisor import QUESTIONS, PlanRequest, build_plan, horizon_for
+from .advisor import QUESTIONS, PlanRequest, build_plan
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
 from .ai.insights import LEVELS, Insights, valid_context
+from .ai.usage import UsageTracker
 from .alerts import Alert, evaluate
 from .config import Settings, get_settings
 from .longterm.model import HORIZONS
@@ -94,7 +95,8 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     market = MarketService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else YahooProvider()
     )
-    insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market)
+    usage = UsageTracker(settings.supabase_url, settings.supabase_secret_key)
+    insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market, usage)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -155,22 +157,28 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if settings.advisor_mode != "public":
             raise HTTPException(403, "O modo assessor está desligado.")
 
-    def advisor_examples(prazo: int, svc: RankingService) -> dict[str, list[dict]]:
-        """Ativos do app para ilustrar ações e FIIs: ranking do horizonte do prazo, ou o de curto prazo."""
-        out = {}
-        for key, cls in (("acoes", "acoes"), ("fiis", "fiis")):
-            horizon = app.state.longterm.horizon(cls, horizon_for(prazo)) if app.state.longterm.data else None
-            if horizon and horizon["assets"]:
-                out[key] = [
-                    {"ticker": a["ticker"], "name": a["name"], "logo_url": a.get("logo_url"),
-                     "note": f"{a['rank']}º no horizonte de {horizon['years']} ano(s)"}
-                    for a in horizon["assets"][:3]
+    def advisor_picks(svc: RankingService) -> dict[str, dict[str, list[dict]]]:
+        """Primeiros ativos do app em cada prazo: curto pelo ranking de 5 min, médio (3 anos) e longo (10 anos)
+        pelo ranking de horizontes calibrado com o histórico."""
+        out: dict[str, dict[str, list[dict]]] = {}
+        for cls in ("acoes", "fiis"):
+            terms: dict[str, list[dict]] = {}
+            if (snap := svc.snapshots.get(cls)) and snap.assets:
+                terms["curto"] = [
+                    {"ticker": a.ticker, "name": a.name, "logo_url": a.logo_url,
+                     "probability": a.probability_outperform, "note": f"{a.rank}º no ranking de curto prazo"}
+                    for a in snap.assets[:5]
                 ]
-            elif (snap := svc.snapshots.get(cls)) and snap.assets:
-                out[key] = [
-                    {"ticker": a.ticker, "name": a.name, "logo_url": a.logo_url, "note": f"{a.rank}º no ranking de curto prazo"}
-                    for a in snap.assets[:3]
-                ]
+            for term, years in (("medio", 3), ("longo", 10)):
+                horizon = app.state.longterm.horizon(cls, years) if app.state.longterm.data else None
+                if horizon and horizon["assets"]:
+                    terms[term] = [
+                        {"ticker": a["ticker"], "name": a["name"], "logo_url": a.get("logo_url"),
+                         "probability": a.get("prob_beat_benchmark"),
+                         "note": f"{a['rank']}º no horizonte de {years} anos"}
+                        for a in horizon["assets"][:5]
+                    ]
+            out[cls] = terms
         return out
 
     @app.get("/assessor/perguntas")
@@ -182,7 +190,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     async def advisor_plan(body: PlanRequest, svc: RankingService = Depends(get_ranking)):
         require_advisor()
         macro = {i.key: i.value for i in await app.state.bcb.indicators()}
-        plan = build_plan(body, macro, advisor_examples(body.answers.prazo, svc))
+        plan = build_plan(body, macro, advisor_picks(svc))
         return {**plan, "disclaimer": ADVISOR_DISCLAIMER}
 
     @app.post("/assessor/explicar")
@@ -192,7 +200,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         require_ai()
         ai_rate_limit(request)
         macro = {i.key: i.value for i in await app.state.bcb.indicators()}
-        plan = build_plan(body, macro, advisor_examples(body.answers.prazo, svc))
+        plan = build_plan(body, macro, advisor_picks(svc))
         text = await app.state.insights.complete_with(advisor_system(plan, LEVELS[nivel]), EXPLAIN_TASK)
         return {"explanation": text, "disclaimer": ADVISOR_DISCLAIMER}
 
@@ -205,7 +213,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         ai_rate_limit(request)
         assistant = Assistant(
             settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
-            app.state.market,
+            app.state.market, usage, "assessor_chat",
         )
         result = await assistant.reply(
             [m.model_dump(include={"role", "content"}) for m in body.messages],
@@ -218,6 +226,13 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     def require_ai() -> None:
         if not settings.anthropic_api_key:
             raise HTTPException(503, "ANTHROPIC_API_KEY não configurada.")
+
+    @app.get("/ia/consumo")
+    async def ai_usage():
+        """Chamadas, tokens e custo estimado da IA (hoje, 7 e 30 dias, por função e por dia)."""
+        await usage.load()
+        usd = next((i.value for i in await app.state.bcb.indicators() if i.key == "usd_brl"), None)
+        return {**usage.summary(usd), "model": settings.anthropic_model, "ai": bool(settings.anthropic_api_key)}
 
     @app.get("/mercado")
     async def market_overview(svc: RankingService = Depends(get_ranking)):
@@ -352,10 +367,11 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         # Mesma explicação enquanto o ranking não for recalculado: abrir a página de novo não gasta cota.
         key = (asset.ticker, nivel, snapshot.computed_at)
         if key in explain_cache:
+            usage.hit()
             return {"ticker": asset.ticker, "explanation": explain_cache[key], "disclaimer": DISCLAIMER}
         ai_rate_limit(request)
         macro = await app.state.bcb.indicators()
-        text = await Explainer(settings.anthropic_api_key, settings.anthropic_model).explain(
+        text = await Explainer(settings.anthropic_api_key, settings.anthropic_model, usage).explain(
             asset, snapshot, macro, LEVELS[nivel]
         )
         if len(explain_cache) > 500:
@@ -371,7 +387,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         ai_rate_limit(request)
         assistant = Assistant(
             settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
-            app.state.market,
+            app.state.market, usage,
         )
         result = await assistant.reply(
             [m.model_dump(include={"role", "content"}) for m in body.messages], page=body.page, level=body.level
