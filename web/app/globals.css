@@ -3,30 +3,36 @@
 @tailwind utilities;
 
 /*
- * Design system: dashboard escuro em azul-marinho/grafite suave, cards com bordas sutis e acentos em pastel
- * (bege, verde-claro, azul-claro). O app é sempre escuro, então não há variação por prefers-color-scheme.
+ * Design system no estilo de internet banking: menu lateral escuro, área de trabalho clara com cards brancos de
+ * bordas finas, botões de ação amarelos e números em destaque. O app é sempre claro.
  */
 :root {
-  color-scheme: dark;
-  --primary: 232 236 242;
-  --on-primary: 15 20 32;
-  --background: 15 20 32;
-  --surface: 22 29 43;
-  --surface-2: 28 36 53;
-  --border: 39 49 68;
-  --text: 232 236 242;
-  --text-muted: 141 151 171;
-  --accent-bg: 52 45 37;
-  --accent-text: 242 197 146;
-  --track: 33 42 60;
-  --positive: 148 216 168;
-  --negative: 244 152 140;
-  /* Paleta pastel dos gráficos */
-  --chart-1: 242 197 146;
-  --chart-2: 199 225 241;
-  --chart-3: 213 230 176;
-  --chart-4: 120 132 156;
-  --chart-5: 186 173 230;
+  color-scheme: light;
+  /* Ação principal: amarelo com texto escuro */
+  --primary: 255 204 0;
+  --on-primary: 26 26 26;
+  --background: 243 243 243;
+  --surface: 255 255 255;
+  --surface-2: 248 248 248;
+  --border: 228 228 228;
+  --text: 28 28 28;
+  --text-muted: 112 112 112;
+  --accent-bg: 255 245 204;
+  --accent-text: 122 90 0;
+  --track: 238 238 238;
+  --positive: 0 138 82;
+  --negative: 210 45 45;
+  /* Menu lateral */
+  --nav: 28 28 28;
+  --nav-2: 44 44 44;
+  --nav-text: 214 214 214;
+  --nav-muted: 140 140 140;
+  /* Paleta dos gráficos */
+  --chart-1: 230 172 0;
+  --chart-2: 60 60 60;
+  --chart-3: 0 138 104;
+  --chart-4: 160 160 160;
+  --chart-5: 84 104 196;
 }
 
 body {
@@ -38,5 +44,5 @@ body {
 }
 
 ::selection {
-  background: rgb(var(--chart-2) / 0.3);
+  background: rgb(var(--primary) / 0.45);
 }

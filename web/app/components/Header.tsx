@@ -12,7 +12,7 @@ export function Header() {
   const { prefs, unseen, askAI, ready } = useApp();
   const name = prefs.name.trim();
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between bg-background/85 px-4 backdrop-blur md:h-20 md:justify-end md:px-8">
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-surface px-4 md:justify-end md:px-8">
       <Link href="/" className="flex items-center gap-2.5 md:hidden">
         <Logo size={30} />
         <span className="text-lg font-bold tracking-tight">AI.vesting</span>
@@ -21,7 +21,7 @@ export function Header() {
         <ApiStatusPill />
         <button
           onClick={() => askAI()}
-          className="hidden items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold text-accent-text transition-colors hover:bg-surface-2 sm:flex"
+          className="hidden items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition-opacity hover:opacity-90 sm:flex"
         >
           <Sparkles size={16} /> Pergunte à IA
         </button>

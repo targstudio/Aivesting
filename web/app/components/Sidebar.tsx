@@ -47,27 +47,30 @@ export function Sidebar() {
   const pathname = usePathname();
   return (
     <>
-      <div className="hidden w-60 shrink-0 border-r border-border bg-surface md:block">
+      <div className="hidden w-60 shrink-0 bg-nav text-nav-text md:block">
       <aside className="sticky top-0 flex h-screen flex-col overflow-y-auto px-4 py-6">
         <Link href="/" className="mb-8 flex items-center gap-2.5 px-3">
           <Logo size={30} />
-          <span className="text-lg font-bold tracking-tight">AI.vesting</span>
+          <span className="text-lg font-bold tracking-tight text-white">AI.vesting</span>
         </Link>
         {NAV_SECTIONS.map((section, i) => (
-          <div key={section.title ?? i} className={i > 0 ? "mt-5 border-t border-border pt-5" : ""}>
-            {section.title && <div className="mb-2 px-3 text-xs font-medium text-muted">{section.title}</div>}
-            <div className="flex flex-col gap-1">
+          <div key={section.title ?? i} className={i > 0 ? "mt-5 border-t border-white/10 pt-5" : ""}>
+            {section.title && (
+              <div className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-nav-muted">{section.title}</div>
+            )}
+            <div className="flex flex-col gap-0.5">
               {section.items.map(({ href, label, icon: Icon }) => {
                 const active = isActive(pathname, href);
                 return (
                   <Link
                     key={href}
                     href={href}
-                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                      active ? "bg-surface-2 text-text ring-1 ring-border" : "text-muted hover:bg-surface-2/60 hover:text-text"
+                    className={`relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
+                      active ? "bg-nav-2 text-white" : "text-nav-text hover:bg-nav-2/60 hover:text-white"
                     }`}
                   >
-                    <Icon size={18} strokeWidth={1.75} className="shrink-0" />
+                    {active && <span className="absolute inset-y-1.5 left-0 w-1 rounded-r bg-primary" aria-hidden />}
+                    <Icon size={18} strokeWidth={1.75} className={`shrink-0 ${active ? "text-primary" : ""}`} />
                     <span>{label}</span>
                   </Link>
                 );
@@ -78,12 +81,12 @@ export function Sidebar() {
       </aside>
       </div>
       {/* Mobile: barra inferior com os itens principais */}
-      <nav className="fixed inset-x-0 bottom-0 z-20 flex justify-around border-t border-border bg-surface/95 py-2 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 flex justify-around bg-nav py-2 md:hidden">
         {NAV_ITEMS.filter((i) => i.mobile).map(({ href, label, icon: Icon }) => (
           <Link
             key={href}
             href={href}
-            className={`flex flex-col items-center gap-1 px-2 text-[11px] ${isActive(pathname, href) ? "font-semibold text-accent-text" : "text-muted"}`}
+            className={`flex flex-col items-center gap-1 px-2 text-[11px] ${isActive(pathname, href) ? "font-semibold text-primary" : "text-nav-muted"}`}
           >
             <Icon size={20} strokeWidth={1.75} />
             {label}

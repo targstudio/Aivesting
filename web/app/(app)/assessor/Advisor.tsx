@@ -28,13 +28,13 @@ const PROFILE_TEXT = {
   arrojado: "Aceita oscilações fortes em busca de mais retorno no longo prazo.",
 };
 
-// Cores das classes no gráfico de alocação: paleta pastel do painel.
+// Cores das classes no gráfico de alocação (paleta dos gráficos).
 const CLASS_COLOR: Record<string, string> = {
   reserva: "rgb(var(--chart-4))",
   rf_pos: "rgb(var(--chart-2))",
   rf_ipca: "rgb(var(--chart-3))",
   fiis: "rgb(var(--chart-5))",
-  internacional: "#9fc7c0",
+  internacional: "rgb(0 128 160)",
   acoes: "rgb(var(--chart-1))",
 };
 
