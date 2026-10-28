@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { formatTime } from "@/lib/format";
 import { useApp } from "./AppProvider";
+import { Markdown } from "./Markdown";
 
 type Reading = { text: string; generated_at: string; cached: boolean };
 
@@ -45,18 +46,18 @@ export function AiInsight({
   }, [ready, prefs.aiAuto, run]);
 
   return (
-    <section className="mb-6 rounded-card bg-primary p-6 text-on-primary md:p-8">
+    <section className="mb-6 rounded-card border border-border bg-gradient-to-br from-surface-2 to-surface p-5 md:p-6">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-lg font-bold">
+        <h2 className="flex items-center gap-2.5 font-semibold">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bg text-accent-text">
             <Sparkles size={16} />
           </span>
           {title}
         </h2>
-        <div className="flex items-center gap-2 text-xs opacity-70">
+        <div className="flex items-center gap-2 text-xs text-muted">
           {reading && state === "done" && <span>gerada às {formatTime(reading.generated_at)}</span>}
           {state === "done" && (
-            <button onClick={run} aria-label="Gerar de novo" className="rounded-full p-1.5 hover:bg-on-primary/10">
+            <button onClick={run} aria-label="Gerar de novo" className="rounded-full p-1.5 hover:bg-track">
               <RefreshCw size={14} />
             </button>
           )}
@@ -74,13 +75,13 @@ export function AiInsight({
       {state === "loading" && (
         <div className="space-y-2" aria-label="Gerando leitura">
           {[92, 100, 75].map((w) => (
-            <div key={w} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-on-primary/15" />
+            <div key={w} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-track" />
           ))}
         </div>
       )}
-      {state === "done" && reading && <p className="whitespace-pre-line text-sm leading-relaxed md:text-[15px]">{reading.text}</p>}
+      {state === "done" && reading && <Markdown text={reading.text} className="text-sm leading-relaxed text-text/90 md:text-[15px]" />}
       {state === "error" && (
-        <p className="text-sm opacity-80">
+        <p className="text-sm text-muted">
           {error}{" "}
           <button onClick={run} className="font-semibold underline">
             Tentar de novo
@@ -88,11 +89,11 @@ export function AiInsight({
         </p>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-on-primary/15 pt-4">
-        <span className="text-xs opacity-60">Gerada pela Claude a partir dos dados do app. Não é recomendação.</span>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+        <span className="text-xs text-muted">Gerada pela Claude a partir dos dados do app. Não é recomendação.</span>
         <button
           onClick={() => askAI({ prompt: askPrompt })}
-          className="inline-flex items-center gap-2 rounded-full border border-on-primary/30 px-4 py-2 text-sm font-semibold hover:bg-on-primary/10"
+          className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold hover:bg-track"
         >
           <MessageCircle size={16} /> Perguntar mais
         </button>

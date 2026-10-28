@@ -8,6 +8,7 @@ import { AssetLogo } from "@/app/components/AssetLogo";
 import { Card } from "@/app/components/ui";
 import { apiFetch, type AlertKind, type AssetSummary } from "@/lib/api";
 import { formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
+import { Markdown } from "@/app/components/Markdown";
 
 const KINDS: { kind: AlertKind; label: string; unit: string; hint: string }[] = [
   { kind: "preco_acima", label: "Preço chegar a ou passar de", unit: "R$", hint: "Ex.: 40,00" },
@@ -239,7 +240,7 @@ export function Alerts({ initialTicker }: { initialTicker?: string }) {
                       <div className="mb-1 flex items-center gap-2 text-xs font-semibold text-accent-text">
                         <Sparkles size={14} /> Explicação da IA
                       </div>
-                      <p className="whitespace-pre-line">{a.explanation}</p>
+                      <Markdown text={a.explanation} />
                     </div>
                   ) : (
                     <button

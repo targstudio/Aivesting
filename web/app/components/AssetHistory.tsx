@@ -1,5 +1,6 @@
 import type { AssetHistory, RiskMetrics } from "@/lib/api";
 import { changeColor, formatMonth, formatProbability, formatRatio } from "@/lib/format";
+import { PairedBars } from "./charts";
 import { Card, Stat } from "./ui";
 
 const plural = (y: string) => (y === "1" ? "1 ano" : `${y} anos`);
@@ -102,7 +103,20 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
 
         <Card>
           <h2 className="mb-4 text-lg">Ano a ano</h2>
-          <div className="overflow-x-auto">
+          <div className="mb-4">
+            <PairedBars
+              groups={h.annual.slice(-10).map((a) => ({
+                label: `${String(a.year).slice(2)}`,
+                values: [a.return * 100, bench.has(a.year) ? bench.get(a.year)! * 100 : null, cdi.has(a.year) ? cdi.get(a.year)! * 100 : null],
+              }))}
+              series={[
+                { label: h.ticker, color: "rgb(var(--chart-1))" },
+                { label: h.benchmark, color: "rgb(var(--chart-2))" },
+                { label: "CDI", color: "rgb(var(--chart-4))" },
+              ]}
+            />
+          </div>
+          <div className="max-h-64 overflow-auto">
             <table className="w-full text-left text-sm">
               <thead className="text-xs text-muted">
                 <tr>

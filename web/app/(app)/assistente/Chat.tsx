@@ -4,6 +4,7 @@ import { ArrowUp, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { useApp } from "@/app/components/AppProvider";
+import { Markdown } from "@/app/components/Markdown";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -120,7 +121,7 @@ export function Chat({
       <div className={`flex-1 space-y-4 ${compact ? "overflow-y-auto" : ""}`}>
         {messages.length === 0 && (
           <div className="flex flex-col items-start gap-4 py-6">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-on-primary">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-bg text-accent-text">
               <Sparkles size={22} />
             </span>
             <p className="text-muted">Comece com uma destas perguntas ou escreva a sua:</p>
@@ -129,7 +130,7 @@ export function Chat({
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-full bg-accent-bg px-4 py-2 text-left text-sm font-semibold text-accent-text"
+                  className="rounded-full border border-border bg-surface-2 px-4 py-2 text-left text-sm font-medium text-text hover:border-accent-text/40"
                 >
                   {s}
                 </button>
@@ -140,11 +141,11 @@ export function Chat({
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[85%] whitespace-pre-line rounded-3xl px-5 py-3 text-sm leading-relaxed ${compact ? "" : "md:max-w-[70%]"} ${
-                m.role === "user" ? "bg-primary text-on-primary" : "bg-track"
+              className={`max-w-[85%] rounded-2xl px-5 py-3 text-sm leading-relaxed ${compact ? "" : "md:max-w-[70%]"} ${
+                m.role === "user" ? "whitespace-pre-line bg-accent-bg text-accent-text" : "border border-border bg-surface-2"
               }`}
             >
-              {m.content}
+              {m.role === "user" ? m.content : <Markdown text={m.content} />}
               {sources[i]?.length ? (
                 <div className="mt-2 text-xs text-muted">
                   Consultou: {sources[i].map((t) => TOOL_LABELS[t] ?? t).join(", ")}
@@ -155,7 +156,7 @@ export function Chat({
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="rounded-3xl bg-track px-5 py-3 text-sm text-muted">Consultando os dados...</div>
+            <div className="rounded-2xl border border-border bg-surface-2 px-5 py-3 text-sm text-muted">Consultando os dados...</div>
           </div>
         )}
         <div ref={endRef} />
@@ -166,7 +167,7 @@ export function Chat({
           e.preventDefault();
           send(input);
         }}
-        className="mt-4 flex items-center gap-2 rounded-full border border-border bg-surface p-1.5 pl-5 focus-within:border-primary"
+        className="mt-4 flex items-center gap-2 rounded-full border border-border bg-surface-2 p-1.5 pl-5 focus-within:border-chart-2/60"
       >
         <input
           value={input}
