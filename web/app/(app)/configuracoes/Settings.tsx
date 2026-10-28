@@ -120,7 +120,7 @@ export function Settings() {
             </Row>
             <Row
               title="Leitura automática em cada tela"
-              desc="Gera o resumo da IA ao abrir Início, Mercado, Ranking, Macro e Horizontes. Desligado, aparece um botão para gerar."
+              desc="Na primeira visita a cada tela, gera o resumo da IA sozinho. Depois a última leitura fica guardada e só muda quando você clica em Atualizar. Desligado, aparece um botão para gerar."
             >
               <Toggle label="Leitura automática" on={prefs.aiAuto} onChange={(aiAuto) => set({ aiAuto })} />
             </Row>

@@ -11,8 +11,8 @@ import { Markdown } from "./Markdown";
 type Reading = { text: string; generated_at: string; cached: boolean };
 
 /**
- * Leitura da IA para a tela atual. O texto é gerado pela API a partir dos dados do app e fica em cache por
- * alguns minutos no servidor, então abrir a tela várias vezes não gasta cota.
+ * Leitura da IA para a tela atual. A última leitura fica guardada (no navegador e na API) e só é gerada de novo
+ * quando a pessoa clica em "Atualizar", então abrir a tela várias vezes não gasta tokens.
  */
 export function AiInsight({
   context,
@@ -31,18 +31,26 @@ export function AiInsight({
   const [asleep, setAsleep] = useState(false);
   const api = useApiStatus();
 
-  const run = useCallback(async () => {
+  const storeKey = `aivesting.leitura:${context}:${prefs.level}`;
+
+  /** `refresh` pede uma leitura nova à IA; sem ele, a API devolve a última guardada (sem gastar tokens). */
+  const run = useCallback(async (refresh = false) => {
     setState("loading");
     try {
       const params = new URLSearchParams({ contexto: context, nivel: prefs.level });
-      setReading(await apiFetch<Reading>(`/ia/leitura?${params}`));
+      if (refresh) params.set("atualizar", "true");
+      const r = await apiFetch<Reading>(`/ia/leitura?${params}`);
+      setReading(r);
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(r));
+      } catch {}
       setState("done");
     } catch (e) {
       setAsleep(e instanceof ApiNetworkError);
       setError(e instanceof Error ? e.message : "Não foi possível gerar a leitura.");
       setState("error");
     }
-  }, [context, prefs.level]);
+  }, [context, prefs.level, storeKey]);
 
   // Falhou porque a API estava dormindo: tenta de novo sozinho quando ela acordar.
   useEffect(() => {
@@ -52,10 +60,26 @@ export function AiInsight({
     }
   }, [asleep, api.phase, run]);
 
+  // Ao abrir a tela, mostra a última leitura guardada neste navegador; só pede à API se ainda não houver nenhuma.
   useEffect(() => {
-    if (ready && prefs.aiAuto) run();
+    if (!ready) return;
+    let saved: Reading | null = null;
+    try {
+      const raw = localStorage.getItem(storeKey);
+      saved = raw ? JSON.parse(raw) : null;
+    } catch {}
+    if (saved) {
+      setReading(saved);
+      setState("done");
+    } else if (prefs.aiAuto) run();
     else setState("idle");
-  }, [ready, prefs.aiAuto, run]);
+  }, [ready, prefs.aiAuto, storeKey, run]);
+
+  const when = reading
+    ? new Date(reading.generated_at).toDateString() === new Date().toDateString()
+      ? `hoje às ${formatTime(reading.generated_at)}`
+      : new Date(reading.generated_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })
+    : "";
 
   return (
     <section className="mb-6 rounded-card border border-border bg-gradient-to-br from-surface-2 to-surface p-5 md:p-6">
@@ -67,10 +91,14 @@ export function AiInsight({
           {title}
         </h2>
         <div className="flex items-center gap-2 text-xs text-muted">
-          {reading && state === "done" && <span>gerada às {formatTime(reading.generated_at)}</span>}
+          {reading && state === "done" && <span>gerada {when}</span>}
           {state === "done" && (
-            <button onClick={run} aria-label="Gerar de novo" className="rounded-full p-1.5 hover:bg-track">
-              <RefreshCw size={14} />
+            <button
+              onClick={() => run(true)}
+              title="Pede uma leitura nova à IA (gasta tokens)"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 font-semibold text-text hover:bg-track"
+            >
+              <RefreshCw size={13} /> Atualizar
             </button>
           )}
         </div>
@@ -78,7 +106,7 @@ export function AiInsight({
 
       {state === "idle" && (
         <button
-          onClick={run}
+          onClick={() => run()}
           className="inline-flex items-center gap-2 rounded-full bg-accent-bg px-5 py-2.5 text-sm font-semibold text-accent-text"
         >
           <Sparkles size={16} /> Gerar leitura da IA
@@ -96,7 +124,7 @@ export function AiInsight({
         <p className="text-sm text-muted">
           {asleep ? "A API está acordando; a leitura aparece sozinha quando o indicador do topo ficar verde." : error}{" "}
           {!asleep && (
-            <button onClick={run} className="font-semibold underline">
+            <button onClick={() => run()} className="font-semibold underline">
               Tentar de novo
             </button>
           )}
