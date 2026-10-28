@@ -1,8 +1,8 @@
 {
  "model_version": "horizontes-v1",
- "generated_at": "2026-10-28T17:25:22+00:00",
+ "generated_at": "2026-10-28T17:27:24+00:00",
  "data_source": "Yahoo Finance (preço ajustado por proventos) e Banco Central (SGS 4391, 4189, 13522)",
- "data_fetched_at": "2026-10-28T17:24:37+00:00",
+ "data_fetched_at": "2026-10-28T17:27:21+00:00",
  "data_from": "2000-01",
  "data_through": "2026-10",
  "split_adjustments": {
@@ -54,15 +54,15 @@
    "usd_brl": {
     "label": "Dólar",
     "unit": "R$",
-    "value": 5.3834,
+    "value": 5.3813,
     "month": "2026-10",
     "change_12m": null,
-    "return_12m": 0.0003
+    "return_12m": -0.0001
    },
    "sp500": {
     "label": "S&P 500",
     "unit": "pts",
-    "value": 7735.8501,
+    "value": 7735.5601,
     "month": "2026-10",
     "change_12m": null,
     "return_12m": 0.1309
@@ -70,9 +70,9 @@
    "us10y": {
     "label": "Juro de 10 anos dos EUA",
     "unit": "% a.a.",
-    "value": 5.02,
+    "value": 5.016,
     "month": "2026-10",
-    "change_12m": 0.919,
+    "change_12m": 0.915,
     "return_12m": null
    }
   }
@@ -195,8 +195,8 @@
    "benchmark_is_proxy": false,
    "benchmark_risk": {
     "months": 120,
-    "total_return": 1.6407,
-    "cagr": 0.102,
+    "total_return": 1.6399,
+    "cagr": 0.1019,
     "volatility": 0.2062,
     "max_drawdown": -0.3686,
     "sharpe": 0.04,
@@ -257,7 +257,7 @@
     },
     {
      "year": 2026,
-     "return": 0.064,
+     "return": 0.0637,
      "partial": true
     }
    ],
@@ -467,7 +467,7 @@
        "name": "Itaú Unibanco Holding S.A.",
        "history": {
         "windows": 299,
-        "median": 0.1885,
+        "median": 0.1884,
         "p10": -0.1847,
         "p90": 0.5458,
         "beat_cdi_freq": 0.599,
@@ -527,7 +527,7 @@
        "prob_beat_benchmark": 0.582,
        "prob_beat_cdi": 0.556,
        "top_factors": [],
-       "sharpe_10y": -0.04,
+       "sharpe_10y": -0.05,
        "rank": 11
       },
       {
@@ -553,7 +553,7 @@
        "history": {
         "windows": 310,
         "median": 0.1561,
-        "p10": -0.1792,
+        "p10": -0.1816,
         "p90": 0.8977,
         "beat_cdi_freq": 0.529,
         "beat_benchmark_freq": 0.539
@@ -823,7 +823,7 @@
        "prob_beat_benchmark": 0.653,
        "prob_beat_cdi": 0.582,
        "top_factors": [],
-       "sharpe_10y": -0.04,
+       "sharpe_10y": -0.05,
        "rank": 11
       },
       {
@@ -1119,7 +1119,7 @@
        "prob_beat_benchmark": 0.694,
        "prob_beat_cdi": 0.648,
        "top_factors": [],
-       "sharpe_10y": -0.04,
+       "sharpe_10y": -0.05,
        "rank": 11
       },
       {
@@ -1325,7 +1325,7 @@
        "history": {
         "windows": 109,
         "median": 0.1755,
-        "p10": 0.1221,
+        "p10": 0.1222,
         "p90": 0.213,
         "beat_cdi_freq": 0.899,
         "beat_benchmark_freq": 0.972
@@ -1359,7 +1359,7 @@
        "history": {
         "windows": 138,
         "median": 0.2082,
-        "p10": 0.1227,
+        "p10": 0.1226,
         "p90": 0.2653,
         "beat_cdi_freq": 0.92,
         "beat_benchmark_freq": 1.0
@@ -1401,7 +1401,7 @@
        "prob_beat_benchmark": 0.784,
        "prob_beat_cdi": 0.715,
        "top_factors": [],
-       "sharpe_10y": -0.04,
+       "sharpe_10y": -0.05,
        "rank": 11
       },
       {
@@ -1481,8 +1481,8 @@
    "benchmark_is_proxy": true,
    "benchmark_risk": {
     "months": 120,
-    "total_return": 0.836,
-    "cagr": 0.0626,
+    "total_return": 0.8363,
+    "cagr": 0.0627,
     "volatility": 0.1069,
     "max_drawdown": -0.2548,
     "sharpe": -0.29,
@@ -1543,7 +1543,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0038,
+     "return": 0.0039,
      "partial": true
     }
    ],
@@ -1587,7 +1587,7 @@
    ],
    "benchmark_in_scenario": {
     "months": 52,
-    "avg_annual": 0.0541
+    "avg_annual": 0.0542
    },
    "horizons": {
     "1": {
@@ -1655,7 +1655,7 @@
         "p10": -0.0919,
         "p90": 0.2089,
         "beat_cdi_freq": 0.301,
-        "beat_benchmark_freq": 0.466
+        "beat_benchmark_freq": 0.472
        },
        "prob_beat_benchmark": 0.499,
        "prob_beat_cdi": 0.377,
@@ -1882,7 +1882,7 @@
        "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
        "history": {
         "windows": 111,
-        "median": 0.0641,
+        "median": 0.0645,
         "p10": -0.0075,
         "p90": 0.1189,
         "beat_cdi_freq": 0.135,
@@ -2079,7 +2079,7 @@
        "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
        "history": {
         "windows": 128,
-        "median": 0.0611,
+        "median": 0.0612,
         "p10": 0.0005,
         "p90": 0.1019,
         "beat_cdi_freq": 0.305,
@@ -2217,7 +2217,7 @@
         "windows": 87,
         "median": 0.0131,
         "p10": -0.0328,
-        "p90": 0.1405,
+        "p90": 0.1404,
         "beat_cdi_freq": 0.23,
         "beat_benchmark_freq": 0.368
        },
@@ -2358,7 +2358,7 @@
        "history": {
         "windows": 27,
         "median": 0.0526,
-        "p10": 0.0385,
+        "p10": 0.0386,
         "p90": 0.0715,
         "beat_cdi_freq": 0.0,
         "beat_benchmark_freq": 0.259
@@ -2605,9 +2605,9 @@
    "first_month": "2007-10",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.3496,
-    "cagr": 0.1285,
-    "volatility": 0.3501,
+    "total_return": 2.3519,
+    "cagr": 0.1286,
+    "volatility": 0.35,
     "max_drawdown": -0.4815,
     "sharpe": 0.1,
     "cdi_cagr": 0.0933,
@@ -2667,7 +2667,7 @@
     },
     {
      "year": 2026,
-     "return": 0.1097,
+     "return": 0.1104,
      "partial": true
     }
    ],
@@ -2711,7 +2711,7 @@
    ],
    "in_scenario": {
     "months": 60,
-    "avg_annual": 0.2007
+    "avg_annual": 0.2008
    },
    "horizons": {
     "1": {
@@ -2766,7 +2766,7 @@
      "history": {
       "windows": 109,
       "median": 0.1755,
-      "p10": 0.1221,
+      "p10": 0.1222,
       "p90": 0.213,
       "beat_cdi_freq": 0.899,
       "beat_benchmark_freq": 0.972
@@ -2782,11 +2782,11 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 1.1145,
-    "cagr": 0.0778,
+    "total_return": 1.1133,
+    "cagr": 0.0777,
     "volatility": 0.3469,
     "max_drawdown": -0.4645,
-    "sharpe": -0.04,
+    "sharpe": -0.05,
     "cdi_cagr": 0.0933,
     "worst_12m": -0.3972,
     "best_12m": 0.9996
@@ -2844,7 +2844,7 @@
     },
     {
      "year": 2026,
-     "return": -0.2102,
+     "return": -0.2107,
      "partial": true
     }
    ],
@@ -2888,7 +2888,7 @@
    ],
    "in_scenario": {
     "months": 93,
-    "avg_annual": 0.3115
+    "avg_annual": 0.3114
    },
    "horizons": {
     "1": {
@@ -3136,8 +3136,8 @@
    "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 1.8557,
-    "cagr": 0.1106,
+    "total_return": 1.8566,
+    "cagr": 0.1107,
     "volatility": 0.1828,
     "max_drawdown": -0.2812,
     "sharpe": 0.09,
@@ -3198,7 +3198,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0235,
+     "return": 0.0238,
      "partial": true
     }
    ],
@@ -3242,7 +3242,7 @@
    ],
    "in_scenario": {
     "months": 39,
-    "avg_annual": 0.0898
+    "avg_annual": 0.0899
    },
    "horizons": {
     "1": {
@@ -3313,9 +3313,9 @@
    "first_month": "2017-10",
    "risk_10y": {
     "months": 108,
-    "total_return": 0.2158,
-    "cagr": 0.022,
-    "volatility": 0.1425,
+    "total_return": 0.2141,
+    "cagr": 0.0218,
+    "volatility": 0.1426,
     "max_drawdown": -0.3643,
     "sharpe": -0.49,
     "cdi_cagr": 0.0914,
@@ -3330,7 +3330,7 @@
     },
     {
      "year": 2019,
-     "return": 0.1295,
+     "return": 0.1296,
      "partial": false
     },
     {
@@ -3365,7 +3365,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0105,
+     "return": 0.0091,
      "partial": true
     }
    ],
@@ -3409,7 +3409,7 @@
    ],
    "in_scenario": {
     "months": 30,
-    "avg_annual": 0.0497
+    "avg_annual": 0.0491
    },
    "horizons": {
     "1": {
@@ -3473,8 +3473,8 @@
    "first_month": "2008-04",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.6846,
-    "cagr": 0.1393,
+    "total_return": 2.6878,
+    "cagr": 0.1394,
     "volatility": 0.2582,
     "max_drawdown": -0.2863,
     "sharpe": 0.18,
@@ -3535,7 +3535,7 @@
     },
     {
      "year": 2026,
-     "return": -0.1122,
+     "return": -0.1114,
      "partial": true
     }
    ],
@@ -3579,7 +3579,7 @@
    ],
    "in_scenario": {
     "months": 59,
-    "avg_annual": 0.227
+    "avg_annual": 0.2272
    },
    "horizons": {
     "1": {
@@ -3650,9 +3650,9 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 3.4014,
+    "total_return": 3.3996,
     "cagr": 0.1597,
-    "volatility": 0.3657,
+    "volatility": 0.3658,
     "max_drawdown": -0.4979,
     "sharpe": 0.18,
     "cdi_cagr": 0.0933,
@@ -3712,7 +3712,7 @@
     },
     {
      "year": 2026,
-     "return": 0.201,
+     "return": 0.2005,
      "partial": true
     }
    ],
@@ -3827,7 +3827,7 @@
    "first_month": "2011-03",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.989,
+    "total_return": 0.9897,
     "cagr": 0.0712,
     "volatility": 0.1643,
     "max_drawdown": -0.2333,
@@ -3889,7 +3889,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0067,
+     "return": 0.007,
      "partial": true
     }
    ],
@@ -3946,7 +3946,7 @@
       "p10": -0.0919,
       "p90": 0.2089,
       "beat_cdi_freq": 0.301,
-      "beat_benchmark_freq": 0.466
+      "beat_benchmark_freq": 0.472
      },
      "top_factors": [],
      "total": 11
@@ -3972,7 +3972,7 @@
      "prob_beat_cdi": 0.17,
      "history": {
       "windows": 128,
-      "median": 0.0611,
+      "median": 0.0612,
       "p10": 0.0005,
       "p90": 0.1019,
       "beat_cdi_freq": 0.305,
@@ -4004,8 +4004,8 @@
    "first_month": "2018-07",
    "risk_10y": {
     "months": 99,
-    "total_return": 0.629,
-    "cagr": 0.0609,
+    "total_return": 0.6303,
+    "cagr": 0.061,
     "volatility": 0.1355,
     "max_drawdown": -0.1966,
     "sharpe": -0.24,
@@ -4051,7 +4051,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0238,
+     "return": -0.023,
      "partial": true
     }
    ],
@@ -4095,7 +4095,7 @@
    ],
    "in_scenario": {
     "months": 22,
-    "avg_annual": 0.157
+    "avg_annual": 0.1575
    },
    "horizons": {
     "1": {
@@ -4159,9 +4159,9 @@
    "first_month": "2000-12",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.1343,
+    "total_return": 2.1327,
     "cagr": 0.121,
-    "volatility": 0.2838,
+    "volatility": 0.2839,
     "max_drawdown": -0.3906,
     "sharpe": 0.1,
     "cdi_cagr": 0.0933,
@@ -4221,7 +4221,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0358,
+     "return": 0.0353,
      "partial": true
     }
    ],
@@ -4274,7 +4274,7 @@
      "prob_beat_cdi": 0.556,
      "history": {
       "windows": 299,
-      "median": 0.1885,
+      "median": 0.1884,
       "p10": -0.1847,
       "p90": 0.5458,
       "beat_cdi_freq": 0.599,
@@ -4336,7 +4336,7 @@
    "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.6357,
+    "total_return": 0.635,
     "cagr": 0.0504,
     "volatility": 0.0764,
     "max_drawdown": -0.2495,
@@ -4398,7 +4398,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0837,
+     "return": 0.0832,
      "partial": true
     }
    ],
@@ -4442,7 +4442,7 @@
    ],
    "in_scenario": {
     "months": 39,
-    "avg_annual": 0.0129
+    "avg_annual": 0.0127
    },
    "horizons": {
     "1": {
@@ -4483,7 +4483,7 @@
       "windows": 87,
       "median": 0.0131,
       "p10": -0.0328,
-      "p90": 0.1405,
+      "p90": 0.1404,
       "beat_cdi_freq": 0.23,
       "beat_benchmark_freq": 0.368
      },
@@ -4513,9 +4513,9 @@
    "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.4617,
-    "cagr": 0.0387,
-    "volatility": 0.1581,
+    "total_return": 0.463,
+    "cagr": 0.0388,
+    "volatility": 0.158,
     "max_drawdown": -0.356,
     "sharpe": -0.35,
     "cdi_cagr": 0.0933,
@@ -4575,7 +4575,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0321,
+     "return": 0.033,
      "partial": true
     }
    ],
@@ -4619,7 +4619,7 @@
    ],
    "in_scenario": {
     "months": 39,
-    "avg_annual": -0.0342
+    "avg_annual": -0.034
    },
    "horizons": {
     "1": {
@@ -4674,7 +4674,7 @@
      "history": {
       "windows": 27,
       "median": 0.0526,
-      "p10": 0.0385,
+      "p10": 0.0386,
       "p90": 0.0715,
       "beat_cdi_freq": 0.0,
       "beat_benchmark_freq": 0.259
@@ -4690,10 +4690,10 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": -0.3199,
-    "cagr": -0.0378,
+    "total_return": -0.3206,
+    "cagr": -0.0379,
     "volatility": 0.3932,
-    "max_drawdown": -0.747,
+    "max_drawdown": -0.7473,
     "sharpe": -0.33,
     "cdi_cagr": 0.0933,
     "worst_12m": -0.5863,
@@ -4752,7 +4752,7 @@
     },
     {
      "year": 2026,
-     "return": -0.2698,
+     "return": -0.2706,
      "partial": true
     }
    ],
@@ -4783,7 +4783,7 @@
     },
     {
      "key": "2021",
-     "return": -0.425,
+     "return": -0.4251,
      "recovery_months": null,
      "recovered": false
     },
@@ -4796,7 +4796,7 @@
    ],
    "in_scenario": {
     "months": 93,
-    "avg_annual": 0.4
+    "avg_annual": 0.3999
    },
    "horizons": {
     "1": {
@@ -4867,8 +4867,8 @@
    "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.8023,
-    "cagr": 0.0607,
+    "total_return": 0.8044,
+    "cagr": 0.0608,
     "volatility": 0.1396,
     "max_drawdown": -0.347,
     "sharpe": -0.23,
@@ -4929,7 +4929,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0438,
+     "return": 0.045,
      "partial": true
     }
    ],
@@ -4973,7 +4973,7 @@
    ],
    "in_scenario": {
     "months": 39,
-    "avg_annual": 0.0347
+    "avg_annual": 0.035
    },
    "horizons": {
     "1": {
@@ -4997,7 +4997,7 @@
      "prob_beat_cdi": 0.215,
      "history": {
       "windows": 111,
-      "median": 0.0641,
+      "median": 0.0645,
       "p10": -0.0075,
       "p90": 0.1189,
       "beat_cdi_freq": 0.135,
@@ -5044,9 +5044,9 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 10.8988,
-    "cagr": 0.281,
-    "volatility": 0.3677,
+    "total_return": 10.883,
+    "cagr": 0.2808,
+    "volatility": 0.3676,
     "max_drawdown": -0.5364,
     "sharpe": 0.51,
     "cdi_cagr": 0.0933,
@@ -5106,7 +5106,7 @@
     },
     {
      "year": 2026,
-     "return": 0.8196,
+     "return": 0.8172,
      "partial": true
     }
    ],
@@ -5150,7 +5150,7 @@
    ],
    "in_scenario": {
     "months": 93,
-    "avg_annual": 0.2451
+    "avg_annual": 0.2448
    },
    "horizons": {
     "1": {
@@ -5221,8 +5221,8 @@
    "first_month": "2010-10",
    "risk_10y": {
     "months": 120,
-    "total_return": 224.643,
-    "cagr": 0.7193,
+    "total_return": 224.4552,
+    "cagr": 0.7191,
     "volatility": 0.5692,
     "max_drawdown": -0.6516,
     "sharpe": 1.1,
@@ -5283,7 +5283,7 @@
     },
     {
      "year": 2026,
-     "return": 0.7405,
+     "return": 0.739,
      "partial": true
     }
    ],
@@ -5327,7 +5327,7 @@
    ],
    "in_scenario": {
     "months": 52,
-    "avg_annual": 0.903
+    "avg_annual": 0.9025
    },
    "horizons": {
     "1": {
@@ -5398,9 +5398,9 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.3265,
-    "cagr": 0.0287,
-    "volatility": 0.2968,
+    "total_return": 0.3223,
+    "cagr": 0.0283,
+    "volatility": 0.2969,
     "max_drawdown": -0.5303,
     "sharpe": -0.22,
     "cdi_cagr": 0.0933,
@@ -5460,7 +5460,7 @@
     },
     {
      "year": 2026,
-     "return": -0.3177,
+     "return": -0.3199,
      "partial": true
     }
    ],
@@ -5504,7 +5504,7 @@
    ],
    "in_scenario": {
     "months": 93,
-    "avg_annual": 0.4176
+    "avg_annual": 0.4171
    },
    "horizons": {
     "1": {
@@ -5514,7 +5514,7 @@
      "history": {
       "windows": 310,
       "median": 0.1561,
-      "p10": -0.1792,
+      "p10": -0.1816,
       "p90": 0.8977,
       "beat_cdi_freq": 0.529,
       "beat_benchmark_freq": 0.539
@@ -5575,9 +5575,9 @@
    "first_month": "2005-05",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.1459,
-    "cagr": 0.1214,
-    "volatility": 0.3848,
+    "total_return": 2.1385,
+    "cagr": 0.1212,
+    "volatility": 0.3849,
     "max_drawdown": -0.5703,
     "sharpe": 0.07,
     "cdi_cagr": 0.0933,
@@ -5637,7 +5637,7 @@
     },
     {
      "year": 2026,
-     "return": -0.2921,
+     "return": -0.2938,
      "partial": true
     }
    ],
@@ -5681,7 +5681,7 @@
    ],
    "in_scenario": {
     "months": 82,
-    "avg_annual": 0.4985
+    "avg_annual": 0.4982
    },
    "horizons": {
     "1": {
@@ -5736,7 +5736,7 @@
      "history": {
       "windows": 138,
       "median": 0.2082,
-      "p10": 0.1227,
+      "p10": 0.1226,
       "p90": 0.2653,
       "beat_cdi_freq": 0.92,
       "beat_benchmark_freq": 1.0
@@ -5752,9 +5752,9 @@
    "first_month": "2004-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 1.8608,
-    "cagr": 0.1108,
-    "volatility": 0.3462,
+    "total_return": 1.8643,
+    "cagr": 0.111,
+    "volatility": 0.3463,
     "max_drawdown": -0.4231,
     "sharpe": 0.05,
     "cdi_cagr": 0.0933,
@@ -5814,7 +5814,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0532,
+     "return": -0.052,
      "partial": true
     }
    ],
@@ -5858,7 +5858,7 @@
    ],
    "in_scenario": {
     "months": 82,
-    "avg_annual": 0.3042
+    "avg_annual": 0.3045
    },
    "horizons": {
     "1": {
@@ -5929,8 +5929,8 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 4.803,
-    "cagr": 0.1922,
+    "total_return": 4.7973,
+    "cagr": 0.1921,
     "volatility": 0.3023,
     "max_drawdown": -0.3208,
     "sharpe": 0.33,
@@ -5991,7 +5991,7 @@
     },
     {
      "year": 2026,
-     "return": -0.1197,
+     "return": -0.1205,
      "partial": true
     }
    ],
@@ -6035,7 +6035,7 @@
    ],
    "in_scenario": {
     "months": 93,
-    "avg_annual": 0.3931
+    "avg_annual": 0.393
    },
    "horizons": {
     "1": {
@@ -6106,9 +6106,9 @@
    "first_month": "2019-03",
    "risk_10y": {
     "months": 91,
-    "total_return": 0.1908,
-    "cagr": 0.0233,
-    "volatility": 0.1996,
+    "total_return": 0.1899,
+    "cagr": 0.0232,
+    "volatility": 0.1997,
     "max_drawdown": -0.4158,
     "sharpe": -0.37,
     "cdi_cagr": 0.0965,
@@ -6148,7 +6148,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0229,
+     "return": -0.0236,
      "partial": true
     }
    ],
@@ -6192,7 +6192,7 @@
    ],
    "in_scenario": {
     "months": 22,
-    "avg_annual": 0.0315
+    "avg_annual": 0.031
    },
    "horizons": {
     "1": {
@@ -6416,8 +6416,8 @@
    "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 7.4579,
-    "cagr": 0.238,
+    "total_return": 7.4526,
+    "cagr": 0.2379,
     "volatility": 0.3059,
     "max_drawdown": -0.3825,
     "sharpe": 0.47,
@@ -6478,7 +6478,7 @@
     },
     {
      "year": 2026,
-     "return": -0.016,
+     "return": -0.0167,
      "partial": true
     }
    ],
@@ -6522,7 +6522,7 @@
    ],
    "in_scenario": {
     "months": 93,
-    "avg_annual": 0.8735
+    "avg_annual": 0.8733
    },
    "horizons": {
     "1": {
@@ -6593,8 +6593,8 @@
    "first_month": "2020-06",
    "risk_10y": {
     "months": 76,
-    "total_return": 0.0501,
-    "cagr": 0.0077,
+    "total_return": 0.0512,
+    "cagr": 0.0079,
     "volatility": 0.1379,
     "max_drawdown": -0.3272,
     "sharpe": -0.71,
@@ -6630,7 +6630,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0707,
+     "return": -0.0698,
      "partial": true
     }
    ],
@@ -6674,7 +6674,7 @@
    ],
    "in_scenario": {
     "months": 17,
-    "avg_annual": -0.0125
+    "avg_annual": -0.0118
    },
    "horizons": {
     "1": {
@@ -6738,7 +6738,7 @@
    "first_month": "2020-06",
    "risk_10y": {
     "months": 76,
-    "total_return": 0.4705,
+    "total_return": 0.4703,
     "cagr": 0.0628,
     "volatility": 0.126,
     "max_drawdown": -0.2333,
@@ -6775,7 +6775,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0399,
+     "return": -0.04,
      "partial": true
     }
    ],
@@ -6819,7 +6819,7 @@
    ],
    "in_scenario": {
     "months": 17,
-    "avg_annual": 0.1422
+    "avg_annual": 0.1421
    },
    "horizons": {
     "1": {
