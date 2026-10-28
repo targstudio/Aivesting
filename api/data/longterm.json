@@ -1,12 +1,15 @@
 {
  "model_version": "horizontes-v1",
- "generated_at": "2026-10-28T17:21:55+00:00",
+ "generated_at": "2026-10-28T17:24:41+00:00",
  "data_source": "Yahoo Finance (preço ajustado por proventos) e Banco Central (SGS 4391, 4189, 13522)",
- "data_fetched_at": "2026-10-28T17:21:52+00:00",
- "data_from": "1993-05",
+ "data_fetched_at": "2026-10-28T17:24:37+00:00",
+ "data_from": "2000-01",
  "data_through": "2026-10",
  "scenario": {
-  "month": null,
+  "month": "2026-10",
+  "key": "queda|favoravel",
+  "label": "Selic caindo e bolsa americana em tendência de alta",
+  "similar_months": 93,
   "indicators": {
    "selic": {
     "label": "Selic",
@@ -27,25 +30,25 @@
    "usd_brl": {
     "label": "Dólar",
     "unit": "R$",
-    "value": 5.3807,
+    "value": 5.3834,
     "month": "2026-10",
     "change_12m": null,
-    "return_12m": -0.0002
+    "return_12m": 0.0003
    },
    "sp500": {
     "label": "S&P 500",
     "unit": "pts",
-    "value": 7735.9502,
+    "value": 7735.8501,
     "month": "2026-10",
     "change_12m": null,
-    "return_12m": null
+    "return_12m": 0.1309
    },
    "us10y": {
     "label": "Juro de 10 anos dos EUA",
     "unit": "% a.a.",
     "value": 5.02,
     "month": "2026-10",
-    "change_12m": 0.857,
+    "change_12m": 0.919,
     "return_12m": null
    }
   }
@@ -168,9 +171,9 @@
    "benchmark_is_proxy": false,
    "benchmark_risk": {
     "months": 120,
-    "total_return": 1.6421,
+    "total_return": 1.6407,
     "cagr": 0.102,
-    "volatility": 0.2061,
+    "volatility": 0.2062,
     "max_drawdown": -0.3686,
     "sharpe": 0.04,
     "cdi_cagr": 0.0933,
@@ -230,7 +233,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0646,
+     "return": 0.064,
      "partial": true
     }
    ],
@@ -272,57 +275,63 @@
      "recovered": true
     }
    ],
-   "benchmark_in_scenario": null,
+   "benchmark_in_scenario": {
+    "months": 93,
+    "avg_annual": 0.252
+   },
    "horizons": {
     "1": {
      "years": 1,
      "months": 12,
-     "samples": 3728,
+     "samples": 3646,
      "beat_benchmark": {
-      "base_rate": 0.576,
+      "base_rate": 0.579,
+      "effective_windows": 303.8,
       "validation": {
-       "oos_samples": 3424,
-       "oos_effective": 285.3,
-       "brier": 0.2531,
-       "brier_base_rate": 0.2475,
-       "skill": -0.0229,
-       "auc": 0.46,
-       "hit_rate_top": 0.568,
-       "hit_rate_bottom": 0.655,
+       "oos_samples": 3322,
+       "oos_effective": 276.8,
+       "brier": 0.254,
+       "brier_base_rate": 0.2469,
+       "skill": -0.0287,
+       "auc": 0.465,
+       "hit_rate_top": 0.555,
+       "hit_rate_bottom": 0.623,
        "validated": false
       },
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.553,
+      "base_rate": 0.554,
+      "effective_windows": 303.8,
       "validation": {
-       "oos_samples": 3424,
-       "oos_effective": 285.3,
-       "brier": 0.258,
-       "brier_base_rate": 0.2552,
-       "skill": -0.0108,
-       "auc": 0.477,
-       "hit_rate_top": 0.573,
-       "hit_rate_bottom": 0.603,
+       "oos_samples": 3322,
+       "oos_effective": 276.8,
+       "brier": 0.2634,
+       "brier_base_rate": 0.2592,
+       "skill": -0.0164,
+       "auc": 0.476,
+       "hit_rate_top": 0.547,
+       "hit_rate_bottom": 0.581,
        "validated": false
       },
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "PRIO3",
        "name": "Prio S.A.",
        "history": {
-        "windows": 180,
-        "median": 0.2946,
-        "p10": -0.7109,
-        "p90": 1.6173,
-        "beat_cdi_freq": 0.567,
-        "beat_benchmark_freq": 0.561
+        "windows": 181,
+        "median": 0.2901,
+        "p10": -0.7092,
+        "p90": 1.6096,
+        "beat_cdi_freq": 0.564,
+        "beat_benchmark_freq": 0.558
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 1.1,
        "rank": 1
@@ -331,15 +340,15 @@
        "ticker": "PETR4",
        "name": "Petróleo Brasileiro S.A. - Petrobras",
        "history": {
-        "windows": 309,
-        "median": 0.1917,
-        "p10": -0.2584,
-        "p90": 0.7492,
-        "beat_cdi_freq": 0.537,
-        "beat_benchmark_freq": 0.56
+        "windows": 310,
+        "median": 0.1991,
+        "p10": -0.258,
+        "p90": 0.7466,
+        "beat_cdi_freq": 0.539,
+        "beat_benchmark_freq": 0.561
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.51,
        "rank": 2
@@ -348,15 +357,15 @@
        "ticker": "WEGE3",
        "name": "WEG S.A.",
        "history": {
-        "windows": 309,
-        "median": 0.2433,
-        "p10": -0.1179,
+        "windows": 310,
+        "median": 0.2406,
+        "p10": -0.1178,
         "p90": 0.981,
-        "beat_cdi_freq": 0.689,
-        "beat_benchmark_freq": 0.647
+        "beat_cdi_freq": 0.687,
+        "beat_benchmark_freq": 0.645
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.47,
        "rank": 3
@@ -365,15 +374,15 @@
        "ticker": "VALE3",
        "name": "Vale S.A.",
        "history": {
-        "windows": 309,
-        "median": 0.158,
-        "p10": -0.2272,
-        "p90": 0.8235,
-        "beat_cdi_freq": 0.56,
-        "beat_benchmark_freq": 0.55
+        "windows": 310,
+        "median": 0.1558,
+        "p10": -0.2271,
+        "p90": 0.8231,
+        "beat_cdi_freq": 0.558,
+        "beat_benchmark_freq": 0.548
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.33,
        "rank": 4
@@ -382,15 +391,15 @@
        "ticker": "EQTL3",
        "name": "Equatorial S.A.",
        "history": {
-        "windows": 210,
-        "median": 0.2255,
-        "p10": -0.032,
-        "p90": 0.5462,
-        "beat_cdi_freq": 0.71,
-        "beat_benchmark_freq": 0.676
+        "windows": 211,
+        "median": 0.2254,
+        "p10": -0.0431,
+        "p90": 0.5461,
+        "beat_cdi_freq": 0.706,
+        "beat_benchmark_freq": 0.678
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 5
@@ -399,15 +408,15 @@
        "ticker": "GGBR4",
        "name": "Gerdau S.A.",
        "history": {
-        "windows": 309,
-        "median": 0.1203,
-        "p10": -0.3496,
-        "p90": 0.7487,
-        "beat_cdi_freq": 0.505,
-        "beat_benchmark_freq": 0.553
+        "windows": 310,
+        "median": 0.1227,
+        "p10": -0.3482,
+        "p90": 0.7553,
+        "beat_cdi_freq": 0.506,
+        "beat_benchmark_freq": 0.555
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 6
@@ -416,15 +425,15 @@
        "ticker": "B3SA3",
        "name": "B3 S.A. - Brasil, Bolsa, Balcão",
        "history": {
-        "windows": 216,
-        "median": 0.1382,
-        "p10": -0.3825,
-        "p90": 0.6113,
-        "beat_cdi_freq": 0.537,
-        "beat_benchmark_freq": 0.546
+        "windows": 217,
+        "median": 0.1357,
+        "p10": -0.3915,
+        "p90": 0.6076,
+        "beat_cdi_freq": 0.535,
+        "beat_benchmark_freq": 0.544
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 7
@@ -433,15 +442,15 @@
        "ticker": "ITUB4",
        "name": "Itaú Unibanco Holding S.A.",
        "history": {
-        "windows": 298,
-        "median": 0.1896,
-        "p10": -0.1849,
-        "p90": 0.5473,
-        "beat_cdi_freq": 0.601,
-        "beat_benchmark_freq": 0.654
+        "windows": 299,
+        "median": 0.1885,
+        "p10": -0.1847,
+        "p90": 0.5458,
+        "beat_cdi_freq": 0.599,
+        "beat_benchmark_freq": 0.656
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 8
@@ -450,15 +459,15 @@
        "ticker": "RENT3",
        "name": "Localiza Rent a Car S.A.",
        "history": {
-        "windows": 245,
-        "median": 0.1454,
-        "p10": -0.2686,
-        "p90": 0.8487,
-        "beat_cdi_freq": 0.567,
-        "beat_benchmark_freq": 0.678
+        "windows": 246,
+        "median": 0.1477,
+        "p10": -0.2668,
+        "p90": 0.8638,
+        "beat_cdi_freq": 0.569,
+        "beat_benchmark_freq": 0.679
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.07,
        "rank": 9
@@ -467,15 +476,15 @@
        "ticker": "SUZB3",
        "name": "Suzano S.A.",
        "history": {
-        "windows": 254,
+        "windows": 255,
         "median": 0.0065,
-        "p10": -0.1485,
-        "p90": 0.7376,
-        "beat_cdi_freq": 0.28,
-        "beat_benchmark_freq": 0.512
+        "p10": -0.1483,
+        "p90": 0.736,
+        "beat_cdi_freq": 0.282,
+        "beat_benchmark_freq": 0.514
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": 0.05,
        "rank": 10
@@ -484,15 +493,15 @@
        "ticker": "BBAS3",
        "name": "Banco do Brasil S.A.",
        "history": {
-        "windows": 309,
-        "median": 0.1957,
-        "p10": -0.2195,
-        "p90": 0.7399,
-        "beat_cdi_freq": 0.602,
-        "beat_benchmark_freq": 0.657
+        "windows": 310,
+        "median": 0.1883,
+        "p10": -0.2175,
+        "p90": 0.7374,
+        "beat_cdi_freq": 0.6,
+        "beat_benchmark_freq": 0.655
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": -0.04,
        "rank": 11
@@ -501,15 +510,15 @@
        "ticker": "BBDC4",
        "name": "Banco Bradesco S.A.",
        "history": {
-        "windows": 213,
-        "median": 0.0599,
-        "p10": -0.2793,
-        "p90": 0.4267,
-        "beat_cdi_freq": 0.455,
-        "beat_benchmark_freq": 0.54
+        "windows": 214,
+        "median": 0.0596,
+        "p10": -0.2801,
+        "p90": 0.4264,
+        "beat_cdi_freq": 0.453,
+        "beat_benchmark_freq": 0.542
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": -0.15,
        "rank": 12
@@ -518,15 +527,15 @@
        "ticker": "RADL3",
        "name": "Raia Drogasil S.A.",
        "history": {
-        "windows": 309,
+        "windows": 310,
         "median": 0.1682,
-        "p10": -0.1798,
-        "p90": 1.0374,
-        "beat_cdi_freq": 0.547,
-        "beat_benchmark_freq": 0.54
+        "p10": -0.1792,
+        "p90": 1.1091,
+        "beat_cdi_freq": 0.548,
+        "beat_benchmark_freq": 0.542
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": -0.22,
        "rank": 13
@@ -535,15 +544,15 @@
        "ticker": "ABEV3",
        "name": "Ambev S.A.",
        "history": {
-        "windows": 309,
-        "median": 0.1539,
-        "p10": -0.229,
-        "p90": 0.6407,
-        "beat_cdi_freq": 0.518,
-        "beat_benchmark_freq": 0.56
+        "windows": 310,
+        "median": 0.1551,
+        "p10": -0.2288,
+        "p90": 0.6636,
+        "beat_cdi_freq": 0.519,
+        "beat_benchmark_freq": 0.561
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": -0.3,
        "rank": 14
@@ -552,15 +561,15 @@
        "ticker": "LREN3",
        "name": "Lojas Renner S.A.",
        "history": {
-        "windows": 309,
-        "median": 0.0078,
-        "p10": -0.3303,
-        "p90": 0.6477,
-        "beat_cdi_freq": 0.443,
-        "beat_benchmark_freq": 0.485
+        "windows": 310,
+        "median": 0.0072,
+        "p10": -0.3288,
+        "p90": 0.6463,
+        "beat_cdi_freq": 0.442,
+        "beat_benchmark_freq": 0.484
        },
-       "prob_beat_benchmark": 0.576,
-       "prob_beat_cdi": 0.553,
+       "prob_beat_benchmark": 0.579,
+       "prob_beat_cdi": 0.554,
        "top_factors": [],
        "sharpe_10y": -0.33,
        "rank": 15
@@ -570,52 +579,55 @@
     "3": {
      "years": 3,
      "months": 36,
-     "samples": 3368,
+     "samples": 3286,
      "beat_benchmark": {
-      "base_rate": 0.635,
+      "base_rate": 0.64,
+      "effective_windows": 91.3,
       "validation": {
-       "oos_samples": 2585,
-       "oos_effective": 71.8,
-       "brier": 0.2446,
-       "brier_base_rate": 0.237,
-       "skill": -0.0322,
-       "auc": 0.383,
-       "hit_rate_top": 0.565,
-       "hit_rate_bottom": 0.805,
+       "oos_samples": 2454,
+       "oos_effective": 68.2,
+       "brier": 0.2442,
+       "brier_base_rate": 0.2375,
+       "skill": -0.028,
+       "auc": 0.417,
+       "hit_rate_top": 0.591,
+       "hit_rate_bottom": 0.755,
        "validated": false
       },
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.576,
+      "base_rate": 0.574,
+      "effective_windows": 91.3,
       "validation": {
-       "oos_samples": 2585,
-       "oos_effective": 71.8,
-       "brier": 0.2677,
-       "brier_base_rate": 0.2649,
-       "skill": -0.0105,
-       "auc": 0.383,
-       "hit_rate_top": 0.465,
-       "hit_rate_bottom": 0.708,
+       "oos_samples": 2454,
+       "oos_effective": 68.2,
+       "brier": 0.2674,
+       "brier_base_rate": 0.267,
+       "skill": -0.0016,
+       "auc": 0.387,
+       "hit_rate_top": 0.476,
+       "hit_rate_bottom": 0.693,
        "validated": false
       },
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "PRIO3",
        "name": "Prio S.A.",
        "history": {
-        "windows": 156,
-        "median": 0.3628,
-        "p10": -0.6509,
-        "p90": 1.2503,
-        "beat_cdi_freq": 0.615,
-        "beat_benchmark_freq": 0.635
+        "windows": 157,
+        "median": 0.3476,
+        "p10": -0.6511,
+        "p90": 1.2488,
+        "beat_cdi_freq": 0.611,
+        "beat_benchmark_freq": 0.631
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 1.1,
        "rank": 1
@@ -624,15 +636,15 @@
        "ticker": "PETR4",
        "name": "Petróleo Brasileiro S.A. - Petrobras",
        "history": {
-        "windows": 285,
-        "median": 0.1715,
-        "p10": -0.1438,
+        "windows": 286,
+        "median": 0.1712,
+        "p10": -0.1434,
         "p90": 0.518,
-        "beat_cdi_freq": 0.589,
-        "beat_benchmark_freq": 0.618
+        "beat_cdi_freq": 0.587,
+        "beat_benchmark_freq": 0.619
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.51,
        "rank": 2
@@ -641,15 +653,15 @@
        "ticker": "WEGE3",
        "name": "WEG S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.2216,
-        "p10": 0.0516,
+        "windows": 286,
+        "median": 0.2217,
+        "p10": 0.0519,
         "p90": 0.575,
-        "beat_cdi_freq": 0.814,
-        "beat_benchmark_freq": 0.793
+        "beat_cdi_freq": 0.815,
+        "beat_benchmark_freq": 0.794
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.47,
        "rank": 3
@@ -658,15 +670,15 @@
        "ticker": "VALE3",
        "name": "Vale S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.1668,
-        "p10": -0.127,
-        "p90": 0.5146,
-        "beat_cdi_freq": 0.568,
-        "beat_benchmark_freq": 0.582
+        "windows": 286,
+        "median": 0.1669,
+        "p10": -0.1268,
+        "p90": 0.5143,
+        "beat_cdi_freq": 0.57,
+        "beat_benchmark_freq": 0.584
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.33,
        "rank": 4
@@ -675,15 +687,15 @@
        "ticker": "EQTL3",
        "name": "Equatorial S.A.",
        "history": {
-        "windows": 186,
-        "median": 0.2114,
-        "p10": 0.0799,
-        "p90": 0.3513,
-        "beat_cdi_freq": 0.833,
-        "beat_benchmark_freq": 0.919
+        "windows": 187,
+        "median": 0.211,
+        "p10": 0.0789,
+        "p90": 0.3504,
+        "beat_cdi_freq": 0.829,
+        "beat_benchmark_freq": 0.914
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 5
@@ -692,15 +704,15 @@
        "ticker": "GGBR4",
        "name": "Gerdau S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.0304,
-        "p10": -0.8301,
-        "p90": 0.4475,
-        "beat_cdi_freq": 0.404,
-        "beat_benchmark_freq": 0.421
+        "windows": 286,
+        "median": 0.0314,
+        "p10": -0.8297,
+        "p90": 0.4482,
+        "beat_cdi_freq": 0.406,
+        "beat_benchmark_freq": 0.423
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 6
@@ -709,15 +721,15 @@
        "ticker": "B3SA3",
        "name": "B3 S.A. - Brasil, Bolsa, Balcão",
        "history": {
-        "windows": 192,
-        "median": 0.0582,
-        "p10": -0.2836,
-        "p90": 0.3928,
-        "beat_cdi_freq": 0.438,
-        "beat_benchmark_freq": 0.536
+        "windows": 193,
+        "median": 0.0568,
+        "p10": -0.2818,
+        "p90": 0.3924,
+        "beat_cdi_freq": 0.435,
+        "beat_benchmark_freq": 0.534
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 7
@@ -726,15 +738,15 @@
        "ticker": "ITUB4",
        "name": "Itaú Unibanco Holding S.A.",
        "history": {
-        "windows": 274,
-        "median": 0.1377,
+        "windows": 275,
+        "median": 0.14,
         "p10": -0.0169,
-        "p90": 0.3981,
-        "beat_cdi_freq": 0.577,
-        "beat_benchmark_freq": 0.719
+        "p90": 0.3973,
+        "beat_cdi_freq": 0.575,
+        "beat_benchmark_freq": 0.72
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 8
@@ -743,15 +755,15 @@
        "ticker": "RENT3",
        "name": "Localiza Rent a Car S.A.",
        "history": {
-        "windows": 221,
-        "median": 0.1335,
-        "p10": -0.0844,
-        "p90": 0.5306,
-        "beat_cdi_freq": 0.566,
-        "beat_benchmark_freq": 0.706
+        "windows": 222,
+        "median": 0.134,
+        "p10": -0.084,
+        "p90": 0.5339,
+        "beat_cdi_freq": 0.568,
+        "beat_benchmark_freq": 0.707
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.07,
        "rank": 9
@@ -760,15 +772,15 @@
        "ticker": "SUZB3",
        "name": "Suzano S.A.",
        "history": {
-        "windows": 230,
-        "median": 0.0866,
+        "windows": 231,
+        "median": 0.0884,
         "p10": 0.0054,
         "p90": 0.3919,
-        "beat_cdi_freq": 0.465,
-        "beat_benchmark_freq": 0.626
+        "beat_cdi_freq": 0.468,
+        "beat_benchmark_freq": 0.628
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": 0.05,
        "rank": 10
@@ -777,15 +789,15 @@
        "ticker": "BBAS3",
        "name": "Banco do Brasil S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.1527,
-        "p10": -0.0217,
-        "p90": 0.5075,
-        "beat_cdi_freq": 0.596,
-        "beat_benchmark_freq": 0.751
+        "windows": 286,
+        "median": 0.1526,
+        "p10": -0.0213,
+        "p90": 0.5072,
+        "beat_cdi_freq": 0.594,
+        "beat_benchmark_freq": 0.752
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": -0.04,
        "rank": 11
@@ -794,15 +806,15 @@
        "ticker": "BBDC4",
        "name": "Banco Bradesco S.A.",
        "history": {
-        "windows": 189,
-        "median": 0.0442,
-        "p10": -0.0969,
-        "p90": 0.229,
-        "beat_cdi_freq": 0.381,
-        "beat_benchmark_freq": 0.524
+        "windows": 190,
+        "median": 0.0436,
+        "p10": -0.1019,
+        "p90": 0.2289,
+        "beat_cdi_freq": 0.379,
+        "beat_benchmark_freq": 0.521
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": -0.15,
        "rank": 12
@@ -811,15 +823,15 @@
        "ticker": "RADL3",
        "name": "Raia Drogasil S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.2168,
-        "p10": 0.0302,
-        "p90": 1.3003,
-        "beat_cdi_freq": 0.684,
-        "beat_benchmark_freq": 0.716
+        "windows": 286,
+        "median": 0.2171,
+        "p10": 0.0305,
+        "p90": 1.2988,
+        "beat_cdi_freq": 0.685,
+        "beat_benchmark_freq": 0.717
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": -0.22,
        "rank": 13
@@ -828,15 +840,15 @@
        "ticker": "ABEV3",
        "name": "Ambev S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.1138,
-        "p10": -0.0373,
-        "p90": 0.4213,
-        "beat_cdi_freq": 0.453,
-        "beat_benchmark_freq": 0.456
+        "windows": 286,
+        "median": 0.1139,
+        "p10": -0.037,
+        "p90": 0.4271,
+        "beat_cdi_freq": 0.455,
+        "beat_benchmark_freq": 0.458
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": -0.3,
        "rank": 14
@@ -845,15 +857,15 @@
        "ticker": "LREN3",
        "name": "Lojas Renner S.A.",
        "history": {
-        "windows": 285,
-        "median": 0.0672,
-        "p10": -0.9135,
-        "p90": 0.3582,
-        "beat_cdi_freq": 0.453,
-        "beat_benchmark_freq": 0.495
+        "windows": 286,
+        "median": 0.0666,
+        "p10": -0.9134,
+        "p90": 0.3578,
+        "beat_cdi_freq": 0.451,
+        "beat_benchmark_freq": 0.497
        },
-       "prob_beat_benchmark": 0.635,
-       "prob_beat_cdi": 0.576,
+       "prob_beat_benchmark": 0.64,
+       "prob_beat_cdi": 0.574,
        "top_factors": [],
        "sharpe_10y": -0.33,
        "rank": 15
@@ -863,52 +875,55 @@
     "5": {
      "years": 5,
      "months": 60,
-     "samples": 3008,
+     "samples": 2926,
      "beat_benchmark": {
-      "base_rate": 0.677,
+      "base_rate": 0.68,
+      "effective_windows": 48.8,
       "validation": {
-       "oos_samples": 1590,
-       "oos_effective": 26.5,
-       "brier": 0.2269,
-       "brier_base_rate": 0.2278,
-       "skill": 0.0041,
-       "auc": 0.508,
-       "hit_rate_top": 0.7,
-       "hit_rate_bottom": 0.719,
+       "oos_samples": 1410,
+       "oos_effective": 23.5,
+       "brier": 0.2278,
+       "brier_base_rate": 0.2319,
+       "skill": 0.0175,
+       "auc": 0.54,
+       "hit_rate_top": 0.716,
+       "hit_rate_bottom": 0.65,
        "validated": false
       },
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.643,
+      "base_rate": 0.639,
+      "effective_windows": 48.8,
       "validation": {
-       "oos_samples": 1590,
-       "oos_effective": 26.5,
-       "brier": 0.2221,
-       "brier_base_rate": 0.2224,
-       "skill": 0.0013,
-       "auc": 0.495,
-       "hit_rate_top": 0.709,
-       "hit_rate_bottom": 0.7,
+       "oos_samples": 1410,
+       "oos_effective": 23.5,
+       "brier": 0.2252,
+       "brier_base_rate": 0.2279,
+       "skill": 0.0117,
+       "auc": 0.499,
+       "hit_rate_top": 0.688,
+       "hit_rate_bottom": 0.688,
        "validated": false
       },
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "PRIO3",
        "name": "Prio S.A.",
        "history": {
-        "windows": 132,
-        "median": 0.4253,
-        "p10": -0.4751,
-        "p90": 1.1632,
-        "beat_cdi_freq": 0.742,
-        "beat_benchmark_freq": 0.735
+        "windows": 133,
+        "median": 0.4196,
+        "p10": -0.5134,
+        "p90": 1.1615,
+        "beat_cdi_freq": 0.737,
+        "beat_benchmark_freq": 0.729
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 1.1,
        "rank": 1
@@ -917,15 +932,15 @@
        "ticker": "PETR4",
        "name": "Petróleo Brasileiro S.A. - Petrobras",
        "history": {
-        "windows": 261,
-        "median": 0.1981,
-        "p10": -0.1084,
-        "p90": 0.3859,
-        "beat_cdi_freq": 0.586,
-        "beat_benchmark_freq": 0.548
+        "windows": 262,
+        "median": 0.1954,
+        "p10": -0.1083,
+        "p90": 0.3857,
+        "beat_cdi_freq": 0.584,
+        "beat_benchmark_freq": 0.55
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.51,
        "rank": 2
@@ -934,15 +949,15 @@
        "ticker": "WEGE3",
        "name": "WEG S.A.",
        "history": {
-        "windows": 261,
-        "median": 0.2301,
-        "p10": 0.082,
-        "p90": 0.4866,
+        "windows": 262,
+        "median": 0.2305,
+        "p10": 0.0825,
+        "p90": 0.4863,
         "beat_cdi_freq": 0.87,
         "beat_benchmark_freq": 0.897
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.47,
        "rank": 3
@@ -951,15 +966,15 @@
        "ticker": "VALE3",
        "name": "Vale S.A.",
        "history": {
-        "windows": 261,
+        "windows": 262,
         "median": 0.1604,
-        "p10": -0.0938,
-        "p90": 0.4703,
-        "beat_cdi_freq": 0.644,
-        "beat_benchmark_freq": 0.693
+        "p10": -0.0922,
+        "p90": 0.4698,
+        "beat_cdi_freq": 0.645,
+        "beat_benchmark_freq": 0.695
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.33,
        "rank": 4
@@ -968,15 +983,15 @@
        "ticker": "EQTL3",
        "name": "Equatorial S.A.",
        "history": {
-        "windows": 162,
-        "median": 0.2207,
-        "p10": 0.1229,
-        "p90": 0.3461,
-        "beat_cdi_freq": 0.944,
+        "windows": 163,
+        "median": 0.2205,
+        "p10": 0.1218,
+        "p90": 0.3456,
+        "beat_cdi_freq": 0.945,
         "beat_benchmark_freq": 1.0
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 5
@@ -985,15 +1000,15 @@
        "ticker": "GGBR4",
        "name": "Gerdau S.A.",
        "history": {
-        "windows": 261,
+        "windows": 262,
         "median": 0.0256,
-        "p10": -0.6095,
+        "p10": -0.6094,
         "p90": 0.2804,
-        "beat_cdi_freq": 0.387,
-        "beat_benchmark_freq": 0.383
+        "beat_cdi_freq": 0.385,
+        "beat_benchmark_freq": 0.382
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 6
@@ -1002,15 +1017,15 @@
        "ticker": "B3SA3",
        "name": "B3 S.A. - Brasil, Bolsa, Balcão",
        "history": {
-        "windows": 168,
-        "median": 0.1353,
-        "p10": -0.1907,
-        "p90": 0.3323,
-        "beat_cdi_freq": 0.554,
-        "beat_benchmark_freq": 0.571
+        "windows": 169,
+        "median": 0.1328,
+        "p10": -0.193,
+        "p90": 0.332,
+        "beat_cdi_freq": 0.55,
+        "beat_benchmark_freq": 0.568
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 7
@@ -1019,15 +1034,15 @@
        "ticker": "ITUB4",
        "name": "Itaú Unibanco Holding S.A.",
        "history": {
-        "windows": 250,
-        "median": 0.1464,
+        "windows": 251,
+        "median": 0.1466,
         "p10": 0.0243,
-        "p90": 0.301,
-        "beat_cdi_freq": 0.624,
-        "beat_benchmark_freq": 0.636
+        "p90": 0.3003,
+        "beat_cdi_freq": 0.625,
+        "beat_benchmark_freq": 0.637
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 8
@@ -1036,15 +1051,15 @@
        "ticker": "RENT3",
        "name": "Localiza Rent a Car S.A.",
        "history": {
-        "windows": 197,
-        "median": 0.1707,
-        "p10": 0.001,
-        "p90": 0.3912,
-        "beat_cdi_freq": 0.726,
-        "beat_benchmark_freq": 0.853
+        "windows": 198,
+        "median": 0.1718,
+        "p10": 0.0012,
+        "p90": 0.3949,
+        "beat_cdi_freq": 0.727,
+        "beat_benchmark_freq": 0.854
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.07,
        "rank": 9
@@ -1053,15 +1068,15 @@
        "ticker": "SUZB3",
        "name": "Suzano S.A.",
        "history": {
-        "windows": 206,
-        "median": 0.096,
+        "windows": 207,
+        "median": 0.099,
         "p10": 0.0069,
-        "p90": 0.2363,
-        "beat_cdi_freq": 0.51,
-        "beat_benchmark_freq": 0.748
+        "p90": 0.2379,
+        "beat_cdi_freq": 0.512,
+        "beat_benchmark_freq": 0.749
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": 0.05,
        "rank": 10
@@ -1070,15 +1085,15 @@
        "ticker": "BBAS3",
        "name": "Banco do Brasil S.A.",
        "history": {
-        "windows": 261,
-        "median": 0.141,
-        "p10": 0.0261,
+        "windows": 262,
+        "median": 0.1412,
+        "p10": 0.0266,
         "p90": 0.4331,
-        "beat_cdi_freq": 0.751,
-        "beat_benchmark_freq": 0.877
+        "beat_cdi_freq": 0.752,
+        "beat_benchmark_freq": 0.878
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": -0.04,
        "rank": 11
@@ -1087,15 +1102,15 @@
        "ticker": "BBDC4",
        "name": "Banco Bradesco S.A.",
        "history": {
-        "windows": 165,
-        "median": 0.067,
-        "p10": -0.0699,
-        "p90": 0.1798,
-        "beat_cdi_freq": 0.388,
-        "beat_benchmark_freq": 0.442
+        "windows": 166,
+        "median": 0.0667,
+        "p10": -0.0697,
+        "p90": 0.1797,
+        "beat_cdi_freq": 0.386,
+        "beat_benchmark_freq": 0.44
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": -0.15,
        "rank": 12
@@ -1104,15 +1119,15 @@
        "ticker": "RADL3",
        "name": "Raia Drogasil S.A.",
        "history": {
-        "windows": 261,
-        "median": 0.3091,
-        "p10": 0.0617,
-        "p90": 0.9496,
-        "beat_cdi_freq": 0.831,
-        "beat_benchmark_freq": 0.812
+        "windows": 262,
+        "median": 0.3093,
+        "p10": 0.062,
+        "p90": 0.9473,
+        "beat_cdi_freq": 0.832,
+        "beat_benchmark_freq": 0.813
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": -0.22,
        "rank": 13
@@ -1121,15 +1136,15 @@
        "ticker": "ABEV3",
        "name": "Ambev S.A.",
        "history": {
-        "windows": 261,
-        "median": 0.1315,
-        "p10": -0.028,
-        "p90": 0.3251,
-        "beat_cdi_freq": 0.475,
-        "beat_benchmark_freq": 0.41
+        "windows": 262,
+        "median": 0.1316,
+        "p10": -0.0279,
+        "p90": 0.328,
+        "beat_cdi_freq": 0.477,
+        "beat_benchmark_freq": 0.412
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": -0.3,
        "rank": 14
@@ -1138,15 +1153,15 @@
        "ticker": "LREN3",
        "name": "Lojas Renner S.A.",
        "history": {
-        "windows": 261,
-        "median": 0.1273,
-        "p10": -0.7832,
-        "p90": 0.3225,
-        "beat_cdi_freq": 0.54,
-        "beat_benchmark_freq": 0.513
+        "windows": 262,
+        "median": 0.1262,
+        "p10": -0.783,
+        "p90": 0.3206,
+        "beat_cdi_freq": 0.538,
+        "beat_benchmark_freq": 0.511
        },
-       "prob_beat_benchmark": 0.677,
-       "prob_beat_cdi": 0.643,
+       "prob_beat_benchmark": 0.68,
+       "prob_beat_cdi": 0.639,
        "top_factors": [],
        "sharpe_10y": -0.33,
        "rank": 15
@@ -1156,9 +1171,10 @@
     "10": {
      "years": 10,
      "months": 120,
-     "samples": 2108,
+     "samples": 2026,
      "beat_benchmark": {
-      "base_rate": 0.762,
+      "base_rate": 0.77,
+      "effective_windows": 16.9,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -1166,7 +1182,8 @@
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.696,
+      "base_rate": 0.694,
+      "effective_windows": 16.9,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -1174,20 +1191,21 @@
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "PRIO3",
        "name": "Prio S.A.",
        "history": {
-        "windows": 72,
-        "median": 0.433,
-        "p10": -0.0358,
-        "p90": 0.6934,
-        "beat_cdi_freq": 0.778,
-        "beat_benchmark_freq": 0.806
+        "windows": 73,
+        "median": 0.4317,
+        "p10": -0.0448,
+        "p90": 0.6931,
+        "beat_cdi_freq": 0.767,
+        "beat_benchmark_freq": 0.795
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 1.1,
        "rank": 1
@@ -1196,15 +1214,15 @@
        "ticker": "PETR4",
        "name": "Petróleo Brasileiro S.A. - Petrobras",
        "history": {
-        "windows": 201,
-        "median": 0.1064,
+        "windows": 202,
+        "median": 0.1079,
         "p10": -0.0395,
-        "p90": 0.2519,
-        "beat_cdi_freq": 0.458,
-        "beat_benchmark_freq": 0.398
+        "p90": 0.251,
+        "beat_cdi_freq": 0.46,
+        "beat_benchmark_freq": 0.401
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.51,
        "rank": 2
@@ -1213,15 +1231,15 @@
        "ticker": "WEGE3",
        "name": "WEG S.A.",
        "history": {
-        "windows": 201,
-        "median": 0.255,
-        "p10": 0.1618,
-        "p90": 0.318,
+        "windows": 202,
+        "median": 0.2551,
+        "p10": 0.1623,
+        "p90": 0.3191,
         "beat_cdi_freq": 1.0,
         "beat_benchmark_freq": 1.0
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.47,
        "rank": 3
@@ -1230,15 +1248,15 @@
        "ticker": "VALE3",
        "name": "Vale S.A.",
        "history": {
-        "windows": 201,
-        "median": 0.1297,
-        "p10": -0.0004,
-        "p90": 0.2797,
-        "beat_cdi_freq": 0.587,
-        "beat_benchmark_freq": 0.701
+        "windows": 202,
+        "median": 0.1306,
+        "p10": -0.0002,
+        "p90": 0.2836,
+        "beat_cdi_freq": 0.589,
+        "beat_benchmark_freq": 0.703
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.33,
        "rank": 4
@@ -1247,15 +1265,15 @@
        "ticker": "EQTL3",
        "name": "Equatorial S.A.",
        "history": {
-        "windows": 102,
-        "median": 0.2391,
-        "p10": 0.1962,
-        "p90": 0.2852,
+        "windows": 103,
+        "median": 0.2388,
+        "p10": 0.1965,
+        "p90": 0.285,
         "beat_cdi_freq": 1.0,
         "beat_benchmark_freq": 1.0
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 5
@@ -1264,15 +1282,15 @@
        "ticker": "GGBR4",
        "name": "Gerdau S.A.",
        "history": {
-        "windows": 201,
-        "median": 0.0092,
-        "p10": -0.3698,
-        "p90": 0.1671,
-        "beat_cdi_freq": 0.284,
-        "beat_benchmark_freq": 0.338
+        "windows": 202,
+        "median": 0.0084,
+        "p10": -0.3694,
+        "p90": 0.1666,
+        "beat_cdi_freq": 0.282,
+        "beat_benchmark_freq": 0.337
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.18,
        "rank": 6
@@ -1281,15 +1299,15 @@
        "ticker": "B3SA3",
        "name": "B3 S.A. - Brasil, Bolsa, Balcão",
        "history": {
-        "windows": 108,
-        "median": 0.1515,
-        "p10": 0.0335,
-        "p90": 0.1915,
-        "beat_cdi_freq": 0.63,
-        "beat_benchmark_freq": 0.806
+        "windows": 109,
+        "median": 0.1508,
+        "p10": 0.0157,
+        "p90": 0.1911,
+        "beat_cdi_freq": 0.624,
+        "beat_benchmark_freq": 0.798
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 7
@@ -1298,15 +1316,15 @@
        "ticker": "ITUB4",
        "name": "Itaú Unibanco Holding S.A.",
        "history": {
-        "windows": 190,
-        "median": 0.1254,
+        "windows": 191,
+        "median": 0.1259,
         "p10": 0.088,
-        "p90": 0.1876,
-        "beat_cdi_freq": 0.816,
+        "p90": 0.1881,
+        "beat_cdi_freq": 0.817,
         "beat_benchmark_freq": 0.995
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.1,
        "rank": 8
@@ -1315,15 +1333,15 @@
        "ticker": "RENT3",
        "name": "Localiza Rent a Car S.A.",
        "history": {
-        "windows": 137,
+        "windows": 138,
         "median": 0.2082,
-        "p10": 0.1225,
-        "p90": 0.2649,
+        "p10": 0.1227,
+        "p90": 0.2653,
         "beat_cdi_freq": 0.92,
         "beat_benchmark_freq": 1.0
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.07,
        "rank": 9
@@ -1332,15 +1350,15 @@
        "ticker": "SUZB3",
        "name": "Suzano S.A.",
        "history": {
-        "windows": 146,
-        "median": 0.1186,
+        "windows": 147,
+        "median": 0.1187,
         "p10": 0.0884,
-        "p90": 0.1457,
-        "beat_cdi_freq": 0.856,
-        "beat_benchmark_freq": 0.904
+        "p90": 0.1463,
+        "beat_cdi_freq": 0.857,
+        "beat_benchmark_freq": 0.905
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": 0.05,
        "rank": 10
@@ -1349,15 +1367,15 @@
        "ticker": "BBAS3",
        "name": "Banco do Brasil S.A.",
        "history": {
-        "windows": 201,
-        "median": 0.1393,
+        "windows": 202,
+        "median": 0.1396,
         "p10": 0.0672,
-        "p90": 0.2648,
-        "beat_cdi_freq": 0.716,
+        "p90": 0.268,
+        "beat_cdi_freq": 0.718,
         "beat_benchmark_freq": 0.995
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": -0.04,
        "rank": 11
@@ -1366,15 +1384,15 @@
        "ticker": "BBDC4",
        "name": "Banco Bradesco S.A.",
        "history": {
-        "windows": 105,
-        "median": 0.0871,
-        "p10": 0.0418,
+        "windows": 106,
+        "median": 0.0867,
+        "p10": 0.0419,
         "p90": 0.1208,
-        "beat_cdi_freq": 0.438,
-        "beat_benchmark_freq": 0.476
+        "beat_cdi_freq": 0.434,
+        "beat_benchmark_freq": 0.481
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": -0.15,
        "rank": 12
@@ -1383,15 +1401,15 @@
        "ticker": "RADL3",
        "name": "Raia Drogasil S.A.",
        "history": {
-        "windows": 201,
-        "median": 0.3407,
-        "p10": 0.1462,
-        "p90": 0.6435,
+        "windows": 202,
+        "median": 0.343,
+        "p10": 0.1483,
+        "p90": 0.6596,
         "beat_cdi_freq": 0.95,
-        "beat_benchmark_freq": 0.915
+        "beat_benchmark_freq": 0.916
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": -0.22,
        "rank": 13
@@ -1400,15 +1418,15 @@
        "ticker": "ABEV3",
        "name": "Ambev S.A.",
        "history": {
-        "windows": 201,
+        "windows": 202,
         "median": 0.1859,
         "p10": 0.0122,
-        "p90": 0.2734,
-        "beat_cdi_freq": 0.701,
-        "beat_benchmark_freq": 0.721
+        "p90": 0.2752,
+        "beat_cdi_freq": 0.703,
+        "beat_benchmark_freq": 0.723
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": -0.3,
        "rank": 14
@@ -1417,15 +1435,15 @@
        "ticker": "LREN3",
        "name": "Lojas Renner S.A.",
        "history": {
-        "windows": 201,
-        "median": 0.074,
-        "p10": -0.4889,
-        "p90": 0.2539,
-        "beat_cdi_freq": 0.453,
-        "beat_benchmark_freq": 0.463
+        "windows": 202,
+        "median": 0.0738,
+        "p10": -0.4893,
+        "p90": 0.2537,
+        "beat_cdi_freq": 0.45,
+        "beat_benchmark_freq": 0.46
        },
-       "prob_beat_benchmark": 0.762,
-       "prob_beat_cdi": 0.696,
+       "prob_beat_benchmark": 0.77,
+       "prob_beat_cdi": 0.694,
        "top_factors": [],
        "sharpe_10y": -0.33,
        "rank": 15
@@ -1439,14 +1457,14 @@
    "benchmark_is_proxy": true,
    "benchmark_risk": {
     "months": 120,
-    "total_return": 1.9078,
-    "cagr": 0.1126,
-    "volatility": 0.2223,
-    "max_drawdown": -0.2588,
+    "total_return": 1.9048,
+    "cagr": 0.1125,
+    "volatility": 0.2212,
+    "max_drawdown": -0.2548,
     "sharpe": 0.09,
     "cdi_cagr": 0.0933,
-    "worst_12m": -0.1309,
-    "best_12m": 1.0288
+    "worst_12m": -0.1326,
+    "best_12m": 1.0325
    },
    "benchmark_annual": [
     {
@@ -1456,27 +1474,27 @@
     },
     {
      "year": 2017,
-     "return": 0.1523,
+     "return": 0.1584,
      "partial": false
     },
     {
      "year": 2018,
-     "return": 0.017,
+     "return": 0.0156,
      "partial": false
     },
     {
      "year": 2019,
-     "return": 0.3347,
+     "return": 0.3309,
      "partial": false
     },
     {
      "year": 2020,
-     "return": -0.1301,
+     "return": -0.1326,
      "partial": false
     },
     {
      "year": 2021,
-     "return": -0.0699,
+     "return": -0.0706,
      "partial": false
     },
     {
@@ -1486,22 +1504,22 @@
     },
     {
      "year": 2023,
-     "return": 0.2006,
+     "return": 0.2005,
      "partial": false
     },
     {
      "year": 2024,
-     "return": -0.0732,
+     "return": -0.071,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.2363,
+     "return": 0.2301,
      "partial": false
     },
     {
      "year": 2026,
-     "return": 0.5814,
+     "return": 0.5881,
      "partial": true
     }
    ],
@@ -1514,86 +1532,92 @@
     },
     {
      "key": "2015",
-     "return": -0.1805,
+     "return": -0.1748,
      "recovery_months": 12,
      "recovered": true
     },
     {
      "key": "2018",
-     "return": -0.0391,
+     "return": -0.0394,
      "recovery_months": 6,
      "recovered": true
     },
     {
      "key": "2020",
-     "return": -0.199,
+     "return": -0.1788,
      "recovery_months": 39,
      "recovered": true
     },
     {
      "key": "2021",
-     "return": -0.0136,
+     "return": -0.0126,
      "recovery_months": 1,
      "recovered": true
     },
     {
      "key": "2024",
-     "return": -0.0872,
+     "return": -0.0852,
      "recovery_months": 4,
      "recovered": true
     }
    ],
-   "benchmark_in_scenario": null,
+   "benchmark_in_scenario": {
+    "months": 52,
+    "avg_annual": 0.0541
+   },
    "horizons": {
     "1": {
      "years": 1,
      "months": 12,
-     "samples": 898,
+     "samples": 902,
      "beat_benchmark": {
-      "base_rate": 0.454,
+      "base_rate": 0.46,
+      "effective_windows": 75.2,
       "validation": {
        "oos_samples": 692,
        "oos_effective": 57.7,
-       "brier": 0.2741,
-       "brier_base_rate": 0.2509,
-       "skill": -0.0921,
-       "auc": 0.51,
-       "hit_rate_top": 0.483,
-       "hit_rate_bottom": 0.454,
+       "brier": 0.2792,
+       "brier_base_rate": 0.2517,
+       "skill": -0.1092,
+       "auc": 0.479,
+       "hit_rate_top": 0.459,
+       "hit_rate_bottom": 0.522,
        "validated": false
       },
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.388,
+      "base_rate": 0.386,
+      "effective_windows": 75.2,
       "validation": {
        "oos_samples": 692,
        "oos_effective": 57.7,
-       "brier": 0.2636,
-       "brier_base_rate": 0.2439,
-       "skill": -0.081,
-       "auc": 0.488,
-       "hit_rate_top": 0.386,
-       "hit_rate_bottom": 0.406,
+       "brier": 0.2628,
+       "brier_base_rate": 0.2427,
+       "skill": -0.0828,
+       "auc": 0.49,
+       "hit_rate_top": 0.367,
+       "hit_rate_bottom": 0.382,
        "validated": false
       },
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "XPML11",
        "name": "Xp Malls Fundo Investimentos Imobiliarios",
        "history": {
         "windows": 65,
-        "median": 0.1046,
-        "p10": -0.0913,
-        "p90": 7.2185,
-        "beat_cdi_freq": 0.492,
+        "median": 0.1181,
+        "p10": -0.087,
+        "p90": 7.123,
+        "beat_cdi_freq": 0.508,
         "beat_benchmark_freq": 0.631
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
        "sharpe_10y": 0.14,
        "rank": 1
@@ -1602,15 +1626,15 @@
        "ticker": "BTLG11",
        "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
        "history": {
-        "windows": 134,
-        "median": 0.0686,
-        "p10": -0.2192,
-        "p90": 0.3501,
-        "beat_cdi_freq": 0.396,
-        "beat_benchmark_freq": 0.47
+        "windows": 135,
+        "median": 0.065,
+        "p10": -0.2255,
+        "p90": 0.3494,
+        "beat_cdi_freq": 0.393,
+        "beat_benchmark_freq": 0.467
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
        "sharpe_10y": 0.09,
        "rank": 2
@@ -1619,18 +1643,35 @@
        "ticker": "HGLG11",
        "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
        "history": {
-        "windows": 175,
-        "median": 0.0459,
-        "p10": -0.0925,
-        "p90": 0.2091,
-        "beat_cdi_freq": 0.297,
-        "beat_benchmark_freq": 0.491
+        "windows": 176,
+        "median": 0.0461,
+        "p10": -0.0919,
+        "p90": 0.2089,
+        "beat_cdi_freq": 0.301,
+        "beat_benchmark_freq": 0.466
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
        "sharpe_10y": -0.13,
        "rank": 3
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 135,
+        "median": 0.062,
+        "p10": -0.0663,
+        "p90": 0.2073,
+        "beat_cdi_freq": 0.356,
+        "beat_benchmark_freq": 0.481
+       },
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 4
       },
       {
        "ticker": "HGRU11",
@@ -1638,83 +1679,66 @@
        "history": {
         "windows": 88,
         "median": 0.1003,
-        "p10": -0.0816,
-        "p90": 0.227,
-        "beat_cdi_freq": 0.5,
+        "p10": -0.085,
+        "p90": 0.2276,
+        "beat_cdi_freq": 0.489,
         "beat_benchmark_freq": 0.602
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
-       "sharpe_10y": -0.23,
-       "rank": 4
-      },
-      {
-       "ticker": "MXRF11",
-       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
-       "history": {
-        "windows": 134,
-        "median": 0.062,
-        "p10": -0.0663,
-        "p90": 0.2075,
-        "beat_cdi_freq": 0.358,
-        "beat_benchmark_freq": 0.478
-       },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
-       "top_factors": [],
-       "sharpe_10y": -0.23,
+       "sharpe_10y": -0.24,
        "rank": 5
       },
       {
        "ticker": "VISC11",
        "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
        "history": {
-        "windows": 97,
-        "median": 0.0589,
-        "p10": -0.1154,
-        "p90": 0.2607,
-        "beat_cdi_freq": 0.361,
-        "beat_benchmark_freq": 0.402
+        "windows": 96,
+        "median": 0.0593,
+        "p10": -0.1103,
+        "p90": 0.2745,
+        "beat_cdi_freq": 0.365,
+        "beat_benchmark_freq": 0.417
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
-       "sharpe_10y": -0.27,
+       "sharpe_10y": -0.3,
        "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 135,
+        "median": 0.0786,
+        "p10": -0.118,
+        "p90": 0.268,
+        "beat_cdi_freq": 0.437,
+        "beat_benchmark_freq": 0.489
+       },
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
       },
       {
        "ticker": "VILG11",
        "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 80,
-        "median": 0.0168,
-        "p10": -0.1604,
-        "p90": 0.2571,
+        "median": 0.0198,
+        "p10": -0.1589,
+        "p90": 0.2475,
         "beat_cdi_freq": 0.312,
         "beat_benchmark_freq": 0.287
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
-       "sharpe_10y": -0.34,
-       "rank": 7
-      },
-      {
-       "ticker": "KNRI11",
-       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
-       "history": {
-        "windows": 134,
-        "median": 0.0788,
-        "p10": -0.1185,
-        "p90": 0.2685,
-        "beat_cdi_freq": 0.44,
-        "beat_benchmark_freq": 0.463
-       },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
-       "top_factors": [],
-       "sharpe_10y": -0.35,
+       "sharpe_10y": -0.37,
        "rank": 8
       },
       {
@@ -1722,31 +1746,31 @@
        "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 97,
-        "median": 0.0541,
-        "p10": -0.1725,
-        "p90": 0.1728,
-        "beat_cdi_freq": 0.175,
-        "beat_benchmark_freq": 0.34
+        "median": 0.0486,
+        "p10": -0.1719,
+        "p90": 0.1586,
+        "beat_cdi_freq": 0.165,
+        "beat_benchmark_freq": 0.351
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
-       "sharpe_10y": -0.44,
+       "sharpe_10y": -0.49,
        "rank": 9
       },
       {
        "ticker": "KNCR11",
        "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
        "history": {
-        "windows": 134,
-        "median": 0.0588,
-        "p10": -0.0861,
-        "p90": 0.1829,
-        "beat_cdi_freq": 0.343,
-        "beat_benchmark_freq": 0.455
+        "windows": 135,
+        "median": 0.0591,
+        "p10": -0.0857,
+        "p90": 0.1825,
+        "beat_cdi_freq": 0.341,
+        "beat_benchmark_freq": 0.459
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
        "sharpe_10y": -0.56,
        "rank": 10
@@ -1756,16 +1780,16 @@
        "name": "Xp Log Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 65,
-        "median": 0.0488,
-        "p10": -0.1696,
-        "p90": 0.24,
-        "beat_cdi_freq": 0.292,
+        "median": 0.0516,
+        "p10": -0.1719,
+        "p90": 0.2412,
+        "beat_cdi_freq": 0.277,
         "beat_benchmark_freq": 0.308
        },
-       "prob_beat_benchmark": 0.454,
-       "prob_beat_cdi": 0.388,
+       "prob_beat_benchmark": 0.46,
+       "prob_beat_cdi": 0.386,
        "top_factors": [],
-       "sharpe_10y": -0.7,
+       "sharpe_10y": -0.71,
        "rank": 11
       }
      ]
@@ -1773,9 +1797,10 @@
     "3": {
      "years": 3,
      "months": 36,
-     "samples": 634,
+     "samples": 638,
      "beat_benchmark": {
-      "base_rate": 0.431,
+      "base_rate": 0.436,
+      "effective_windows": 17.7,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -1783,7 +1808,8 @@
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.222,
+      "base_rate": 0.226,
+      "effective_windows": 17.7,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -1791,20 +1817,21 @@
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "XPML11",
        "name": "Xp Malls Fundo Investimentos Imobiliarios",
        "history": {
         "windows": 41,
-        "median": 0.1203,
-        "p10": 0.0622,
-        "p90": 1.1851,
-        "beat_cdi_freq": 0.512,
+        "median": 0.1181,
+        "p10": 0.0619,
+        "p90": 1.1918,
+        "beat_cdi_freq": 0.488,
         "beat_benchmark_freq": 1.0
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
        "sharpe_10y": 0.14,
        "rank": 1
@@ -1813,15 +1840,15 @@
        "ticker": "BTLG11",
        "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
        "history": {
-        "windows": 110,
-        "median": 0.0806,
-        "p10": -0.0489,
-        "p90": 0.1914,
-        "beat_cdi_freq": 0.355,
-        "beat_benchmark_freq": 0.482
+        "windows": 111,
+        "median": 0.0791,
+        "p10": -0.0508,
+        "p90": 0.1906,
+        "beat_cdi_freq": 0.351,
+        "beat_benchmark_freq": 0.477
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
        "sharpe_10y": 0.09,
        "rank": 2
@@ -1830,102 +1857,102 @@
        "ticker": "HGLG11",
        "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
        "history": {
-        "windows": 151,
+        "windows": 152,
         "median": 0.0553,
-        "p10": -0.0384,
-        "p90": 0.1252,
-        "beat_cdi_freq": 0.265,
-        "beat_benchmark_freq": 0.576
+        "p10": -0.0383,
+        "p90": 0.1251,
+        "beat_cdi_freq": 0.263,
+        "beat_benchmark_freq": 0.553
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
        "sharpe_10y": -0.13,
        "rank": 3
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 111,
+        "median": 0.0641,
+        "p10": -0.0075,
+        "p90": 0.1189,
+        "beat_cdi_freq": 0.135,
+        "beat_benchmark_freq": 0.468
+       },
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 4
       },
       {
        "ticker": "HGRU11",
        "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
        "history": {
         "windows": 64,
-        "median": 0.0776,
-        "p10": 0.0182,
-        "p90": 0.114,
-        "beat_cdi_freq": 0.094,
-        "beat_benchmark_freq": 0.812
-       },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
-       "top_factors": [],
-       "sharpe_10y": -0.23,
-       "rank": 4
-      },
-      {
-       "ticker": "MXRF11",
-       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
-       "history": {
-        "windows": 110,
-        "median": 0.0646,
-        "p10": -0.0079,
+        "median": 0.0756,
+        "p10": 0.0183,
         "p90": 0.119,
-        "beat_cdi_freq": 0.136,
-        "beat_benchmark_freq": 0.473
+        "beat_cdi_freq": 0.094,
+        "beat_benchmark_freq": 0.797
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
-       "sharpe_10y": -0.23,
+       "sharpe_10y": -0.24,
        "rank": 5
       },
       {
        "ticker": "VISC11",
        "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
        "history": {
-        "windows": 73,
-        "median": 0.0616,
-        "p10": -0.0274,
-        "p90": 0.1055,
-        "beat_cdi_freq": 0.041,
-        "beat_benchmark_freq": 0.425
+        "windows": 72,
+        "median": 0.0619,
+        "p10": -0.0268,
+        "p90": 0.1062,
+        "beat_cdi_freq": 0.056,
+        "beat_benchmark_freq": 0.417
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
-       "sharpe_10y": -0.27,
+       "sharpe_10y": -0.3,
        "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 111,
+        "median": 0.0586,
+        "p10": -0.037,
+        "p90": 0.1312,
+        "beat_cdi_freq": 0.153,
+        "beat_benchmark_freq": 0.315
+       },
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
       },
       {
        "ticker": "VILG11",
        "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 56,
-        "median": -0.0167,
-        "p10": -0.0473,
-        "p90": 0.0708,
+        "median": -0.0204,
+        "p10": -0.0461,
+        "p90": 0.0796,
         "beat_cdi_freq": 0.036,
         "beat_benchmark_freq": 0.0
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
-       "sharpe_10y": -0.34,
-       "rank": 7
-      },
-      {
-       "ticker": "KNRI11",
-       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
-       "history": {
-        "windows": 110,
-        "median": 0.0584,
-        "p10": -0.0371,
-        "p90": 0.1316,
-        "beat_cdi_freq": 0.155,
-        "beat_benchmark_freq": 0.291
-       },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
-       "top_factors": [],
-       "sharpe_10y": -0.35,
+       "sharpe_10y": -0.37,
        "rank": 8
       },
       {
@@ -1933,31 +1960,31 @@
        "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 73,
-        "median": 0.0158,
-        "p10": -0.018,
+        "median": 0.0151,
+        "p10": -0.0137,
         "p90": 0.0623,
         "beat_cdi_freq": 0.014,
-        "beat_benchmark_freq": 0.26
+        "beat_benchmark_freq": 0.301
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
-       "sharpe_10y": -0.44,
+       "sharpe_10y": -0.49,
        "rank": 9
       },
       {
        "ticker": "KNCR11",
        "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
        "history": {
-        "windows": 110,
-        "median": 0.0024,
-        "p10": -0.0425,
-        "p90": 0.1549,
-        "beat_cdi_freq": 0.373,
-        "beat_benchmark_freq": 0.391
+        "windows": 111,
+        "median": 0.0011,
+        "p10": -0.0424,
+        "p90": 0.1542,
+        "beat_cdi_freq": 0.369,
+        "beat_benchmark_freq": 0.396
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
        "sharpe_10y": -0.56,
        "rank": 10
@@ -1967,16 +1994,16 @@
        "name": "Xp Log Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 41,
-        "median": 0.0564,
-        "p10": 0.0036,
-        "p90": 0.1154,
-        "beat_cdi_freq": 0.049,
-        "beat_benchmark_freq": 0.122
+        "median": 0.054,
+        "p10": 0.0035,
+        "p90": 0.1126,
+        "beat_cdi_freq": 0.024,
+        "beat_benchmark_freq": 0.171
        },
-       "prob_beat_benchmark": 0.431,
-       "prob_beat_cdi": 0.222,
+       "prob_beat_benchmark": 0.436,
+       "prob_beat_cdi": 0.226,
        "top_factors": [],
-       "sharpe_10y": -0.7,
+       "sharpe_10y": -0.71,
        "rank": 11
       }
      ]
@@ -1984,9 +2011,10 @@
     "5": {
      "years": 5,
      "months": 60,
-     "samples": 384,
+     "samples": 388,
      "beat_benchmark": {
-      "base_rate": 0.365,
+      "base_rate": 0.379,
+      "effective_windows": 6.5,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -1994,7 +2022,8 @@
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.167,
+      "base_rate": 0.17,
+      "effective_windows": 6.5,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -2002,20 +2031,21 @@
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": true,
      "assets": [
       {
        "ticker": "XPML11",
        "name": "Xp Malls Fundo Investimentos Imobiliarios",
        "history": {
         "windows": 17,
-        "median": 0.622,
-        "p10": 0.0666,
-        "p90": 0.6365,
+        "median": 0.624,
+        "p10": 0.0674,
+        "p90": 0.6353,
         "beat_cdi_freq": 0.588,
         "beat_benchmark_freq": 1.0
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
        "sharpe_10y": 0.14,
        "rank": 1
@@ -2024,15 +2054,15 @@
        "ticker": "BTLG11",
        "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
        "history": {
-        "windows": 86,
-        "median": 0.0681,
-        "p10": 0.0294,
-        "p90": 0.1451,
-        "beat_cdi_freq": 0.43,
-        "beat_benchmark_freq": 0.628
+        "windows": 87,
+        "median": 0.0677,
+        "p10": 0.0283,
+        "p90": 0.1449,
+        "beat_cdi_freq": 0.425,
+        "beat_benchmark_freq": 0.644
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
        "sharpe_10y": 0.09,
        "rank": 2
@@ -2041,18 +2071,35 @@
        "ticker": "HGLG11",
        "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
        "history": {
-        "windows": 127,
+        "windows": 128,
         "median": 0.0611,
-        "p10": 0.0012,
-        "p90": 0.102,
-        "beat_cdi_freq": 0.307,
-        "beat_benchmark_freq": 0.85
+        "p10": 0.0005,
+        "p90": 0.1019,
+        "beat_cdi_freq": 0.305,
+        "beat_benchmark_freq": 0.852
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
        "sharpe_10y": -0.13,
        "rank": 3
+      },
+      {
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 87,
+        "median": 0.0468,
+        "p10": 0.0202,
+        "p90": 0.0876,
+        "beat_cdi_freq": 0.011,
+        "beat_benchmark_freq": 0.299
+       },
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.23,
+       "rank": 4
       },
       {
        "ticker": "HGRU11",
@@ -2060,83 +2107,66 @@
        "history": {
         "windows": 40,
         "median": 0.0759,
-        "p10": 0.0536,
-        "p90": 0.0933,
+        "p10": 0.0548,
+        "p90": 0.0931,
         "beat_cdi_freq": 0.175,
         "beat_benchmark_freq": 0.75
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
-       "sharpe_10y": -0.23,
-       "rank": 4
-      },
-      {
-       "ticker": "MXRF11",
-       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
-       "history": {
-        "windows": 86,
-        "median": 0.0467,
-        "p10": 0.0202,
-        "p90": 0.0882,
-        "beat_cdi_freq": 0.012,
-        "beat_benchmark_freq": 0.291
-       },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
-       "top_factors": [],
-       "sharpe_10y": -0.23,
+       "sharpe_10y": -0.24,
        "rank": 5
       },
       {
        "ticker": "VISC11",
        "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
        "history": {
-        "windows": 49,
+        "windows": 48,
         "median": 0.0584,
-        "p10": 0.0035,
-        "p90": 0.0754,
+        "p10": 0.0031,
+        "p90": 0.0738,
         "beat_cdi_freq": 0.0,
-        "beat_benchmark_freq": 0.347
+        "beat_benchmark_freq": 0.333
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
-       "sharpe_10y": -0.27,
+       "sharpe_10y": -0.3,
        "rank": 6
+      },
+      {
+       "ticker": "KNRI11",
+       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
+       "history": {
+        "windows": 87,
+        "median": 0.0404,
+        "p10": -0.0198,
+        "p90": 0.0931,
+        "beat_cdi_freq": 0.069,
+        "beat_benchmark_freq": 0.184
+       },
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
+       "top_factors": [],
+       "sharpe_10y": -0.35,
+       "rank": 7
       },
       {
        "ticker": "VILG11",
        "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
        "history": {
         "windows": 32,
-        "median": -0.0034,
-        "p10": -0.0467,
-        "p90": 0.0447,
+        "median": -0.0064,
+        "p10": -0.0447,
+        "p90": 0.045,
         "beat_cdi_freq": 0.0,
         "beat_benchmark_freq": 0.0
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
-       "sharpe_10y": -0.34,
-       "rank": 7
-      },
-      {
-       "ticker": "KNRI11",
-       "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
-       "history": {
-        "windows": 86,
-        "median": 0.0396,
-        "p10": -0.02,
-        "p90": 0.0932,
-        "beat_cdi_freq": 0.07,
-        "beat_benchmark_freq": 0.174
-       },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
-       "top_factors": [],
-       "sharpe_10y": -0.35,
+       "sharpe_10y": -0.37,
        "rank": 8
       },
       {
@@ -2145,30 +2175,30 @@
        "history": {
         "windows": 49,
         "median": 0.0307,
-        "p10": -0.0184,
-        "p90": 0.0411,
+        "p10": -0.0155,
+        "p90": 0.0403,
         "beat_cdi_freq": 0.0,
         "beat_benchmark_freq": 0.082
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
-       "sharpe_10y": -0.44,
+       "sharpe_10y": -0.49,
        "rank": 9
       },
       {
        "ticker": "KNCR11",
        "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
        "history": {
-        "windows": 86,
-        "median": 0.014,
-        "p10": -0.0329,
-        "p90": 0.1406,
-        "beat_cdi_freq": 0.233,
-        "beat_benchmark_freq": 0.244
+        "windows": 87,
+        "median": 0.0131,
+        "p10": -0.0328,
+        "p90": 0.1405,
+        "beat_cdi_freq": 0.23,
+        "beat_benchmark_freq": 0.253
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
        "sharpe_10y": -0.56,
        "rank": 10
@@ -2179,15 +2209,15 @@
        "history": {
         "windows": 17,
         "median": 0.0383,
-        "p10": 0.0098,
-        "p90": 0.0615,
+        "p10": 0.0066,
+        "p90": 0.0566,
         "beat_cdi_freq": 0.0,
         "beat_benchmark_freq": 0.0
        },
-       "prob_beat_benchmark": 0.365,
-       "prob_beat_cdi": 0.167,
+       "prob_beat_benchmark": 0.379,
+       "prob_beat_cdi": 0.17,
        "top_factors": [],
-       "sharpe_10y": -0.7,
+       "sharpe_10y": -0.71,
        "rank": 11
       }
      ]
@@ -2195,9 +2225,10 @@
     "10": {
      "years": 10,
      "months": 120,
-     "samples": 10,
+     "samples": 15,
      "beat_benchmark": {
-      "base_rate": 0.0,
+      "base_rate": null,
+      "effective_windows": 0.1,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -2205,7 +2236,8 @@
       "coefficients": null
      },
      "beat_cdi": {
-      "base_rate": 0.2,
+      "base_rate": null,
+      "effective_windows": 0.1,
       "validation": {
        "oos_samples": 0,
        "validated": false
@@ -2213,13 +2245,14 @@
       "coefficients": null
      },
      "model_used": false,
+     "enough_history": false,
      "assets": [
       {
        "ticker": "XPML11",
        "name": "Xp Malls Fundo Investimentos Imobiliarios",
        "history": null,
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
        "sharpe_10y": 0.14,
        "rank": 1
@@ -2228,15 +2261,15 @@
        "ticker": "BTLG11",
        "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
        "history": {
-        "windows": 26,
-        "median": 0.0698,
-        "p10": 0.0287,
-        "p90": 0.1149,
-        "beat_cdi_freq": 0.385,
-        "beat_benchmark_freq": 0.231
+        "windows": 27,
+        "median": 0.0689,
+        "p10": 0.028,
+        "p90": 0.1144,
+        "beat_cdi_freq": 0.37,
+        "beat_benchmark_freq": 0.222
        },
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
        "sharpe_10y": 0.09,
        "rank": 2
@@ -2245,106 +2278,106 @@
        "ticker": "HGLG11",
        "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
        "history": {
-        "windows": 67,
-        "median": 0.0618,
+        "windows": 68,
+        "median": 0.0615,
         "p10": 0.0341,
         "p90": 0.0811,
-        "beat_cdi_freq": 0.03,
-        "beat_benchmark_freq": 0.851
+        "beat_cdi_freq": 0.029,
+        "beat_benchmark_freq": 0.853
        },
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
        "sharpe_10y": -0.13,
        "rank": 3
       },
       {
-       "ticker": "HGRU11",
-       "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
-       "history": null,
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "ticker": "MXRF11",
+       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+       "history": {
+        "windows": 27,
+        "median": 0.0585,
+        "p10": 0.0486,
+        "p90": 0.0706,
+        "beat_cdi_freq": 0.0,
+        "beat_benchmark_freq": 0.407
+       },
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
        "sharpe_10y": -0.23,
        "rank": 4
       },
       {
-       "ticker": "MXRF11",
-       "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
-       "history": {
-        "windows": 26,
-        "median": 0.0589,
-        "p10": 0.0486,
-        "p90": 0.0706,
-        "beat_cdi_freq": 0.0,
-        "beat_benchmark_freq": 0.385
-       },
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "ticker": "HGRU11",
+       "name": "Patria Renda Urbana - Fundo De Investimento Imobiliario",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
-       "sharpe_10y": -0.23,
+       "sharpe_10y": -0.24,
        "rank": 5
       },
       {
        "ticker": "VISC11",
        "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
        "history": null,
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
-       "sharpe_10y": -0.27,
+       "sharpe_10y": -0.3,
        "rank": 6
-      },
-      {
-       "ticker": "VILG11",
-       "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
-       "history": null,
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
-       "top_factors": [],
-       "sharpe_10y": -0.34,
-       "rank": 7
       },
       {
        "ticker": "KNRI11",
        "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
        "history": {
-        "windows": 26,
-        "median": 0.0527,
+        "windows": 27,
+        "median": 0.0526,
         "p10": 0.0385,
-        "p90": 0.0719,
+        "p90": 0.0715,
         "beat_cdi_freq": 0.0,
-        "beat_benchmark_freq": 0.192
+        "beat_benchmark_freq": 0.222
        },
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
        "sharpe_10y": -0.35,
+       "rank": 7
+      },
+      {
+       "ticker": "VILG11",
+       "name": "Vinci Logistica Fundo Investimento Imobiliario FII",
+       "history": null,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
+       "top_factors": [],
+       "sharpe_10y": -0.37,
        "rank": 8
       },
       {
        "ticker": "CPTS11",
        "name": "Capitania Securities II Fundo Investimento Imobiliario FII",
        "history": null,
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
-       "sharpe_10y": -0.44,
+       "sharpe_10y": -0.49,
        "rank": 9
       },
       {
        "ticker": "KNCR11",
        "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
        "history": {
-        "windows": 26,
-        "median": 0.0427,
-        "p10": 0.034,
+        "windows": 27,
+        "median": 0.0423,
+        "p10": 0.0336,
         "p90": 0.0544,
         "beat_cdi_freq": 0.0,
         "beat_benchmark_freq": 0.0
        },
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
        "sharpe_10y": -0.56,
        "rank": 10
@@ -2353,10 +2386,10 @@
        "ticker": "XPLG11",
        "name": "Xp Log Fundo Investimento Imobiliario FII",
        "history": null,
-       "prob_beat_benchmark": 0.0,
-       "prob_beat_cdi": 0.2,
+       "prob_beat_benchmark": null,
+       "prob_beat_cdi": null,
        "top_factors": [],
-       "sharpe_10y": -0.7,
+       "sharpe_10y": -0.71,
        "rank": 11
       }
      ]
@@ -2368,11 +2401,11 @@
   "ABEV3": {
    "name": "Ambev S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.2259,
-    "cagr": 0.0206,
+    "total_return": 0.2243,
+    "cagr": 0.0204,
     "volatility": 0.2392,
     "max_drawdown": -0.5023,
     "sharpe": -0.3,
@@ -2433,7 +2466,7 @@
     },
     {
      "year": 2026,
-     "return": 0.1106,
+     "return": 0.1092,
      "partial": true
     }
    ],
@@ -2475,64 +2508,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.4015
+   },
    "horizons": {
     "1": {
      "rank": 14,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.1539,
-      "p10": -0.229,
-      "p90": 0.6407,
-      "beat_cdi_freq": 0.518,
-      "beat_benchmark_freq": 0.56
+      "windows": 310,
+      "median": 0.1551,
+      "p10": -0.2288,
+      "p90": 0.6636,
+      "beat_cdi_freq": 0.519,
+      "beat_benchmark_freq": 0.561
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 14,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.1138,
-      "p10": -0.0373,
-      "p90": 0.4213,
-      "beat_cdi_freq": 0.453,
-      "beat_benchmark_freq": 0.456
+      "windows": 286,
+      "median": 0.1139,
+      "p10": -0.037,
+      "p90": 0.4271,
+      "beat_cdi_freq": 0.455,
+      "beat_benchmark_freq": 0.458
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 14,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
-      "median": 0.1315,
-      "p10": -0.028,
-      "p90": 0.3251,
-      "beat_cdi_freq": 0.475,
-      "beat_benchmark_freq": 0.41
+      "windows": 262,
+      "median": 0.1316,
+      "p10": -0.0279,
+      "p90": 0.328,
+      "beat_cdi_freq": 0.477,
+      "beat_benchmark_freq": 0.412
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 14,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
+      "windows": 202,
       "median": 0.1859,
       "p10": 0.0122,
-      "p90": 0.2734,
-      "beat_cdi_freq": 0.701,
-      "beat_benchmark_freq": 0.721
+      "p90": 0.2752,
+      "beat_cdi_freq": 0.703,
+      "beat_benchmark_freq": 0.723
      },
      "top_factors": [],
      "total": 15
@@ -2542,7 +2578,7 @@
   "B3SA3": {
    "name": "B3 S.A. - Brasil, Bolsa, Balcão",
    "asset_class": "acoes",
-   "first_month": "2007-11",
+   "first_month": "2007-10",
    "risk_10y": {
     "months": 120,
     "total_return": 2.3496,
@@ -2649,64 +2685,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 60,
+    "avg_annual": 0.2007
+   },
    "horizons": {
     "1": {
      "rank": 7,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 216,
-      "median": 0.1382,
-      "p10": -0.3825,
-      "p90": 0.6113,
-      "beat_cdi_freq": 0.537,
-      "beat_benchmark_freq": 0.546
+      "windows": 217,
+      "median": 0.1357,
+      "p10": -0.3915,
+      "p90": 0.6076,
+      "beat_cdi_freq": 0.535,
+      "beat_benchmark_freq": 0.544
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 7,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 192,
-      "median": 0.0582,
-      "p10": -0.2836,
-      "p90": 0.3928,
-      "beat_cdi_freq": 0.438,
-      "beat_benchmark_freq": 0.536
+      "windows": 193,
+      "median": 0.0568,
+      "p10": -0.2818,
+      "p90": 0.3924,
+      "beat_cdi_freq": 0.435,
+      "beat_benchmark_freq": 0.534
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 7,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 168,
-      "median": 0.1353,
-      "p10": -0.1907,
-      "p90": 0.3323,
-      "beat_cdi_freq": 0.554,
-      "beat_benchmark_freq": 0.571
+      "windows": 169,
+      "median": 0.1328,
+      "p10": -0.193,
+      "p90": 0.332,
+      "beat_cdi_freq": 0.55,
+      "beat_benchmark_freq": 0.568
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 7,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 108,
-      "median": 0.1515,
-      "p10": 0.0335,
-      "p90": 0.1915,
-      "beat_cdi_freq": 0.63,
-      "beat_benchmark_freq": 0.806
+      "windows": 109,
+      "median": 0.1508,
+      "p10": 0.0157,
+      "p90": 0.1911,
+      "beat_cdi_freq": 0.624,
+      "beat_benchmark_freq": 0.798
      },
      "top_factors": [],
      "total": 15
@@ -2716,12 +2755,12 @@
   "BBAS3": {
    "name": "Banco do Brasil S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 1.1158,
+    "total_return": 1.1145,
     "cagr": 0.0778,
-    "volatility": 0.3468,
+    "volatility": 0.3469,
     "max_drawdown": -0.4645,
     "sharpe": -0.04,
     "cdi_cagr": 0.0933,
@@ -2781,7 +2820,7 @@
     },
     {
      "year": 2026,
-     "return": -0.2098,
+     "return": -0.2102,
      "partial": true
     }
    ],
@@ -2823,63 +2862,66 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.3115
+   },
    "horizons": {
     "1": {
      "rank": 11,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.1957,
-      "p10": -0.2195,
-      "p90": 0.7399,
-      "beat_cdi_freq": 0.602,
-      "beat_benchmark_freq": 0.657
+      "windows": 310,
+      "median": 0.1883,
+      "p10": -0.2175,
+      "p90": 0.7374,
+      "beat_cdi_freq": 0.6,
+      "beat_benchmark_freq": 0.655
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 11,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.1527,
-      "p10": -0.0217,
-      "p90": 0.5075,
-      "beat_cdi_freq": 0.596,
-      "beat_benchmark_freq": 0.751
+      "windows": 286,
+      "median": 0.1526,
+      "p10": -0.0213,
+      "p90": 0.5072,
+      "beat_cdi_freq": 0.594,
+      "beat_benchmark_freq": 0.752
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 11,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
-      "median": 0.141,
-      "p10": 0.0261,
+      "windows": 262,
+      "median": 0.1412,
+      "p10": 0.0266,
       "p90": 0.4331,
-      "beat_cdi_freq": 0.751,
-      "beat_benchmark_freq": 0.877
+      "beat_cdi_freq": 0.752,
+      "beat_benchmark_freq": 0.878
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 11,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.1393,
+      "windows": 202,
+      "median": 0.1396,
       "p10": 0.0672,
-      "p90": 0.2648,
-      "beat_cdi_freq": 0.716,
+      "p90": 0.268,
+      "beat_cdi_freq": 0.718,
       "beat_benchmark_freq": 0.995
      },
      "top_factors": [],
@@ -2890,12 +2932,12 @@
   "BBDC4": {
    "name": "Banco Bradesco S.A.",
    "asset_class": "acoes",
-   "first_month": "2008-02",
+   "first_month": "2008-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.5286,
-    "cagr": 0.0433,
-    "volatility": 0.3325,
+    "total_return": 0.5255,
+    "cagr": 0.0431,
+    "volatility": 0.3326,
     "max_drawdown": -0.4492,
     "sharpe": -0.15,
     "cdi_cagr": 0.0933,
@@ -2955,7 +2997,7 @@
     },
     {
      "year": 2026,
-     "return": -0.1266,
+     "return": -0.1284,
      "partial": true
     }
    ],
@@ -2997,64 +3039,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 59,
+    "avg_annual": 0.1449
+   },
    "horizons": {
     "1": {
      "rank": 12,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 213,
-      "median": 0.0599,
-      "p10": -0.2793,
-      "p90": 0.4267,
-      "beat_cdi_freq": 0.455,
-      "beat_benchmark_freq": 0.54
+      "windows": 214,
+      "median": 0.0596,
+      "p10": -0.2801,
+      "p90": 0.4264,
+      "beat_cdi_freq": 0.453,
+      "beat_benchmark_freq": 0.542
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 12,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 189,
-      "median": 0.0442,
-      "p10": -0.0969,
-      "p90": 0.229,
-      "beat_cdi_freq": 0.381,
-      "beat_benchmark_freq": 0.524
+      "windows": 190,
+      "median": 0.0436,
+      "p10": -0.1019,
+      "p90": 0.2289,
+      "beat_cdi_freq": 0.379,
+      "beat_benchmark_freq": 0.521
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 12,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 165,
-      "median": 0.067,
-      "p10": -0.0699,
-      "p90": 0.1798,
-      "beat_cdi_freq": 0.388,
-      "beat_benchmark_freq": 0.442
+      "windows": 166,
+      "median": 0.0667,
+      "p10": -0.0697,
+      "p90": 0.1797,
+      "beat_cdi_freq": 0.386,
+      "beat_benchmark_freq": 0.44
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 12,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 105,
-      "median": 0.0871,
-      "p10": 0.0418,
+      "windows": 106,
+      "median": 0.0867,
+      "p10": 0.0419,
       "p90": 0.1208,
-      "beat_cdi_freq": 0.438,
-      "beat_benchmark_freq": 0.476
+      "beat_cdi_freq": 0.434,
+      "beat_benchmark_freq": 0.481
      },
      "top_factors": [],
      "total": 15
@@ -3064,11 +3109,11 @@
   "BTLG11": {
    "name": "BTG Pactual Logística Fundo de Investimento Imobiliário",
    "asset_class": "fiis",
-   "first_month": "2014-09",
+   "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 1.8563,
-    "cagr": 0.1107,
+    "total_return": 1.8557,
+    "cagr": 0.1106,
     "volatility": 0.1828,
     "max_drawdown": -0.2812,
     "sharpe": 0.09,
@@ -3129,7 +3174,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0237,
+     "return": 0.0235,
      "partial": true
     }
    ],
@@ -3142,9 +3187,9 @@
     },
     {
      "key": "2015",
-     "return": null,
-     "recovery_months": null,
-     "recovered": false
+     "return": -0.4349,
+     "recovery_months": 40,
+     "recovered": true
     },
     {
      "key": "2018",
@@ -3171,64 +3216,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": 0.0898
+   },
    "horizons": {
     "1": {
      "rank": 2,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
-      "windows": 134,
-      "median": 0.0686,
-      "p10": -0.2192,
-      "p90": 0.3501,
-      "beat_cdi_freq": 0.396,
-      "beat_benchmark_freq": 0.47
+      "windows": 135,
+      "median": 0.065,
+      "p10": -0.2255,
+      "p90": 0.3494,
+      "beat_cdi_freq": 0.393,
+      "beat_benchmark_freq": 0.467
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
      "rank": 2,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
-      "windows": 110,
-      "median": 0.0806,
-      "p10": -0.0489,
-      "p90": 0.1914,
-      "beat_cdi_freq": 0.355,
-      "beat_benchmark_freq": 0.482
+      "windows": 111,
+      "median": 0.0791,
+      "p10": -0.0508,
+      "p90": 0.1906,
+      "beat_cdi_freq": 0.351,
+      "beat_benchmark_freq": 0.477
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
      "rank": 2,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
-      "windows": 86,
-      "median": 0.0681,
-      "p10": 0.0294,
-      "p90": 0.1451,
-      "beat_cdi_freq": 0.43,
-      "beat_benchmark_freq": 0.628
+      "windows": 87,
+      "median": 0.0677,
+      "p10": 0.0283,
+      "p90": 0.1449,
+      "beat_cdi_freq": 0.425,
+      "beat_benchmark_freq": 0.644
      },
      "top_factors": [],
      "total": 11
     },
     "10": {
      "rank": 2,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": {
-      "windows": 26,
-      "median": 0.0698,
-      "p10": 0.0287,
-      "p90": 0.1149,
-      "beat_cdi_freq": 0.385,
-      "beat_benchmark_freq": 0.231
+      "windows": 27,
+      "median": 0.0689,
+      "p10": 0.028,
+      "p90": 0.1144,
+      "beat_cdi_freq": 0.37,
+      "beat_benchmark_freq": 0.222
      },
      "top_factors": [],
      "total": 11
@@ -3241,11 +3289,11 @@
    "first_month": "2017-10",
    "risk_10y": {
     "months": 108,
-    "total_return": 0.2146,
-    "cagr": 0.0218,
-    "volatility": 0.1578,
+    "total_return": 0.2158,
+    "cagr": 0.022,
+    "volatility": 0.1425,
     "max_drawdown": -0.3643,
-    "sharpe": -0.44,
+    "sharpe": -0.49,
     "cdi_cagr": 0.0914,
     "worst_12m": -0.3298,
     "best_12m": 0.5153
@@ -3253,17 +3301,17 @@
    "annual": [
     {
      "year": 2018,
-     "return": 0.0285,
+     "return": 0.0325,
      "partial": false
     },
     {
      "year": 2019,
-     "return": 0.169,
+     "return": 0.1295,
      "partial": false
     },
     {
      "year": 2020,
-     "return": -0.1261,
+     "return": -0.0992,
      "partial": false
     },
     {
@@ -3283,17 +3331,17 @@
     },
     {
      "year": 2024,
-     "return": -0.2721,
+     "return": -0.2667,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.3215,
+     "return": 0.3068,
      "partial": false
     },
     {
      "year": 2026,
-     "return": 0.0066,
+     "return": 0.0105,
      "partial": true
     }
    ],
@@ -3312,13 +3360,13 @@
     },
     {
      "key": "2018",
-     "return": 0.012,
+     "return": 0.0085,
      "recovery_months": 0,
      "recovered": true
     },
     {
      "key": "2020",
-     "return": -0.2093,
+     "return": -0.1694,
      "recovery_months": 28,
      "recovered": true
     },
@@ -3330,52 +3378,55 @@
     },
     {
      "key": "2024",
-     "return": -0.3139,
+     "return": -0.3088,
      "recovery_months": null,
      "recovered": false
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 30,
+    "avg_annual": 0.0497
+   },
    "horizons": {
     "1": {
      "rank": 9,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
       "windows": 97,
-      "median": 0.0541,
-      "p10": -0.1725,
-      "p90": 0.1728,
-      "beat_cdi_freq": 0.175,
-      "beat_benchmark_freq": 0.34
+      "median": 0.0486,
+      "p10": -0.1719,
+      "p90": 0.1586,
+      "beat_cdi_freq": 0.165,
+      "beat_benchmark_freq": 0.351
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
      "rank": 9,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
       "windows": 73,
-      "median": 0.0158,
-      "p10": -0.018,
+      "median": 0.0151,
+      "p10": -0.0137,
       "p90": 0.0623,
       "beat_cdi_freq": 0.014,
-      "beat_benchmark_freq": 0.26
+      "beat_benchmark_freq": 0.301
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
      "rank": 9,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
       "windows": 49,
       "median": 0.0307,
-      "p10": -0.0184,
-      "p90": 0.0411,
+      "p10": -0.0155,
+      "p90": 0.0403,
       "beat_cdi_freq": 0.0,
       "beat_benchmark_freq": 0.082
      },
@@ -3384,8 +3435,8 @@
     },
     "10": {
      "rank": 9,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": null,
      "top_factors": [],
      "total": 11
@@ -3395,12 +3446,12 @@
   "EQTL3": {
    "name": "Equatorial S.A.",
    "asset_class": "acoes",
-   "first_month": "2008-05",
+   "first_month": "2008-04",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.69,
-    "cagr": 0.1395,
-    "volatility": 0.2581,
+    "total_return": 2.6846,
+    "cagr": 0.1393,
+    "volatility": 0.2582,
     "max_drawdown": -0.2863,
     "sharpe": 0.18,
     "cdi_cagr": 0.0933,
@@ -3460,7 +3511,7 @@
     },
     {
      "year": 2026,
-     "return": -0.1109,
+     "return": -0.1122,
      "partial": true
     }
    ],
@@ -3502,48 +3553,51 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 59,
+    "avg_annual": 0.227
+   },
    "horizons": {
     "1": {
      "rank": 5,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 210,
-      "median": 0.2255,
-      "p10": -0.032,
-      "p90": 0.5462,
-      "beat_cdi_freq": 0.71,
-      "beat_benchmark_freq": 0.676
+      "windows": 211,
+      "median": 0.2254,
+      "p10": -0.0431,
+      "p90": 0.5461,
+      "beat_cdi_freq": 0.706,
+      "beat_benchmark_freq": 0.678
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 5,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 186,
-      "median": 0.2114,
-      "p10": 0.0799,
-      "p90": 0.3513,
-      "beat_cdi_freq": 0.833,
-      "beat_benchmark_freq": 0.919
+      "windows": 187,
+      "median": 0.211,
+      "p10": 0.0789,
+      "p90": 0.3504,
+      "beat_cdi_freq": 0.829,
+      "beat_benchmark_freq": 0.914
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 5,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 162,
-      "median": 0.2207,
-      "p10": 0.1229,
-      "p90": 0.3461,
-      "beat_cdi_freq": 0.944,
+      "windows": 163,
+      "median": 0.2205,
+      "p10": 0.1218,
+      "p90": 0.3456,
+      "beat_cdi_freq": 0.945,
       "beat_benchmark_freq": 1.0
      },
      "top_factors": [],
@@ -3551,13 +3605,13 @@
     },
     "10": {
      "rank": 5,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 102,
-      "median": 0.2391,
-      "p10": 0.1962,
-      "p90": 0.2852,
+      "windows": 103,
+      "median": 0.2388,
+      "p10": 0.1965,
+      "p90": 0.285,
       "beat_cdi_freq": 1.0,
       "beat_benchmark_freq": 1.0
      },
@@ -3569,11 +3623,11 @@
   "GGBR4": {
    "name": "Gerdau S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 3.4106,
-    "cagr": 0.16,
+    "total_return": 3.4014,
+    "cagr": 0.1597,
     "volatility": 0.3657,
     "max_drawdown": -0.4979,
     "sharpe": 0.18,
@@ -3634,7 +3688,7 @@
     },
     {
      "year": 2026,
-     "return": 0.2035,
+     "return": 0.201,
      "partial": true
     }
    ],
@@ -3676,64 +3730,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.4756
+   },
    "horizons": {
     "1": {
      "rank": 6,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.1203,
-      "p10": -0.3496,
-      "p90": 0.7487,
-      "beat_cdi_freq": 0.505,
-      "beat_benchmark_freq": 0.553
+      "windows": 310,
+      "median": 0.1227,
+      "p10": -0.3482,
+      "p90": 0.7553,
+      "beat_cdi_freq": 0.506,
+      "beat_benchmark_freq": 0.555
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 6,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.0304,
-      "p10": -0.8301,
-      "p90": 0.4475,
-      "beat_cdi_freq": 0.404,
-      "beat_benchmark_freq": 0.421
+      "windows": 286,
+      "median": 0.0314,
+      "p10": -0.8297,
+      "p90": 0.4482,
+      "beat_cdi_freq": 0.406,
+      "beat_benchmark_freq": 0.423
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 6,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
+      "windows": 262,
       "median": 0.0256,
-      "p10": -0.6095,
+      "p10": -0.6094,
       "p90": 0.2804,
-      "beat_cdi_freq": 0.387,
-      "beat_benchmark_freq": 0.383
+      "beat_cdi_freq": 0.385,
+      "beat_benchmark_freq": 0.382
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 6,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.0092,
-      "p10": -0.3698,
-      "p90": 0.1671,
-      "beat_cdi_freq": 0.284,
-      "beat_benchmark_freq": 0.338
+      "windows": 202,
+      "median": 0.0084,
+      "p10": -0.3694,
+      "p90": 0.1666,
+      "beat_cdi_freq": 0.282,
+      "beat_benchmark_freq": 0.337
      },
      "top_factors": [],
      "total": 15
@@ -3743,10 +3800,10 @@
   "HGLG11": {
    "name": "Cshg Logistica - Fundo De Investimento Imobiliario",
    "asset_class": "fiis",
-   "first_month": "2011-04",
+   "first_month": "2011-03",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.9886,
+    "total_return": 0.989,
     "cagr": 0.0712,
     "volatility": 0.1643,
     "max_drawdown": -0.2333,
@@ -3808,7 +3865,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0065,
+     "return": 0.0067,
      "partial": true
     }
    ],
@@ -3850,64 +3907,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 52,
+    "avg_annual": 0.0872
+   },
    "horizons": {
     "1": {
      "rank": 3,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
-      "windows": 175,
-      "median": 0.0459,
-      "p10": -0.0925,
-      "p90": 0.2091,
-      "beat_cdi_freq": 0.297,
-      "beat_benchmark_freq": 0.491
+      "windows": 176,
+      "median": 0.0461,
+      "p10": -0.0919,
+      "p90": 0.2089,
+      "beat_cdi_freq": 0.301,
+      "beat_benchmark_freq": 0.466
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
      "rank": 3,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
-      "windows": 151,
+      "windows": 152,
       "median": 0.0553,
-      "p10": -0.0384,
-      "p90": 0.1252,
-      "beat_cdi_freq": 0.265,
-      "beat_benchmark_freq": 0.576
+      "p10": -0.0383,
+      "p90": 0.1251,
+      "beat_cdi_freq": 0.263,
+      "beat_benchmark_freq": 0.553
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
      "rank": 3,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
-      "windows": 127,
+      "windows": 128,
       "median": 0.0611,
-      "p10": 0.0012,
-      "p90": 0.102,
-      "beat_cdi_freq": 0.307,
-      "beat_benchmark_freq": 0.85
+      "p10": 0.0005,
+      "p90": 0.1019,
+      "beat_cdi_freq": 0.305,
+      "beat_benchmark_freq": 0.852
      },
      "top_factors": [],
      "total": 11
     },
     "10": {
      "rank": 3,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": {
-      "windows": 67,
-      "median": 0.0618,
+      "windows": 68,
+      "median": 0.0615,
       "p10": 0.0341,
       "p90": 0.0811,
-      "beat_cdi_freq": 0.03,
-      "beat_benchmark_freq": 0.851
+      "beat_cdi_freq": 0.029,
+      "beat_benchmark_freq": 0.853
      },
      "top_factors": [],
      "total": 11
@@ -3920,24 +3980,24 @@
    "first_month": "2018-07",
    "risk_10y": {
     "months": 99,
-    "total_return": 0.6603,
-    "cagr": 0.0634,
-    "volatility": 0.133,
-    "max_drawdown": -0.1894,
-    "sharpe": -0.23,
+    "total_return": 0.629,
+    "cagr": 0.0609,
+    "volatility": 0.1355,
+    "max_drawdown": -0.1966,
+    "sharpe": -0.24,
     "cdi_cagr": 0.0938,
-    "worst_12m": -0.1372,
-    "best_12m": 0.3005
+    "worst_12m": -0.1587,
+    "best_12m": 0.3135
    },
    "annual": [
     {
      "year": 2019,
-     "return": 0.2618,
+     "return": 0.2767,
      "partial": false
     },
     {
      "year": 2020,
-     "return": -0.0239,
+     "return": -0.0343,
      "partial": false
     },
     {
@@ -3957,17 +4017,17 @@
     },
     {
      "year": 2024,
-     "return": -0.0734,
+     "return": -0.0757,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.1829,
+     "return": 0.1786,
      "partial": false
     },
     {
      "year": 2026,
-     "return": -0.0296,
+     "return": -0.0238,
      "partial": true
     }
    ],
@@ -3992,64 +4052,67 @@
     },
     {
      "key": "2020",
-     "return": -0.1849,
+     "return": -0.1764,
      "recovery_months": 29,
      "recovered": true
     },
     {
      "key": "2021",
-     "return": 0.0406,
+     "return": 0.0362,
      "recovery_months": 0,
      "recovered": true
     },
     {
      "key": "2024",
-     "return": -0.0462,
+     "return": -0.0485,
      "recovery_months": 4,
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 22,
+    "avg_annual": 0.157
+   },
    "horizons": {
     "1": {
-     "rank": 4,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "rank": 5,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
       "windows": 88,
       "median": 0.1003,
-      "p10": -0.0816,
-      "p90": 0.227,
-      "beat_cdi_freq": 0.5,
+      "p10": -0.085,
+      "p90": 0.2276,
+      "beat_cdi_freq": 0.489,
       "beat_benchmark_freq": 0.602
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
-     "rank": 4,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "rank": 5,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
       "windows": 64,
-      "median": 0.0776,
-      "p10": 0.0182,
-      "p90": 0.114,
+      "median": 0.0756,
+      "p10": 0.0183,
+      "p90": 0.119,
       "beat_cdi_freq": 0.094,
-      "beat_benchmark_freq": 0.812
+      "beat_benchmark_freq": 0.797
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
-     "rank": 4,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "rank": 5,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
       "windows": 40,
       "median": 0.0759,
-      "p10": 0.0536,
-      "p90": 0.0933,
+      "p10": 0.0548,
+      "p90": 0.0931,
       "beat_cdi_freq": 0.175,
       "beat_benchmark_freq": 0.75
      },
@@ -4057,9 +4120,9 @@
      "total": 11
     },
     "10": {
-     "rank": 4,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "rank": 5,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": null,
      "top_factors": [],
      "total": 11
@@ -4069,11 +4132,11 @@
   "ITUB4": {
    "name": "Itaú Unibanco Holding S.A.",
    "asset_class": "acoes",
-   "first_month": "2001-01",
+   "first_month": "2000-12",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.139,
-    "cagr": 0.1212,
+    "total_return": 2.1343,
+    "cagr": 0.121,
     "volatility": 0.2838,
     "max_drawdown": -0.3906,
     "sharpe": 0.1,
@@ -4134,7 +4197,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0373,
+     "return": 0.0358,
      "partial": true
     }
    ],
@@ -4176,63 +4239,66 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.2873
+   },
    "horizons": {
     "1": {
      "rank": 8,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 298,
-      "median": 0.1896,
-      "p10": -0.1849,
-      "p90": 0.5473,
-      "beat_cdi_freq": 0.601,
-      "beat_benchmark_freq": 0.654
+      "windows": 299,
+      "median": 0.1885,
+      "p10": -0.1847,
+      "p90": 0.5458,
+      "beat_cdi_freq": 0.599,
+      "beat_benchmark_freq": 0.656
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 8,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 274,
-      "median": 0.1377,
+      "windows": 275,
+      "median": 0.14,
       "p10": -0.0169,
-      "p90": 0.3981,
-      "beat_cdi_freq": 0.577,
-      "beat_benchmark_freq": 0.719
+      "p90": 0.3973,
+      "beat_cdi_freq": 0.575,
+      "beat_benchmark_freq": 0.72
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 8,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 250,
-      "median": 0.1464,
+      "windows": 251,
+      "median": 0.1466,
       "p10": 0.0243,
-      "p90": 0.301,
-      "beat_cdi_freq": 0.624,
-      "beat_benchmark_freq": 0.636
+      "p90": 0.3003,
+      "beat_cdi_freq": 0.625,
+      "beat_benchmark_freq": 0.637
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 8,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 190,
-      "median": 0.1254,
+      "windows": 191,
+      "median": 0.1259,
       "p10": 0.088,
-      "p90": 0.1876,
-      "beat_cdi_freq": 0.816,
+      "p90": 0.1881,
+      "beat_cdi_freq": 0.817,
       "beat_benchmark_freq": 0.995
      },
      "top_factors": [],
@@ -4243,10 +4309,10 @@
   "KNCR11": {
    "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
    "asset_class": "fiis",
-   "first_month": "2014-09",
+   "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.6351,
+    "total_return": 0.6357,
     "cagr": 0.0504,
     "volatility": 0.0764,
     "max_drawdown": -0.2495,
@@ -4308,7 +4374,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0833,
+     "return": 0.0837,
      "partial": true
     }
    ],
@@ -4321,9 +4387,9 @@
     },
     {
      "key": "2015",
-     "return": null,
-     "recovery_months": null,
-     "recovered": false
+     "return": -0.005,
+     "recovery_months": 1,
+     "recovered": true
     },
     {
      "key": "2018",
@@ -4350,61 +4416,64 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": 0.0129
+   },
    "horizons": {
     "1": {
      "rank": 10,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
-      "windows": 134,
-      "median": 0.0588,
-      "p10": -0.0861,
-      "p90": 0.1829,
-      "beat_cdi_freq": 0.343,
-      "beat_benchmark_freq": 0.455
+      "windows": 135,
+      "median": 0.0591,
+      "p10": -0.0857,
+      "p90": 0.1825,
+      "beat_cdi_freq": 0.341,
+      "beat_benchmark_freq": 0.459
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
      "rank": 10,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
-      "windows": 110,
-      "median": 0.0024,
-      "p10": -0.0425,
-      "p90": 0.1549,
-      "beat_cdi_freq": 0.373,
-      "beat_benchmark_freq": 0.391
+      "windows": 111,
+      "median": 0.0011,
+      "p10": -0.0424,
+      "p90": 0.1542,
+      "beat_cdi_freq": 0.369,
+      "beat_benchmark_freq": 0.396
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
      "rank": 10,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
-      "windows": 86,
-      "median": 0.014,
-      "p10": -0.0329,
-      "p90": 0.1406,
-      "beat_cdi_freq": 0.233,
-      "beat_benchmark_freq": 0.244
+      "windows": 87,
+      "median": 0.0131,
+      "p10": -0.0328,
+      "p90": 0.1405,
+      "beat_cdi_freq": 0.23,
+      "beat_benchmark_freq": 0.253
      },
      "top_factors": [],
      "total": 11
     },
     "10": {
      "rank": 10,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": {
-      "windows": 26,
-      "median": 0.0427,
-      "p10": 0.034,
+      "windows": 27,
+      "median": 0.0423,
+      "p10": 0.0336,
       "p90": 0.0544,
       "beat_cdi_freq": 0.0,
       "beat_benchmark_freq": 0.0
@@ -4417,11 +4486,11 @@
   "KNRI11": {
    "name": "Kinea Renda Imobiliária Fundo de Investimento Imobiliário",
    "asset_class": "fiis",
-   "first_month": "2014-09",
+   "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.4609,
-    "cagr": 0.0386,
+    "total_return": 0.4617,
+    "cagr": 0.0387,
     "volatility": 0.1581,
     "max_drawdown": -0.356,
     "sharpe": -0.35,
@@ -4482,7 +4551,7 @@
     },
     {
      "year": 2026,
-     "return": 0.0315,
+     "return": 0.0321,
      "partial": true
     }
    ],
@@ -4495,9 +4564,9 @@
     },
     {
      "key": "2015",
-     "return": null,
-     "recovery_months": null,
-     "recovered": false
+     "return": -0.1367,
+     "recovery_months": 3,
+     "recovered": true
     },
     {
      "key": "2018",
@@ -4524,64 +4593,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": -0.0342
+   },
    "horizons": {
     "1": {
-     "rank": 8,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "rank": 7,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
-      "windows": 134,
-      "median": 0.0788,
-      "p10": -0.1185,
-      "p90": 0.2685,
-      "beat_cdi_freq": 0.44,
-      "beat_benchmark_freq": 0.463
+      "windows": 135,
+      "median": 0.0786,
+      "p10": -0.118,
+      "p90": 0.268,
+      "beat_cdi_freq": 0.437,
+      "beat_benchmark_freq": 0.489
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
-     "rank": 8,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "rank": 7,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
-      "windows": 110,
-      "median": 0.0584,
-      "p10": -0.0371,
-      "p90": 0.1316,
-      "beat_cdi_freq": 0.155,
-      "beat_benchmark_freq": 0.291
+      "windows": 111,
+      "median": 0.0586,
+      "p10": -0.037,
+      "p90": 0.1312,
+      "beat_cdi_freq": 0.153,
+      "beat_benchmark_freq": 0.315
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
-     "rank": 8,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "rank": 7,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
-      "windows": 86,
-      "median": 0.0396,
-      "p10": -0.02,
-      "p90": 0.0932,
-      "beat_cdi_freq": 0.07,
-      "beat_benchmark_freq": 0.174
+      "windows": 87,
+      "median": 0.0404,
+      "p10": -0.0198,
+      "p90": 0.0931,
+      "beat_cdi_freq": 0.069,
+      "beat_benchmark_freq": 0.184
      },
      "top_factors": [],
      "total": 11
     },
     "10": {
-     "rank": 8,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "rank": 7,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": {
-      "windows": 26,
-      "median": 0.0527,
+      "windows": 27,
+      "median": 0.0526,
       "p10": 0.0385,
-      "p90": 0.0719,
+      "p90": 0.0715,
       "beat_cdi_freq": 0.0,
-      "beat_benchmark_freq": 0.192
+      "beat_benchmark_freq": 0.222
      },
      "top_factors": [],
      "total": 11
@@ -4591,7 +4663,7 @@
   "LREN3": {
    "name": "Lojas Renner S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
     "total_return": -0.3199,
@@ -4687,7 +4759,7 @@
     },
     {
      "key": "2021",
-     "return": -0.4251,
+     "return": -0.425,
      "recovery_months": null,
      "recovered": false
     },
@@ -4698,64 +4770,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.4
+   },
    "horizons": {
     "1": {
      "rank": 15,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.0078,
-      "p10": -0.3303,
-      "p90": 0.6477,
-      "beat_cdi_freq": 0.443,
-      "beat_benchmark_freq": 0.485
+      "windows": 310,
+      "median": 0.0072,
+      "p10": -0.3288,
+      "p90": 0.6463,
+      "beat_cdi_freq": 0.442,
+      "beat_benchmark_freq": 0.484
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 15,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.0672,
-      "p10": -0.9135,
-      "p90": 0.3582,
-      "beat_cdi_freq": 0.453,
-      "beat_benchmark_freq": 0.495
+      "windows": 286,
+      "median": 0.0666,
+      "p10": -0.9134,
+      "p90": 0.3578,
+      "beat_cdi_freq": 0.451,
+      "beat_benchmark_freq": 0.497
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 15,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
-      "median": 0.1273,
-      "p10": -0.7832,
-      "p90": 0.3225,
-      "beat_cdi_freq": 0.54,
-      "beat_benchmark_freq": 0.513
+      "windows": 262,
+      "median": 0.1262,
+      "p10": -0.783,
+      "p90": 0.3206,
+      "beat_cdi_freq": 0.538,
+      "beat_benchmark_freq": 0.511
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 15,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.074,
-      "p10": -0.4889,
-      "p90": 0.2539,
-      "beat_cdi_freq": 0.453,
-      "beat_benchmark_freq": 0.463
+      "windows": 202,
+      "median": 0.0738,
+      "p10": -0.4893,
+      "p90": 0.2537,
+      "beat_cdi_freq": 0.45,
+      "beat_benchmark_freq": 0.46
      },
      "top_factors": [],
      "total": 15
@@ -4765,7 +4840,7 @@
   "MXRF11": {
    "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
    "asset_class": "fiis",
-   "first_month": "2014-09",
+   "first_month": "2014-08",
    "risk_10y": {
     "months": 120,
     "total_return": 0.8023,
@@ -4843,9 +4918,9 @@
     },
     {
      "key": "2015",
-     "return": null,
-     "recovery_months": null,
-     "recovered": false
+     "return": -0.0462,
+     "recovery_months": 2,
+     "recovered": true
     },
     {
      "key": "2018",
@@ -4872,64 +4947,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 39,
+    "avg_annual": 0.0347
+   },
    "horizons": {
     "1": {
-     "rank": 5,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "rank": 4,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
-      "windows": 134,
+      "windows": 135,
       "median": 0.062,
       "p10": -0.0663,
-      "p90": 0.2075,
-      "beat_cdi_freq": 0.358,
-      "beat_benchmark_freq": 0.478
+      "p90": 0.2073,
+      "beat_cdi_freq": 0.356,
+      "beat_benchmark_freq": 0.481
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
-     "rank": 5,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "rank": 4,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
-      "windows": 110,
-      "median": 0.0646,
-      "p10": -0.0079,
-      "p90": 0.119,
-      "beat_cdi_freq": 0.136,
-      "beat_benchmark_freq": 0.473
+      "windows": 111,
+      "median": 0.0641,
+      "p10": -0.0075,
+      "p90": 0.1189,
+      "beat_cdi_freq": 0.135,
+      "beat_benchmark_freq": 0.468
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
-     "rank": 5,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "rank": 4,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
-      "windows": 86,
-      "median": 0.0467,
+      "windows": 87,
+      "median": 0.0468,
       "p10": 0.0202,
-      "p90": 0.0882,
-      "beat_cdi_freq": 0.012,
-      "beat_benchmark_freq": 0.291
+      "p90": 0.0876,
+      "beat_cdi_freq": 0.011,
+      "beat_benchmark_freq": 0.299
      },
      "top_factors": [],
      "total": 11
     },
     "10": {
-     "rank": 5,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "rank": 4,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": {
-      "windows": 26,
-      "median": 0.0589,
+      "windows": 27,
+      "median": 0.0585,
       "p10": 0.0486,
       "p90": 0.0706,
       "beat_cdi_freq": 0.0,
-      "beat_benchmark_freq": 0.385
+      "beat_benchmark_freq": 0.407
      },
      "top_factors": [],
      "total": 11
@@ -4939,11 +5017,11 @@
   "PETR4": {
    "name": "Petróleo Brasileiro S.A. - Petrobras",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 10.9056,
-    "cagr": 0.2811,
+    "total_return": 10.8988,
+    "cagr": 0.281,
     "volatility": 0.3677,
     "max_drawdown": -0.5364,
     "sharpe": 0.51,
@@ -5004,7 +5082,7 @@
     },
     {
      "year": 2026,
-     "return": 0.8206,
+     "return": 0.8196,
      "partial": true
     }
    ],
@@ -5046,64 +5124,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.2451
+   },
    "horizons": {
     "1": {
      "rank": 2,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.1917,
-      "p10": -0.2584,
-      "p90": 0.7492,
-      "beat_cdi_freq": 0.537,
-      "beat_benchmark_freq": 0.56
+      "windows": 310,
+      "median": 0.1991,
+      "p10": -0.258,
+      "p90": 0.7466,
+      "beat_cdi_freq": 0.539,
+      "beat_benchmark_freq": 0.561
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 2,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.1715,
-      "p10": -0.1438,
+      "windows": 286,
+      "median": 0.1712,
+      "p10": -0.1434,
       "p90": 0.518,
-      "beat_cdi_freq": 0.589,
-      "beat_benchmark_freq": 0.618
+      "beat_cdi_freq": 0.587,
+      "beat_benchmark_freq": 0.619
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 2,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
-      "median": 0.1981,
-      "p10": -0.1084,
-      "p90": 0.3859,
-      "beat_cdi_freq": 0.586,
-      "beat_benchmark_freq": 0.548
+      "windows": 262,
+      "median": 0.1954,
+      "p10": -0.1083,
+      "p90": 0.3857,
+      "beat_cdi_freq": 0.584,
+      "beat_benchmark_freq": 0.55
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 2,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.1064,
+      "windows": 202,
+      "median": 0.1079,
       "p10": -0.0395,
-      "p90": 0.2519,
-      "beat_cdi_freq": 0.458,
-      "beat_benchmark_freq": 0.398
+      "p90": 0.251,
+      "beat_cdi_freq": 0.46,
+      "beat_benchmark_freq": 0.401
      },
      "top_factors": [],
      "total": 15
@@ -5113,11 +5194,11 @@
   "PRIO3": {
    "name": "Prio S.A.",
    "asset_class": "acoes",
-   "first_month": "2010-11",
+   "first_month": "2010-10",
    "risk_10y": {
     "months": 120,
-    "total_return": 224.6117,
-    "cagr": 0.7192,
+    "total_return": 224.643,
+    "cagr": 0.7193,
     "volatility": 0.5692,
     "max_drawdown": -0.6516,
     "sharpe": 1.1,
@@ -5178,7 +5259,7 @@
     },
     {
      "year": 2026,
-     "return": 0.7402,
+     "return": 0.7405,
      "partial": true
     }
    ],
@@ -5220,64 +5301,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 52,
+    "avg_annual": 0.903
+   },
    "horizons": {
     "1": {
      "rank": 1,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 180,
-      "median": 0.2946,
-      "p10": -0.7109,
-      "p90": 1.6173,
-      "beat_cdi_freq": 0.567,
-      "beat_benchmark_freq": 0.561
+      "windows": 181,
+      "median": 0.2901,
+      "p10": -0.7092,
+      "p90": 1.6096,
+      "beat_cdi_freq": 0.564,
+      "beat_benchmark_freq": 0.558
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 1,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 156,
-      "median": 0.3628,
-      "p10": -0.6509,
-      "p90": 1.2503,
-      "beat_cdi_freq": 0.615,
-      "beat_benchmark_freq": 0.635
+      "windows": 157,
+      "median": 0.3476,
+      "p10": -0.6511,
+      "p90": 1.2488,
+      "beat_cdi_freq": 0.611,
+      "beat_benchmark_freq": 0.631
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 1,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 132,
-      "median": 0.4253,
-      "p10": -0.4751,
-      "p90": 1.1632,
-      "beat_cdi_freq": 0.742,
-      "beat_benchmark_freq": 0.735
+      "windows": 133,
+      "median": 0.4196,
+      "p10": -0.5134,
+      "p90": 1.1615,
+      "beat_cdi_freq": 0.737,
+      "beat_benchmark_freq": 0.729
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 1,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 72,
-      "median": 0.433,
-      "p10": -0.0358,
-      "p90": 0.6934,
-      "beat_cdi_freq": 0.778,
-      "beat_benchmark_freq": 0.806
+      "windows": 73,
+      "median": 0.4317,
+      "p10": -0.0448,
+      "p90": 0.6931,
+      "beat_cdi_freq": 0.767,
+      "beat_benchmark_freq": 0.795
      },
      "top_factors": [],
      "total": 15
@@ -5287,12 +5371,12 @@
   "RADL3": {
    "name": "Raia Drogasil S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 0.3274,
+    "total_return": 0.3265,
     "cagr": 0.0287,
-    "volatility": 0.2967,
+    "volatility": 0.2968,
     "max_drawdown": -0.5303,
     "sharpe": -0.22,
     "cdi_cagr": 0.0933,
@@ -5352,7 +5436,7 @@
     },
     {
      "year": 2026,
-     "return": -0.3173,
+     "return": -0.3177,
      "partial": true
     }
    ],
@@ -5394,64 +5478,67 @@
      "recovered": false
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 1.1446
+   },
    "horizons": {
     "1": {
      "rank": 13,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
+      "windows": 310,
       "median": 0.1682,
-      "p10": -0.1798,
-      "p90": 1.0374,
-      "beat_cdi_freq": 0.547,
-      "beat_benchmark_freq": 0.54
+      "p10": -0.1792,
+      "p90": 1.1091,
+      "beat_cdi_freq": 0.548,
+      "beat_benchmark_freq": 0.542
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 13,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.2168,
-      "p10": 0.0302,
-      "p90": 1.3003,
-      "beat_cdi_freq": 0.684,
-      "beat_benchmark_freq": 0.716
+      "windows": 286,
+      "median": 0.2171,
+      "p10": 0.0305,
+      "p90": 1.2988,
+      "beat_cdi_freq": 0.685,
+      "beat_benchmark_freq": 0.717
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 13,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
-      "median": 0.3091,
-      "p10": 0.0617,
-      "p90": 0.9496,
-      "beat_cdi_freq": 0.831,
-      "beat_benchmark_freq": 0.812
+      "windows": 262,
+      "median": 0.3093,
+      "p10": 0.062,
+      "p90": 0.9473,
+      "beat_cdi_freq": 0.832,
+      "beat_benchmark_freq": 0.813
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 13,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.3407,
-      "p10": 0.1462,
-      "p90": 0.6435,
+      "windows": 202,
+      "median": 0.343,
+      "p10": 0.1483,
+      "p90": 0.6596,
       "beat_cdi_freq": 0.95,
-      "beat_benchmark_freq": 0.915
+      "beat_benchmark_freq": 0.916
      },
      "top_factors": [],
      "total": 15
@@ -5461,11 +5548,11 @@
   "RENT3": {
    "name": "Localiza Rent a Car S.A.",
    "asset_class": "acoes",
-   "first_month": "2005-06",
+   "first_month": "2005-05",
    "risk_10y": {
     "months": 120,
-    "total_return": 2.1481,
-    "cagr": 0.1215,
+    "total_return": 2.1459,
+    "cagr": 0.1214,
     "volatility": 0.3848,
     "max_drawdown": -0.5703,
     "sharpe": 0.07,
@@ -5526,7 +5613,7 @@
     },
     {
      "year": 2026,
-     "return": -0.2916,
+     "return": -0.2921,
      "partial": true
     }
    ],
@@ -5568,62 +5655,65 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 82,
+    "avg_annual": 0.4985
+   },
    "horizons": {
     "1": {
      "rank": 9,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 245,
-      "median": 0.1454,
-      "p10": -0.2686,
-      "p90": 0.8487,
-      "beat_cdi_freq": 0.567,
-      "beat_benchmark_freq": 0.678
+      "windows": 246,
+      "median": 0.1477,
+      "p10": -0.2668,
+      "p90": 0.8638,
+      "beat_cdi_freq": 0.569,
+      "beat_benchmark_freq": 0.679
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 9,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 221,
-      "median": 0.1335,
-      "p10": -0.0844,
-      "p90": 0.5306,
-      "beat_cdi_freq": 0.566,
-      "beat_benchmark_freq": 0.706
+      "windows": 222,
+      "median": 0.134,
+      "p10": -0.084,
+      "p90": 0.5339,
+      "beat_cdi_freq": 0.568,
+      "beat_benchmark_freq": 0.707
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 9,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 197,
-      "median": 0.1707,
-      "p10": 0.001,
-      "p90": 0.3912,
-      "beat_cdi_freq": 0.726,
-      "beat_benchmark_freq": 0.853
+      "windows": 198,
+      "median": 0.1718,
+      "p10": 0.0012,
+      "p90": 0.3949,
+      "beat_cdi_freq": 0.727,
+      "beat_benchmark_freq": 0.854
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 9,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 137,
+      "windows": 138,
       "median": 0.2082,
-      "p10": 0.1225,
-      "p90": 0.2649,
+      "p10": 0.1227,
+      "p90": 0.2653,
       "beat_cdi_freq": 0.92,
       "beat_benchmark_freq": 1.0
      },
@@ -5635,11 +5725,11 @@
   "SUZB3": {
    "name": "Suzano S.A.",
    "asset_class": "acoes",
-   "first_month": "2004-09",
+   "first_month": "2004-08",
    "risk_10y": {
     "months": 120,
-    "total_return": 1.8579,
-    "cagr": 0.1107,
+    "total_return": 1.8608,
+    "cagr": 0.1108,
     "volatility": 0.3462,
     "max_drawdown": -0.4231,
     "sharpe": 0.05,
@@ -5700,7 +5790,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0541,
+     "return": -0.0532,
      "partial": true
     }
    ],
@@ -5742,64 +5832,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 82,
+    "avg_annual": 12.6743
+   },
    "horizons": {
     "1": {
      "rank": 10,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 254,
+      "windows": 255,
       "median": 0.0065,
-      "p10": -0.1485,
-      "p90": 0.7376,
-      "beat_cdi_freq": 0.28,
-      "beat_benchmark_freq": 0.512
+      "p10": -0.1483,
+      "p90": 0.736,
+      "beat_cdi_freq": 0.282,
+      "beat_benchmark_freq": 0.514
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 10,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 230,
-      "median": 0.0866,
+      "windows": 231,
+      "median": 0.0884,
       "p10": 0.0054,
       "p90": 0.3919,
-      "beat_cdi_freq": 0.465,
-      "beat_benchmark_freq": 0.626
+      "beat_cdi_freq": 0.468,
+      "beat_benchmark_freq": 0.628
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 10,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 206,
-      "median": 0.096,
+      "windows": 207,
+      "median": 0.099,
       "p10": 0.0069,
-      "p90": 0.2363,
-      "beat_cdi_freq": 0.51,
-      "beat_benchmark_freq": 0.748
+      "p90": 0.2379,
+      "beat_cdi_freq": 0.512,
+      "beat_benchmark_freq": 0.749
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 10,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 146,
-      "median": 0.1186,
+      "windows": 147,
+      "median": 0.1187,
       "p10": 0.0884,
-      "p90": 0.1457,
-      "beat_cdi_freq": 0.856,
-      "beat_benchmark_freq": 0.904
+      "p90": 0.1463,
+      "beat_cdi_freq": 0.857,
+      "beat_benchmark_freq": 0.905
      },
      "top_factors": [],
      "total": 15
@@ -5809,12 +5902,12 @@
   "VALE3": {
    "name": "Vale S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 4.8152,
-    "cagr": 0.1925,
-    "volatility": 0.3022,
+    "total_return": 4.803,
+    "cagr": 0.1922,
+    "volatility": 0.3023,
     "max_drawdown": -0.3208,
     "sharpe": 0.33,
     "cdi_cagr": 0.0933,
@@ -5874,7 +5967,7 @@
     },
     {
      "year": 2026,
-     "return": -0.1178,
+     "return": -0.1197,
      "partial": true
     }
    ],
@@ -5916,64 +6009,67 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.3931
+   },
    "horizons": {
     "1": {
      "rank": 4,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.158,
-      "p10": -0.2272,
-      "p90": 0.8235,
-      "beat_cdi_freq": 0.56,
-      "beat_benchmark_freq": 0.55
+      "windows": 310,
+      "median": 0.1558,
+      "p10": -0.2271,
+      "p90": 0.8231,
+      "beat_cdi_freq": 0.558,
+      "beat_benchmark_freq": 0.548
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 4,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.1668,
-      "p10": -0.127,
-      "p90": 0.5146,
-      "beat_cdi_freq": 0.568,
-      "beat_benchmark_freq": 0.582
+      "windows": 286,
+      "median": 0.1669,
+      "p10": -0.1268,
+      "p90": 0.5143,
+      "beat_cdi_freq": 0.57,
+      "beat_benchmark_freq": 0.584
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 4,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
+      "windows": 262,
       "median": 0.1604,
-      "p10": -0.0938,
-      "p90": 0.4703,
-      "beat_cdi_freq": 0.644,
-      "beat_benchmark_freq": 0.693
+      "p10": -0.0922,
+      "p90": 0.4698,
+      "beat_cdi_freq": 0.645,
+      "beat_benchmark_freq": 0.695
      },
      "top_factors": [],
      "total": 15
     },
     "10": {
      "rank": 4,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.1297,
-      "p10": -0.0004,
-      "p90": 0.2797,
-      "beat_cdi_freq": 0.587,
-      "beat_benchmark_freq": 0.701
+      "windows": 202,
+      "median": 0.1306,
+      "p10": -0.0002,
+      "p90": 0.2836,
+      "beat_cdi_freq": 0.589,
+      "beat_benchmark_freq": 0.703
      },
      "top_factors": [],
      "total": 15
@@ -5986,19 +6082,19 @@
    "first_month": "2019-03",
    "risk_10y": {
     "months": 91,
-    "total_return": 0.1931,
-    "cagr": 0.0236,
-    "volatility": 0.2127,
-    "max_drawdown": -0.3978,
-    "sharpe": -0.34,
+    "total_return": 0.1908,
+    "cagr": 0.0233,
+    "volatility": 0.1996,
+    "max_drawdown": -0.4158,
+    "sharpe": -0.37,
     "cdi_cagr": 0.0965,
-    "worst_12m": -0.2911,
+    "worst_12m": -0.2885,
     "best_12m": 0.575
    },
    "annual": [
     {
      "year": 2020,
-     "return": -0.1333,
+     "return": -0.1562,
      "partial": false
     },
     {
@@ -6018,17 +6114,17 @@
     },
     {
      "year": 2024,
-     "return": -0.1896,
+     "return": -0.1828,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.4996,
+     "return": 0.4729,
      "partial": false
     },
     {
      "year": 2026,
-     "return": -0.0304,
+     "return": -0.0229,
      "partial": true
     }
    ],
@@ -6053,34 +6149,37 @@
     },
     {
      "key": "2020",
-     "return": -0.2651,
-     "recovery_months": 69,
+     "return": -0.1999,
+     "recovery_months": 70,
      "recovered": true
     },
     {
      "key": "2021",
-     "return": -0.1361,
+     "return": -0.1117,
      "recovery_months": 2,
      "recovered": true
     },
     {
      "key": "2024",
-     "return": -0.1336,
-     "recovery_months": 4,
+     "return": -0.1264,
+     "recovery_months": 3,
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 22,
+    "avg_annual": 0.0315
+   },
    "horizons": {
     "1": {
-     "rank": 7,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "rank": 8,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
       "windows": 80,
-      "median": 0.0168,
-      "p10": -0.1604,
-      "p90": 0.2571,
+      "median": 0.0198,
+      "p10": -0.1589,
+      "p90": 0.2475,
       "beat_cdi_freq": 0.312,
       "beat_benchmark_freq": 0.287
      },
@@ -6088,14 +6187,14 @@
      "total": 11
     },
     "3": {
-     "rank": 7,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "rank": 8,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
       "windows": 56,
-      "median": -0.0167,
-      "p10": -0.0473,
-      "p90": 0.0708,
+      "median": -0.0204,
+      "p10": -0.0461,
+      "p90": 0.0796,
       "beat_cdi_freq": 0.036,
       "beat_benchmark_freq": 0.0
      },
@@ -6103,14 +6202,14 @@
      "total": 11
     },
     "5": {
-     "rank": 7,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "rank": 8,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
       "windows": 32,
-      "median": -0.0034,
-      "p10": -0.0467,
-      "p90": 0.0447,
+      "median": -0.0064,
+      "p10": -0.0447,
+      "p90": 0.045,
       "beat_cdi_freq": 0.0,
       "beat_benchmark_freq": 0.0
      },
@@ -6118,9 +6217,9 @@
      "total": 11
     },
     "10": {
-     "rank": 7,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "rank": 8,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": null,
      "top_factors": [],
      "total": 11
@@ -6130,32 +6229,32 @@
   "VISC11": {
    "name": "Vinci Shopping Centers Fundo Investimento Imobiliario - Fii",
    "asset_class": "fiis",
-   "first_month": "2017-10",
+   "first_month": "2017-11",
    "risk_10y": {
-    "months": 108,
-    "total_return": 0.4827,
-    "cagr": 0.0447,
-    "volatility": 0.1706,
-    "max_drawdown": -0.3806,
-    "sharpe": -0.27,
-    "cdi_cagr": 0.0914,
-    "worst_12m": -0.199,
-    "best_12m": 0.3394
+    "months": 107,
+    "total_return": 0.5124,
+    "cagr": 0.0475,
+    "volatility": 0.1484,
+    "max_drawdown": -0.3164,
+    "sharpe": -0.3,
+    "cdi_cagr": 0.0916,
+    "worst_12m": -0.1715,
+    "best_12m": 0.3255
    },
    "annual": [
     {
      "year": 2018,
-     "return": 0.0432,
+     "return": 0.0384,
      "partial": false
     },
     {
      "year": 2019,
-     "return": 0.3318,
+     "return": 0.2935,
      "partial": false
     },
     {
      "year": 2020,
-     "return": -0.199,
+     "return": -0.1715,
      "partial": false
     },
     {
@@ -6175,17 +6274,17 @@
     },
     {
      "year": 2024,
-     "return": -0.1493,
+     "return": -0.138,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.2442,
+     "return": 0.2254,
      "partial": false
     },
     {
      "year": 2026,
-     "return": -0.0155,
+     "return": -0.0134,
      "partial": true
     }
    ],
@@ -6204,80 +6303,83 @@
     },
     {
      "key": "2018",
-     "return": -0.0901,
+     "return": -0.0942,
      "recovery_months": 13,
      "recovered": true
     },
     {
      "key": "2020",
-     "return": -0.3469,
-     "recovery_months": 40,
+     "return": -0.2834,
+     "recovery_months": 44,
      "recovered": true
     },
     {
      "key": "2021",
-     "return": -0.0382,
+     "return": -0.043,
      "recovery_months": 2,
      "recovered": true
     },
     {
      "key": "2024",
-     "return": -0.1239,
-     "recovery_months": 6,
+     "return": -0.1123,
+     "recovery_months": 4,
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 29,
+    "avg_annual": 0.0695
+   },
    "horizons": {
     "1": {
      "rank": 6,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
-      "windows": 97,
-      "median": 0.0589,
-      "p10": -0.1154,
-      "p90": 0.2607,
-      "beat_cdi_freq": 0.361,
-      "beat_benchmark_freq": 0.402
+      "windows": 96,
+      "median": 0.0593,
+      "p10": -0.1103,
+      "p90": 0.2745,
+      "beat_cdi_freq": 0.365,
+      "beat_benchmark_freq": 0.417
      },
      "top_factors": [],
      "total": 11
     },
     "3": {
      "rank": 6,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
-      "windows": 73,
-      "median": 0.0616,
-      "p10": -0.0274,
-      "p90": 0.1055,
-      "beat_cdi_freq": 0.041,
-      "beat_benchmark_freq": 0.425
+      "windows": 72,
+      "median": 0.0619,
+      "p10": -0.0268,
+      "p90": 0.1062,
+      "beat_cdi_freq": 0.056,
+      "beat_benchmark_freq": 0.417
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
      "rank": 6,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
-      "windows": 49,
+      "windows": 48,
       "median": 0.0584,
-      "p10": 0.0035,
-      "p90": 0.0754,
+      "p10": 0.0031,
+      "p90": 0.0738,
       "beat_cdi_freq": 0.0,
-      "beat_benchmark_freq": 0.347
+      "beat_benchmark_freq": 0.333
      },
      "top_factors": [],
      "total": 11
     },
     "10": {
      "rank": 6,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": null,
      "top_factors": [],
      "total": 11
@@ -6287,11 +6389,11 @@
   "WEGE3": {
    "name": "WEG S.A.",
    "asset_class": "acoes",
-   "first_month": "2000-02",
+   "first_month": "2000-01",
    "risk_10y": {
     "months": 120,
-    "total_return": 7.4615,
-    "cagr": 0.2381,
+    "total_return": 7.4579,
+    "cagr": 0.238,
     "volatility": 0.3059,
     "max_drawdown": -0.3825,
     "sharpe": 0.47,
@@ -6352,7 +6454,7 @@
     },
     {
      "year": 2026,
-     "return": -0.0156,
+     "return": -0.016,
      "partial": true
     }
    ],
@@ -6394,47 +6496,50 @@
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 93,
+    "avg_annual": 0.8735
+   },
    "horizons": {
     "1": {
      "rank": 3,
-     "prob_beat_benchmark": 0.576,
-     "prob_beat_cdi": 0.553,
+     "prob_beat_benchmark": 0.579,
+     "prob_beat_cdi": 0.554,
      "history": {
-      "windows": 309,
-      "median": 0.2433,
-      "p10": -0.1179,
+      "windows": 310,
+      "median": 0.2406,
+      "p10": -0.1178,
       "p90": 0.981,
-      "beat_cdi_freq": 0.689,
-      "beat_benchmark_freq": 0.647
+      "beat_cdi_freq": 0.687,
+      "beat_benchmark_freq": 0.645
      },
      "top_factors": [],
      "total": 15
     },
     "3": {
      "rank": 3,
-     "prob_beat_benchmark": 0.635,
-     "prob_beat_cdi": 0.576,
+     "prob_beat_benchmark": 0.64,
+     "prob_beat_cdi": 0.574,
      "history": {
-      "windows": 285,
-      "median": 0.2216,
-      "p10": 0.0516,
+      "windows": 286,
+      "median": 0.2217,
+      "p10": 0.0519,
       "p90": 0.575,
-      "beat_cdi_freq": 0.814,
-      "beat_benchmark_freq": 0.793
+      "beat_cdi_freq": 0.815,
+      "beat_benchmark_freq": 0.794
      },
      "top_factors": [],
      "total": 15
     },
     "5": {
      "rank": 3,
-     "prob_beat_benchmark": 0.677,
-     "prob_beat_cdi": 0.643,
+     "prob_beat_benchmark": 0.68,
+     "prob_beat_cdi": 0.639,
      "history": {
-      "windows": 261,
-      "median": 0.2301,
-      "p10": 0.082,
-      "p90": 0.4866,
+      "windows": 262,
+      "median": 0.2305,
+      "p10": 0.0825,
+      "p90": 0.4863,
       "beat_cdi_freq": 0.87,
       "beat_benchmark_freq": 0.897
      },
@@ -6443,13 +6548,13 @@
     },
     "10": {
      "rank": 3,
-     "prob_beat_benchmark": 0.762,
-     "prob_beat_cdi": 0.696,
+     "prob_beat_benchmark": 0.77,
+     "prob_beat_cdi": 0.694,
      "history": {
-      "windows": 201,
-      "median": 0.255,
-      "p10": 0.1618,
-      "p90": 0.318,
+      "windows": 202,
+      "median": 0.2551,
+      "p10": 0.1623,
+      "p90": 0.3191,
       "beat_cdi_freq": 1.0,
       "beat_benchmark_freq": 1.0
      },
@@ -6464,14 +6569,14 @@
    "first_month": "2020-06",
    "risk_10y": {
     "months": 76,
-    "total_return": 0.0843,
-    "cagr": 0.0129,
-    "volatility": 0.1325,
-    "max_drawdown": -0.3058,
-    "sharpe": -0.7,
+    "total_return": 0.0501,
+    "cagr": 0.0077,
+    "volatility": 0.1379,
+    "max_drawdown": -0.3272,
+    "sharpe": -0.71,
     "cdi_cagr": 0.1061,
-    "worst_12m": -0.2683,
-    "best_12m": 0.3282
+    "worst_12m": -0.2893,
+    "best_12m": 0.3319
    },
    "annual": [
     {
@@ -6491,17 +6596,17 @@
     },
     {
      "year": 2024,
-     "return": -0.0619,
+     "return": -0.0608,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.2409,
+     "return": 0.2428,
      "partial": false
     },
     {
      "year": 2026,
-     "return": -0.0673,
+     "return": -0.0707,
      "partial": true
     }
    ],
@@ -6532,29 +6637,32 @@
     },
     {
      "key": "2021",
-     "return": -0.091,
+     "return": -0.0952,
      "recovery_months": 2,
      "recovered": true
     },
     {
      "key": "2024",
-     "return": -0.0602,
-     "recovery_months": 4,
+     "return": -0.0591,
+     "recovery_months": 3,
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 17,
+    "avg_annual": -0.0125
+   },
    "horizons": {
     "1": {
      "rank": 11,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
       "windows": 65,
-      "median": 0.0488,
-      "p10": -0.1696,
-      "p90": 0.24,
-      "beat_cdi_freq": 0.292,
+      "median": 0.0516,
+      "p10": -0.1719,
+      "p90": 0.2412,
+      "beat_cdi_freq": 0.277,
       "beat_benchmark_freq": 0.308
      },
      "top_factors": [],
@@ -6562,28 +6670,28 @@
     },
     "3": {
      "rank": 11,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
       "windows": 41,
-      "median": 0.0564,
-      "p10": 0.0036,
-      "p90": 0.1154,
-      "beat_cdi_freq": 0.049,
-      "beat_benchmark_freq": 0.122
+      "median": 0.054,
+      "p10": 0.0035,
+      "p90": 0.1126,
+      "beat_cdi_freq": 0.024,
+      "beat_benchmark_freq": 0.171
      },
      "top_factors": [],
      "total": 11
     },
     "5": {
      "rank": 11,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
       "windows": 17,
       "median": 0.0383,
-      "p10": 0.0098,
-      "p90": 0.0615,
+      "p10": 0.0066,
+      "p90": 0.0566,
       "beat_cdi_freq": 0.0,
       "beat_benchmark_freq": 0.0
      },
@@ -6592,8 +6700,8 @@
     },
     "10": {
      "rank": 11,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": null,
      "top_factors": [],
      "total": 11
@@ -6606,13 +6714,13 @@
    "first_month": "2020-06",
    "risk_10y": {
     "months": 76,
-    "total_return": 10.1009,
-    "cagr": 0.4624,
-    "volatility": 2.5675,
-    "max_drawdown": -0.2718,
+    "total_return": 10.1149,
+    "cagr": 0.4627,
+    "volatility": 2.5897,
+    "max_drawdown": -0.2333,
     "sharpe": 0.14,
     "cdi_cagr": 0.1061,
-    "worst_12m": -0.2466,
+    "worst_12m": -0.1893,
     "best_12m": 8.5404
    },
    "annual": [
@@ -6633,17 +6741,17 @@
     },
     {
      "year": 2024,
-     "return": -0.0755,
+     "return": -0.076,
      "partial": false
     },
     {
      "year": 2025,
-     "return": 0.2409,
+     "return": 0.2321,
      "partial": false
     },
     {
      "year": 2026,
-     "return": 6.1985,
+     "return": 6.2567,
      "partial": true
     }
    ],
@@ -6674,29 +6782,32 @@
     },
     {
      "key": "2021",
-     "return": -0.0606,
+     "return": -0.0565,
      "recovery_months": 2,
      "recovered": true
     },
     {
      "key": "2024",
-     "return": -0.0961,
+     "return": -0.0966,
      "recovery_months": 4,
      "recovered": true
     }
    ],
-   "in_scenario": null,
+   "in_scenario": {
+    "months": 17,
+    "avg_annual": 0.1422
+   },
    "horizons": {
     "1": {
      "rank": 1,
-     "prob_beat_benchmark": 0.454,
-     "prob_beat_cdi": 0.388,
+     "prob_beat_benchmark": 0.46,
+     "prob_beat_cdi": 0.386,
      "history": {
       "windows": 65,
-      "median": 0.1046,
-      "p10": -0.0913,
-      "p90": 7.2185,
-      "beat_cdi_freq": 0.492,
+      "median": 0.1181,
+      "p10": -0.087,
+      "p90": 7.123,
+      "beat_cdi_freq": 0.508,
       "beat_benchmark_freq": 0.631
      },
      "top_factors": [],
@@ -6704,14 +6815,14 @@
     },
     "3": {
      "rank": 1,
-     "prob_beat_benchmark": 0.431,
-     "prob_beat_cdi": 0.222,
+     "prob_beat_benchmark": 0.436,
+     "prob_beat_cdi": 0.226,
      "history": {
       "windows": 41,
-      "median": 0.1203,
-      "p10": 0.0622,
-      "p90": 1.1851,
-      "beat_cdi_freq": 0.512,
+      "median": 0.1181,
+      "p10": 0.0619,
+      "p90": 1.1918,
+      "beat_cdi_freq": 0.488,
       "beat_benchmark_freq": 1.0
      },
      "top_factors": [],
@@ -6719,13 +6830,13 @@
     },
     "5": {
      "rank": 1,
-     "prob_beat_benchmark": 0.365,
-     "prob_beat_cdi": 0.167,
+     "prob_beat_benchmark": 0.379,
+     "prob_beat_cdi": 0.17,
      "history": {
       "windows": 17,
-      "median": 0.622,
-      "p10": 0.0666,
-      "p90": 0.6365,
+      "median": 0.624,
+      "p10": 0.0674,
+      "p90": 0.6353,
       "beat_cdi_freq": 0.588,
       "beat_benchmark_freq": 1.0
      },
@@ -6734,8 +6845,8 @@
     },
     "10": {
      "rank": 1,
-     "prob_beat_benchmark": 0.0,
-     "prob_beat_cdi": 0.2,
+     "prob_beat_benchmark": null,
+     "prob_beat_cdi": null,
      "history": null,
      "top_factors": [],
      "total": 11
