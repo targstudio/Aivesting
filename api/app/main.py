@@ -13,6 +13,8 @@ from pydantic import BaseModel, Field
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
 from .config import Settings, get_settings
+from .longterm.model import HORIZONS
+from .longterm.service import LongTermService
 from .providers.bcb import BcbClient
 from .providers.brapi import BrapiProvider
 from .providers.demo import DemoMacro, DemoProvider
@@ -28,6 +30,12 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(min_length=1, max_length=40)
 
+
+LONGTERM_DISCLAIMER = (
+    "Probabilidades estimadas por modelo estatístico com dados desde 2000 e validadas fora da amostra. "
+    "Não é recomendação de investimento nem considera o seu perfil. Rentabilidade passada não garante "
+    "rentabilidade futura."
+)
 
 DISCLAIMER = (
     "Conteúdo informativo gerado por modelo estatístico. Não é recomendação de investimento. "
@@ -52,6 +60,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         else None
     )
     ranking = RankingService(settings, provider, store)
+    longterm = LongTermService(settings.longterm_path)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -70,6 +79,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.ranking = ranking
     app.state.bcb = bcb
     app.state.provider = provider
+    app.state.longterm = longterm
 
     def get_ranking() -> RankingService:
         return app.state.ranking
@@ -119,6 +129,33 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         await svc.recompute(force=True)
         return {"classes": {k: len(v.assets) for k, v in svc.snapshots.items()}}
 
+    def longterm_data() -> LongTermService:
+        if app.state.longterm.data is None:
+            raise HTTPException(503, "Modelo de horizontes ainda não calibrado.")
+        return app.state.longterm
+
+    @app.get("/horizontes")
+    async def horizons_overview():
+        return {**longterm_data().overview(), "disclaimer": LONGTERM_DISCLAIMER}
+
+    @app.get("/horizontes/{asset_class}/{years}")
+    async def horizon_ranking(asset_class: str, years: int):
+        if asset_class not in CLASSES:
+            raise HTTPException(404, "Classe desconhecida. Use 'acoes' ou 'fiis'.")
+        if years not in HORIZONS:
+            raise HTTPException(404, "Horizonte desconhecido. Use 1, 3, 5 ou 10.")
+        result = longterm_data().horizon(asset_class, years)
+        if result is None:
+            raise HTTPException(404, "Sem dados para essa classe.")
+        return {**result, "disclaimer": LONGTERM_DISCLAIMER}
+
+    @app.get("/assets/{ticker}/historico")
+    async def asset_history(ticker: str):
+        result = longterm_data().asset(ticker.upper())
+        if result is None:
+            raise HTTPException(404, f"{ticker.upper()} não tem histórico de longo prazo.")
+        return {**result, "disclaimer": LONGTERM_DISCLAIMER}
+
     def find_asset(svc: RankingService, ticker: str):
         ticker = ticker.upper()
         for snapshot in svc.snapshots.values():
@@ -159,7 +196,9 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if body.messages[-1].role != "user":
             raise HTTPException(422, "A última mensagem precisa ser do usuário.")
         ai_rate_limit(request)
-        assistant = Assistant(settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb)
+        assistant = Assistant(
+            settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm
+        )
         result = await assistant.reply([m.model_dump() for m in body.messages])
         return {**result, "disclaimer": DISCLAIMER}
 

@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     supabase_url: str = ""
     supabase_secret_key: str = ""
 
+    # Resultado calibrado do modelo de horizontes (1, 3, 5 e 10 anos). Vazio = api/data/longterm.json.
+    longterm_path: str = ""
+
     # Usa dados sintéticos (sem brapi nem BCB). Útil para desenvolvimento e demonstração.
     demo_mode: bool = False
 
