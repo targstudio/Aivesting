@@ -1,7 +1,7 @@
 """Leituras da IA em cada tela do app: resumo do mercado, do ranking, do macro e dos horizontes, e alertas explicados.
 
-Cada leitura recebe só os dados que o app já calculou e fica em cache por alguns minutos, para que todas as pessoas
-vejam o mesmo texto e o custo não cresça com o número de acessos. A IA descreve os dados; ela não recomenda.
+Cada leitura recebe só os dados que o app já calculou e fica guardada até alguém pedir "Atualizar", para que todas as
+pessoas vejam o mesmo texto e o custo não cresça com o número de acessos. A IA descreve os dados; ela não recomenda.
 """
 
 import json
@@ -45,7 +45,9 @@ TASKS = {
     "variação, posição no ranking, fatores do modelo) e o contexto do mercado e do macro. Não sugira o que fazer.",
 }
 
-CACHE_SECONDS = 15 * 60
+# A última leitura de cada tela fica guardada e é servida sem chamar a IA até alguém pedir "Atualizar".
+# Pedidos de atualização dentro deste intervalo recebem a leitura recém-gerada (evita cliques repetidos).
+REFRESH_MIN_SECONDS = 2 * 60
 
 
 def system_prompt(task: str, level: str) -> str:
@@ -165,9 +167,10 @@ class Insights:
             return "Não foi possível gerar esta explicação agora."
         return "".join(b.text for b in response.content if b.type == "text").strip()
 
-    def cached(self, context: str, level: str) -> dict | None:
+    def cached(self, context: str, level: str, max_age: float | None = None) -> dict | None:
+        """Última leitura guardada; com `max_age`, só se for mais nova que isso (em segundos)."""
         hit = self._cache.get((context, level))
-        if hit and time.monotonic() - hit[0] < CACHE_SECONDS:
+        if hit and (max_age is None or time.monotonic() - hit[0] < max_age):
             if self.usage:
                 self.usage.hit()
             return {**hit[1], "cached": True}

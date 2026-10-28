@@ -3,7 +3,7 @@ import time
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from dataclasses import asdict
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Literal
 
 import anthropic
@@ -16,7 +16,7 @@ from .advisor import QUESTIONS, PlanRequest, build_plan
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
-from .ai.insights import LEVELS, Insights, valid_context
+from .ai.insights import LEVELS, REFRESH_MIN_SECONDS, Insights, valid_context
 from .ai.usage import UsageTracker
 from .alerts import Alert, evaluate
 from .config import Settings, get_settings
@@ -158,7 +158,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         return app.state.ranking
 
     ai_calls: dict[str, deque] = defaultdict(deque)
-    explain_cache: dict[tuple, str] = {}
+    explain_cache: dict[tuple, tuple[str, float, str]] = {}  # (texto, time.time(), ISO de quando foi gerada)
 
     def ai_rate_limit(request: Request) -> None:
         """Janela deslizante de 1 hora por IP. Em memória: vale por instância da API."""
@@ -296,12 +296,14 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         }
 
     @app.get("/ia/leitura")
-    async def ai_reading(request: Request, contexto: str, nivel: Level = "iniciante"):
-        """Leitura da IA para uma tela: inicio, mercado, macro, ranking:acoes, horizontes:fiis:5..."""
+    async def ai_reading(request: Request, contexto: str, nivel: Level = "iniciante", atualizar: bool = False):
+        """Leitura da IA para uma tela: inicio, mercado, macro, ranking:acoes, horizontes:fiis:5...
+
+        Devolve a última leitura guardada (sem gastar tokens); só gera outra na primeira vez ou com `atualizar=true`."""
         if not valid_context(contexto):
             raise HTTPException(404, "Contexto desconhecido.")
         require_ai()
-        cached = app.state.insights.cached(contexto, nivel)
+        cached = app.state.insights.cached(contexto, nivel, max_age=REFRESH_MIN_SECONDS if atualizar else None)
         if cached:
             return {**cached, "disclaimer": DISCLAIMER}
         ai_rate_limit(request)
@@ -400,15 +402,23 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
 
     @app.post("/assets/{ticker}/explain")
     async def explain_asset(
-        ticker: str, request: Request, nivel: Level = "iniciante", svc: RankingService = Depends(get_ranking)
+        ticker: str,
+        request: Request,
+        nivel: Level = "iniciante",
+        atualizar: bool = False,
+        svc: RankingService = Depends(get_ranking),
     ):
         require_ai()
         asset, snapshot = find_asset(svc, ticker)
-        # Mesma explicação enquanto o ranking não for recalculado: abrir a página de novo não gasta cota.
-        key = (asset.ticker, nivel, snapshot.computed_at)
-        if key in explain_cache:
+        # A última explicação de cada ativo fica guardada até alguém pedir "Atualizar": abrir a página não gasta cota.
+        key = (asset.ticker, nivel)
+        saved = explain_cache.get(key)
+        if saved and (not atualizar or time.time() - saved[1] < REFRESH_MIN_SECONDS):
             usage.hit()
-            return {"ticker": asset.ticker, "explanation": explain_cache[key], "disclaimer": DISCLAIMER}
+            return {
+                "ticker": asset.ticker, "explanation": saved[0], "generated_at": saved[2], "cached": True,
+                "disclaimer": DISCLAIMER,
+            }
         ai_rate_limit(request)
         macro = await app.state.bcb.indicators()
         text = await Explainer(settings.anthropic_api_key, settings.anthropic_model, usage).explain(
@@ -416,8 +426,12 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         )
         if len(explain_cache) > 500:
             explain_cache.clear()
-        explain_cache[key] = text
-        return {"ticker": asset.ticker, "explanation": text, "disclaimer": DISCLAIMER}
+        generated_at = datetime.now(timezone.utc).isoformat()
+        explain_cache[key] = (text, time.time(), generated_at)
+        return {
+            "ticker": asset.ticker, "explanation": text, "generated_at": generated_at, "cached": False,
+            "disclaimer": DISCLAIMER,
+        }
 
     @app.post("/assistant/chat")
     async def chat(body: ChatRequest, request: Request, svc: RankingService = Depends(get_ranking)):
