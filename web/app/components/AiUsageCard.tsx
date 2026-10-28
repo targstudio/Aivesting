@@ -121,7 +121,7 @@ function CreditBalance({ data, credit, onSave }: { data: AiUsage; credit: Credit
         aria-valuenow={Math.round(pct)}
         aria-label="Crédito restante"
       >
-        <div className={`h-full rounded-full ${low ? "bg-negative" : "bg-primary"}`} style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full ${low ? "bg-negative" : "bg-chart-3"}`} style={{ width: `${pct}%` }} />
       </div>
       <p className="mt-2 text-xs text-muted">
         {days == null
@@ -215,7 +215,7 @@ export function AiUsageCard() {
             >
               <span
                 className={`block w-full rounded-t-[4px] transition-opacity ${hover != null && hover !== i ? "opacity-40" : ""} ${
-                  d.cost_usd > 0 ? "bg-primary" : "bg-track"
+                  d.cost_usd > 0 ? "bg-chart-1" : "bg-track"
                 }`}
                 style={{ height: d.cost_usd > 0 ? `${Math.max(3, (d.cost_usd / max) * 100)}%` : "2px" }}
               />

@@ -17,6 +17,8 @@ import {
 } from "@/lib/api";
 import { formatBRL, formatNumber } from "@/lib/format";
 import { Chat } from "../assistente/Chat";
+import { Markdown } from "@/app/components/Markdown";
+import { Donut } from "@/app/components/charts";
 
 const KEY = "aivesting.assessor";
 
@@ -26,14 +28,14 @@ const PROFILE_TEXT = {
   arrojado: "Aceita oscilações fortes em busca de mais retorno no longo prazo.",
 };
 
-// Cores das classes na barra de alocação: tons do bege ao preto, do menor ao maior risco.
+// Cores das classes no gráfico de alocação: paleta pastel do painel.
 const CLASS_COLOR: Record<string, string> = {
-  reserva: "#E9DDC4",
-  rf_pos: "#D6BE8C",
-  rf_ipca: "#B8945A",
-  fiis: "#8A6A3A",
-  internacional: "#5A4630",
-  acoes: "#111111",
+  reserva: "rgb(var(--chart-4))",
+  rf_pos: "rgb(var(--chart-2))",
+  rf_ipca: "rgb(var(--chart-3))",
+  fiis: "rgb(var(--chart-5))",
+  internacional: "#9fc7c0",
+  acoes: "rgb(var(--chart-1))",
 };
 
 function loadSaved(): AdvisorInput | null {
@@ -174,7 +176,7 @@ export function Advisor() {
                         key={o}
                         onClick={() => setAnswers((a) => ({ ...a, [q.key]: i }))}
                         className={`rounded-full px-4 py-2.5 text-left text-sm font-semibold transition-colors ${
-                          active ? "bg-primary text-on-primary" : "bg-track text-text hover:bg-track/70"
+                          active ? "bg-accent-bg text-accent-text ring-1 ring-accent-text/40" : "bg-track text-text hover:bg-surface-2"
                         }`}
                       >
                         {o}
@@ -211,7 +213,7 @@ export function Advisor() {
                     key={m}
                     onClick={() => setMonths(String(m))}
                     className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                      months === String(m) ? "bg-primary text-on-primary" : "bg-track text-text"
+                      months === String(m) ? "bg-accent-bg text-accent-text ring-1 ring-accent-text/40" : "bg-track text-text"
                     }`}
                   >
                     {monthsLabel(m)}
@@ -268,16 +270,20 @@ export function Advisor() {
                   {monthsLabel(plan.months)} · {plan.term_label.toLowerCase()}
                 </div>
               )}
-              <div className="mt-6 text-sm">
-                <div className="tabular text-2xl font-bold">{formatBRL(plan.amount)}</div>
-                <div className="text-muted">
+              <div className="mt-6 flex flex-col items-center gap-2">
+                <Donut
+                  size={190}
+                  slices={plan.allocation.map((a) => ({ label: `${a.label}: ${a.pct}%`, value: a.pct, color: CLASS_COLOR[a.key] }))}
+                  center={
+                    <>
+                      <span className="tabular text-lg font-bold">{formatBRL(plan.amount)}</span>
+                      <span className="text-xs text-muted">total</span>
+                    </>
+                  }
+                />
+                <div className="text-center text-sm text-muted">
                   {formatNumber(100 - plan.variable_income_pct)}% renda fixa · {formatNumber(plan.variable_income_pct)}% renda variável
                 </div>
-              </div>
-              <div className="mt-4 flex h-4 overflow-hidden rounded-full">
-                {plan.allocation.map((a) => (
-                  <div key={a.key} title={`${a.label}: ${a.pct}%`} style={{ width: `${a.pct}%`, background: CLASS_COLOR[a.key] }} />
-                ))}
               </div>
               <ul className="mt-4 space-y-2 text-sm">
                 {plan.allocation.map((a) => (
@@ -290,8 +296,8 @@ export function Advisor() {
               </ul>
             </Card>
 
-            <section className="rounded-card bg-primary p-6 text-on-primary md:p-8">
-              <h2 className="mb-3 flex items-center gap-2 text-lg font-bold">
+            <section className="rounded-card border border-border bg-gradient-to-br from-surface-2 to-surface p-5 md:p-6">
+              <h2 className="mb-3 flex items-center gap-2.5 font-semibold">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bg text-accent-text">
                   <Sparkles size={16} />
                 </span>
@@ -300,17 +306,18 @@ export function Advisor() {
               {explanation?.state === "loading" && (
                 <div className="space-y-2">
                   {[92, 100, 80, 95, 60].map((w, i) => (
-                    <div key={i} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-on-primary/15" />
+                    <div key={i} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-track" />
                   ))}
                 </div>
               )}
               {explanation && explanation.state !== "loading" && (
-                <p className={`whitespace-pre-line text-sm leading-relaxed md:text-[15px] ${explanation.state === "error" ? "opacity-80" : ""}`}>
-                  {explanation.text}
-                </p>
+                <Markdown
+                  text={explanation.text}
+                  className={`text-sm leading-relaxed text-text/90 md:text-[15px] ${explanation.state === "error" ? "opacity-80" : ""}`}
+                />
               )}
               {plan.notes.length > 0 && (
-                <ul className="mt-4 space-y-2 border-t border-on-primary/15 pt-4 text-sm opacity-90">
+                <ul className="mt-4 space-y-2 border-t border-border pt-4 text-sm text-muted">
                   {plan.notes.map((n) => (
                     <li key={n}>• {n}</li>
                   ))}
@@ -427,7 +434,7 @@ function Picks({ allocation: a, plan }: { allocation: AdvisorAllocation; plan: A
             role="tab"
             aria-selected={term === t}
             onClick={() => setTerm(t)}
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${term === t ? "bg-primary text-on-primary" : "bg-track text-text"}`}
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${term === t ? "bg-accent-bg text-accent-text ring-1 ring-accent-text/40" : "bg-track text-text"}`}
           >
             {t === "curto" ? "Curto" : t === "medio" ? "Médio" : "Longo"}
             {t === plan.term ? " · seu prazo" : ""}

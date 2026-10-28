@@ -4,6 +4,7 @@ import { Sparkles } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { useApp } from "./AppProvider";
+import { Markdown } from "./Markdown";
 
 /** Explicação da IA para a posição do ativo. Com a leitura automática ligada, aparece ao abrir a página. */
 export function ExplainButton({ ticker }: { ticker: string }) {
@@ -46,9 +47,7 @@ export function ExplainButton({ ticker }: { ticker: string }) {
         </div>
       )}
       {(state === "done" || state === "error") && (
-        <div className={`mt-4 whitespace-pre-line text-sm leading-relaxed ${state === "error" ? "text-negative" : ""}`}>
-          {text}
-        </div>
+        <Markdown text={text} className={`mt-4 text-sm leading-relaxed ${state === "error" ? "text-negative" : ""}`} />
       )}
     </div>
   );

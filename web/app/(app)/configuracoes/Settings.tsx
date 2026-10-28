@@ -28,7 +28,7 @@ function Pills<T extends string | number>({
           key={String(o.value)}
           onClick={() => onChange(o.value)}
           className={`rounded-full px-4 py-2 font-semibold transition-colors ${
-            o.value === value ? "bg-primary text-on-primary" : "text-muted hover:text-text"
+            o.value === value ? "bg-surface-2 text-text ring-1 ring-border" : "text-muted hover:text-text"
           }`}
         >
           {o.label}
@@ -57,7 +57,7 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
       aria-checked={on}
       aria-label={label}
       onClick={() => onChange(!on)}
-      className={`relative h-8 w-14 rounded-full transition-colors ${on ? "bg-primary" : "bg-track"}`}
+      className={`relative h-8 w-14 rounded-full transition-colors ${on ? "bg-chart-3" : "bg-track"}`}
     >
       <span className={`absolute top-1 h-6 w-6 rounded-full bg-surface shadow transition-all ${on ? "left-7" : "left-1"}`} />
     </button>

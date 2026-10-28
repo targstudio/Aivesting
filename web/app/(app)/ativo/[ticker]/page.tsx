@@ -2,8 +2,9 @@ import { notFound } from "next/navigation";
 import { AssetActions } from "@/app/components/AssetActions";
 import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
+import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
-import { Breadcrumbs, Card, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
+import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAsset, getAssetHistory } from "@/lib/api";
 import { changeColor, formatBRL, formatPercent, formatProbability, formatTime } from "@/lib/format";
 
@@ -59,6 +60,17 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
           </div>
         </div>
       </Card>
+
+      {asset.spark?.length > 1 && (
+        <Card className="mb-6">
+          <CardHeader
+            title="Preço"
+            subtitle="Últimos 30 pregões"
+            value={<span className={changeColor(asset.spark[asset.spark.length - 1] / asset.spark[0] - 1)}>{formatPercent((asset.spark[asset.spark.length - 1] / asset.spark[0] - 1) * 100)}</span>}
+          />
+          <AreaChart values={asset.spark} prefix="R$ " color="var(--chart-2)" />
+        </Card>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>

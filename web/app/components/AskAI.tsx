@@ -26,18 +26,18 @@ export function AskAI() {
       {!ai.open && (
         <button
           onClick={() => askAI()}
-          className="fixed bottom-20 right-4 z-30 flex items-center gap-2 rounded-full bg-primary px-5 py-3.5 font-semibold text-on-primary shadow-lg shadow-black/20 md:bottom-8 md:right-8"
+          className="fixed bottom-20 right-4 z-30 flex items-center gap-2 rounded-full bg-chart-1 px-5 py-3 font-semibold text-on-primary shadow-lg shadow-black/40 md:bottom-8 md:right-8"
         >
           <Sparkles size={18} /> Pergunte à IA
         </button>
       )}
       {ai.open && (
         <div className="fixed inset-0 z-40 flex justify-end">
-          <button aria-label="Fechar" onClick={closeAI} className="absolute inset-0 bg-black/30" />
-          <aside className="relative flex h-full w-full max-w-md flex-col bg-background shadow-2xl">
+          <button aria-label="Fechar" onClick={closeAI} className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+          <aside className="relative flex h-full w-full max-w-md flex-col border-l border-border bg-background shadow-2xl">
             <div className="flex items-center justify-between border-b border-border bg-surface px-5 py-4">
               <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-on-primary">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-bg text-accent-text">
                   <Sparkles size={16} />
                 </span>
                 <div className="leading-tight">

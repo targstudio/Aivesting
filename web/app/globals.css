@@ -2,37 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design system (proposta, seção 7): preto como cor principal, bege como destaque, cantos bem arredondados. */
+/*
+ * Design system: dashboard escuro em azul-marinho/grafite suave, cards com bordas sutis e acentos em pastel
+ * (bege, verde-claro, azul-claro). O app é sempre escuro, então não há variação por prefers-color-scheme.
+ */
 :root {
-  --primary: 17 17 17;
-  --on-primary: 255 255 255;
-  --background: 247 247 245;
-  --surface: 255 255 255;
-  --border: 228 228 224;
-  --text: 17 17 17;
-  --text-muted: 107 107 107;
-  --accent-bg: 251 241 217;
-  --accent-text: 138 90 18;
-  --track: 232 232 230;
-  --positive: 26 127 75;
-  --negative: 200 53 43;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: 245 245 245;
-    --on-primary: 17 17 17;
-    --background: 10 10 10;
-    --surface: 22 22 22;
-    --border: 45 45 45;
-    --text: 240 240 240;
-    --text-muted: 160 160 160;
-    --accent-bg: 58 46 22;
-    --accent-text: 240 200 130;
-    --track: 38 38 38;
-    --positive: 80 200 130;
-    --negative: 245 110 100;
-  }
+  color-scheme: dark;
+  --primary: 232 236 242;
+  --on-primary: 15 20 32;
+  --background: 15 20 32;
+  --surface: 22 29 43;
+  --surface-2: 28 36 53;
+  --border: 39 49 68;
+  --text: 232 236 242;
+  --text-muted: 141 151 171;
+  --accent-bg: 52 45 37;
+  --accent-text: 242 197 146;
+  --track: 33 42 60;
+  --positive: 148 216 168;
+  --negative: 244 152 140;
+  /* Paleta pastel dos gráficos */
+  --chart-1: 242 197 146;
+  --chart-2: 199 225 241;
+  --chart-3: 213 230 176;
+  --chart-4: 120 132 156;
+  --chart-5: 186 173 230;
 }
 
 body {
@@ -41,4 +35,8 @@ body {
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: rgb(var(--chart-2) / 0.3);
 }
