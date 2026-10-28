@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: 43 87 176;
+  --background: 244 244 245;
+  --surface: 255 255 255;
+  --border: 226 228 232;
+  --text: 31 35 40;
+  --text-muted: 107 114 128;
+  --info-bg: 220 230 250;
+  --positive: 30 142 62;
+  --negative: 217 48 37;
+  --nav-active: 231 232 235;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: 120 160 240;
+    --background: 17 19 23;
+    --surface: 27 30 36;
+    --border: 48 53 61;
+    --text: 233 236 241;
+    --text-muted: 156 163 175;
+    --info-bg: 30 45 80;
+    --positive: 74 200 110;
+    --negative: 245 100 90;
+    --nav-active: 40 44 52;
+  }
+}
+
+body {
+  @apply bg-background text-text antialiased;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
