@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AiInsight } from "@/app/components/AiInsight";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { ScenarioCard } from "@/app/components/ScenarioCard";
 import { Breadcrumbs, Card, EmptyState, InfoBanner, PageTitle, Segmented } from "@/app/components/ui";
@@ -80,6 +81,11 @@ export default async function HorizonsPage({
         <EmptyState>O modelo de horizontes ainda não foi calibrado. Verifique se a API está rodando.</EmptyState>
       ) : (
         <>
+          <AiInsight
+            context={`horizontes:${assetClass}:${years}`}
+            title={`O horizonte de ${plural(years)} explicado pela IA`}
+            askPrompt={`Explique de forma simples o ranking de ${plural(years)} de ${assetClass === "fiis" ? "FIIs" : "ações"}`}
+          />
           <div className="mb-6 grid gap-6 lg:grid-cols-2">
             <ScenarioCard scenario={data.scenario} />
             <Card>

@@ -1,5 +1,6 @@
 import { getMacro } from "@/lib/api";
 import { changeColor, formatNumber } from "@/lib/format";
+import { AiInsight } from "@/app/components/AiInsight";
 import { Breadcrumbs, Card, EmptyState, PageTitle, Stat } from "@/app/components/ui";
 
 // O ranking muda durante o pregão: renderiza a cada acesso em vez de gerar a página no build.
@@ -12,6 +13,7 @@ export default async function MacroPage() {
     <>
       <Breadcrumbs items={[{ label: "Macro" }]} />
       <PageTitle title="Cenário macroeconômico" subtitle="Indicadores do Banco Central usados pelo modelo e pelas explicações da IA." />
+      <AiInsight context="macro" title="O cenário explicado pela IA" askPrompt="Como o cenário macro atual costuma afetar ações e FIIs?" />
       {indicators.length ? (
         <div className="grid gap-4 md:grid-cols-3">
           {indicators.map((m) => {

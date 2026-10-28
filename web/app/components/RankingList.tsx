@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { RankedAsset } from "@/lib/api";
 import { AssetLogo } from "./AssetLogo";
+import { Sparkline } from "./Sparkline";
 import { changeColor, formatBRL, formatPercent, formatProbability } from "@/lib/format";
 
 // `compact` esconde a coluna de preço, para listas em meia largura (ex.: página inicial).
@@ -27,7 +28,7 @@ export function RankingList({
             <button
               onClick={() => setOpen(expanded ? null : a.ticker)}
               className={`grid w-full grid-cols-[1.75rem_1fr_auto] items-center gap-3 px-4 py-4 text-left md:px-6 ${
-                compact ? "md:grid-cols-[1.75rem_1fr_5rem_7rem_1.5rem]" : "md:grid-cols-[2rem_1fr_7rem_7rem_8rem_2rem]"
+                compact ? "md:grid-cols-[1.75rem_1fr_5rem_7rem_1.5rem]" : "md:grid-cols-[2rem_1fr_6rem_7rem_7rem_8rem_2rem]"
               }`}
               aria-expanded={expanded}
             >
@@ -43,6 +44,11 @@ export function RankingList({
                 <span className="block text-xs text-muted">Preço</span>
                 <span className="tabular block">{formatBRL(a.price)}</span>
               </span>
+              {!compact && (
+                <span className="hidden md:block" title="Últimos 30 pregões">
+                  <Sparkline values={a.spark ?? []} width={88} height={30} />
+                </span>
+              )}
               <span className="hidden md:block">
                 <span className="block text-xs text-muted">Dia</span>
                 <span className={`tabular block ${changeColor(a.change_percent)}`}>{formatPercent(a.change_percent)}</span>

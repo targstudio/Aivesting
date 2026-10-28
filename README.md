@@ -40,7 +40,21 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
    de juros, estresse fiscal de 2024) e o desempenho em cenários macro parecidos com o atual.
    Para recalibrar à mão: `python scripts/fetch_history.py && python -m app.longterm.build` (em `api/`).
 6. **Assistente** (`api/app/ai/assistant.py`, tela `/assistente`): chat em que a Claude usa ferramentas
-   (`get_ranking`, `get_asset`, `get_macro`, `get_horizon_ranking`, `get_asset_history`) para consultar os dados do app antes de responder.
+   (`get_ranking`, `get_asset`, `get_market`, `get_macro`, `get_horizon_ranking`, `get_asset_history`) para consultar os dados do app antes de responder.
+   O mesmo chat abre em qualquer tela pelo botão "Pergunte à IA", sabendo em que página a pessoa está.
+7. **IA em todas as telas** (`api/app/ai/insights.py`, `GET /ia/leitura?contexto=...`): Início, Mercado, Ranking,
+   Macro e Horizontes abrem com uma leitura da Claude feita só com os dados da tela. Cada leitura fica 15 minutos em
+   cache no servidor (todo mundo vê o mesmo texto e o custo não cresce com os acessos). A explicação de cada ativo fica
+   em cache até o próximo recálculo do ranking. O nível de linguagem (simples, intermediário, avançado) vem das Configurações.
+8. **Mercado** (`api/app/market.py`, `GET /mercado`, tela `/mercado`): Ibovespa, dólar, euro, S&P 500, Nasdaq, juro
+   de 10 anos dos EUA, Euro Stoxx, Xangai, petróleo, ouro e bitcoin pelo Yahoo (cache de 5 minutos), maiores altas e
+   baixas entre os ativos do app e o termômetro de quantos sobem e caem.
+9. **Alertas** (`api/app/alerts.py`, `POST /alertas/avaliar` e `/alertas/explicar`, tela `/alertas`): preço acima ou
+   abaixo, alta ou queda no dia, entrar no top N e probabilidade acima de X. Enquanto não há login, os alertas ficam
+   no navegador e são conferidos a cada 1, 5 ou 15 minutos com o app aberto, com notificação do navegador opcional. A IA
+   explica por que cada alerta disparou.
+10. **Configurações** (tela `/configuracoes`): nível de linguagem da IA, leitura automática, nome, frequência dos
+    alertas, notificações e o estado dos serviços da API.
 
 ## Rodando localmente
 

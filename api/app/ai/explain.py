@@ -40,6 +40,7 @@ def build_payload(
             "versao_modelo": snapshot.model_version,
             "dados_em_tempo_real": snapshot.data_realtime,
             "fatores_principais": [asdict(c) for c in asset.top_factors],
+            "fechamentos_recentes": asset.spark,
         },
         "macro": [asdict(m) for m in macro],
     }
@@ -51,13 +52,13 @@ class Explainer:
         self.model = model
 
     async def explain(
-        self, asset: RankedAsset, snapshot: RankingSnapshot, macro: list[MacroIndicator]
+        self, asset: RankedAsset, snapshot: RankingSnapshot, macro: list[MacroIndicator], level_note: str = ""
     ) -> str:
         payload = build_payload(asset, snapshot, macro)
         response = await self.client.beta.messages.create(
             model=self.model,
             max_tokens=2000,
-            system=SYSTEM_PROMPT,
+            system=f"{SYSTEM_PROMPT}\n\n{level_note}".strip(),
             output_config={"effort": "low"},
             betas=["server-side-fallback-2026-07-01"],
             fallbacks="default",

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getMacro, getRanking, type RankingSnapshot } from "@/lib/api";
 import { formatNumber, formatTime } from "@/lib/format";
+import { AiInsight } from "@/app/components/AiInsight";
 import { RankingList } from "@/app/components/RankingList";
 import { Card, EmptyState, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 
@@ -37,6 +38,8 @@ export default async function Home() {
         Conteúdo informativo gerado por modelo estatístico em calibração. Não é recomendação de investimento.
         {!realtime && " Cotações com atraso até a contratação do feed em tempo real."}
       </InfoBanner>
+
+      <AiInsight context="inicio" title="Resumo do dia pela IA" askPrompt="Como está o mercado hoje no Brasil e lá fora?" />
 
       {(macro?.indicators.length || computedAt) && (
       <Card className="mb-8">

@@ -1,37 +1,51 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
-import { API_URL } from "@/lib/api";
+import { useCallback, useEffect, useState } from "react";
+import { apiFetch } from "@/lib/api";
+import { useApp } from "./AppProvider";
 
+/** Explicação da IA para a posição do ativo. Com a leitura automática ligada, aparece ao abrir a página. */
 export function ExplainButton({ ticker }: { ticker: string }) {
+  const { ready, prefs } = useApp();
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [text, setText] = useState("");
 
-  async function run() {
+  const run = useCallback(async () => {
     setState("loading");
     try {
-      const res = await fetch(`${API_URL}/assets/${ticker}/explain`, { method: "POST" });
-      if (!res.ok) throw new Error((await res.json()).detail ?? res.statusText);
-      setText((await res.json()).explanation);
+      const body = await apiFetch<{ explanation: string }>(`/assets/${ticker}/explain?nivel=${prefs.level}`, { method: "POST" });
+      setText(body.explanation);
       setState("done");
     } catch (e) {
       setText(e instanceof Error ? e.message : "Erro ao gerar explicação.");
       setState("error");
     }
-  }
+  }, [ticker, prefs.level]);
+
+  useEffect(() => {
+    if (ready && prefs.aiAuto) run();
+  }, [ready, prefs.aiAuto, run]);
 
   return (
     <div>
-      <button
-        onClick={run}
-        disabled={state === "loading"}
-        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-on-primary transition-opacity hover:opacity-90 disabled:opacity-60"
-      >
-        <Sparkles size={18} />
-        {state === "loading" ? "Analisando..." : "Por que está nessa posição?"}
-      </button>
-      {state !== "idle" && state !== "loading" && (
+      {(state === "idle" || state === "error") && (
+        <button
+          onClick={run}
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-on-primary transition-opacity hover:opacity-90"
+        >
+          <Sparkles size={18} />
+          {state === "error" ? "Tentar de novo" : "Por que está nessa posição?"}
+        </button>
+      )}
+      {state === "loading" && (
+        <div className="space-y-2" aria-label="Analisando">
+          {[95, 100, 70].map((w) => (
+            <div key={w} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-track" />
+          ))}
+        </div>
+      )}
+      {(state === "done" || state === "error") && (
         <div className={`mt-4 whitespace-pre-line text-sm leading-relaxed ${state === "error" ? "text-negative" : ""}`}>
           {text}
         </div>

@@ -21,6 +21,8 @@ export type RankedAsset = {
   probability_outperform: number;
   top_factors: Contribution[];
   logo_url: string | null;
+  /** Últimos fechamentos (até 30 pregões). */
+  spark: number[];
 };
 
 export type RankingSnapshot = {
@@ -187,3 +189,72 @@ export const HORIZONS: Horizon[] = [1, 3, 5, 10];
 export const getHorizon = (c: AssetClass, years: Horizon) => get<HorizonRanking>(`/horizontes/${c}/${years}`);
 export const getAssetHistory = (ticker: string) =>
   get<AssetHistory>(`/assets/${encodeURIComponent(ticker)}/historico`);
+
+// ---- Mercado, alertas e IA em cada tela ----
+
+export type MarketItem = {
+  symbol: string;
+  label: string;
+  group: string;
+  unit: string;
+  value: number;
+  change_percent: number;
+  spark: number[];
+};
+
+export type Mover = Pick<RankedAsset, "ticker" | "name" | "asset_class" | "price" | "change_percent" | "rank" | "logo_url" | "spark">;
+
+export type MarketOverview = {
+  indices: MarketItem[];
+  atualizado_em: string | null;
+  altas: Mover[];
+  baixas: Mover[];
+  amplitude: { altas: number; baixas: number; estaveis: number };
+  pregao_aberto: boolean;
+  disclaimer: string;
+};
+
+export type Health = {
+  status: string;
+  provider: string;
+  realtime: boolean;
+  database: boolean;
+  ai: boolean;
+  ai_requests_per_hour: number;
+  ranking_interval_minutes: number;
+  market_open: boolean;
+  longterm: boolean;
+};
+
+export type AssetSummary = Pick<RankedAsset, "ticker" | "name" | "asset_class" | "price" | "change_percent" | "rank" | "probability_outperform" | "logo_url">;
+
+export type AlertKind = "preco_acima" | "preco_abaixo" | "alta_dia" | "queda_dia" | "entrou_top" | "prob_acima";
+
+export type AlertResult = {
+  id: string;
+  ticker: string;
+  triggered: boolean;
+  available: boolean;
+  current: number | null;
+  message: string;
+};
+
+export type Level = "iniciante" | "intermediario" | "avancado";
+
+export const getMarket = () => get<MarketOverview>("/mercado");
+
+/** Chamadas feitas no navegador (sem cache do Next), com a mensagem de erro da API. */
+export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...init,
+      headers: init?.body ? { "Content-Type": "application/json", ...init.headers } : init?.headers,
+    });
+  } catch {
+    throw new Error("Não foi possível falar com a API agora. No plano gratuito ela leva até 1 minuto para acordar.");
+  }
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(typeof body.detail === "string" ? body.detail : `Erro ${res.status}`);
+  return body as T;
+}
