@@ -10,8 +10,11 @@ function RiskRow({ label, m }: { label: string; m: RiskMetrics | null }) {
       <td className="py-2.5 pr-3 font-medium">{label}</td>
       <td className={`tabular py-2.5 pr-3 ${m ? changeColor(m.cagr) : ""}`}>{formatRatio(m?.cagr)}</td>
       <td className="tabular py-2.5 pr-3">{formatRatio(m?.volatility, false)}</td>
-      <td className="tabular py-2.5 pr-3 text-negative">{formatRatio(m?.max_drawdown)}</td>
-      <td className="tabular py-2.5">{m?.sharpe?.toLocaleString("pt-BR") ?? "–"}</td>
+      <td className={`tabular py-2.5 pr-3 ${m && m.max_drawdown < 0 ? "text-negative" : ""}`}>
+        {m && m.max_drawdown < 0 ? formatRatio(m.max_drawdown) : "–"}
+      </td>
+      {/* O Sharpe é medido contra o próprio CDI, então não faz sentido na linha do CDI. */}
+      <td className="tabular py-2.5">{label === "CDI" ? "–" : (m?.sharpe?.toLocaleString("pt-BR") ?? "–")}</td>
     </tr>
   );
 }
@@ -85,7 +88,7 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
           )}
           {h.in_scenario && (
             <p className="mt-4 text-sm">
-              Em meses com cenário parecido com o atual ({h.scenario.label?.toLowerCase()}), {h.ticker} rendeu em média{" "}
+              Em meses com cenário parecido com o atual ({h.scenario.label}), {h.ticker} rendeu em média{" "}
               <strong className={changeColor(h.in_scenario.avg_annual)}>{formatRatio(h.in_scenario.avg_annual)} ao ano</strong>
               {h.benchmark_in_scenario && (
                 <>

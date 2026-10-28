@@ -116,7 +116,10 @@ export default async function HorizonsPage({
                   </span>
                 </span>
                 <span className="text-right md:text-left">
-                  <span className="block text-xs text-muted">Prob. vs {data.benchmark}</span>
+                  <span className="block text-xs text-muted">
+                    Prob. vs <span className="md:hidden">índice</span>
+                    <span className="hidden md:inline">{data.benchmark}</span>
+                  </span>
                   <span className="tabular block font-bold text-accent-text">{formatProbability(a.prob_beat_benchmark)}</span>
                 </span>
                 <span className="hidden md:block">

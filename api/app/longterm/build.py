@@ -214,6 +214,7 @@ def build(history: History, log=lambda _: None) -> dict:
         "data_fetched_at": history.fetched_at,
         "data_from": history.months[0],
         "data_through": history.months[last],
+        "split_adjustments": history.adjustments,
         "scenario": scenario_info,
         "crises": [{"key": c.key, "label": c.label, "start": c.start, "end": c.end, "description": c.description} for c in CRISES],
         "cdi_risk": risk_metrics(cdi, history.cdi, last),

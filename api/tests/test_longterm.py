@@ -136,3 +136,12 @@ def test_short_history_has_no_long_horizon_probability():
     assert not ten["enough_history"]
     assert all(a["prob_beat_benchmark"] is None for a in ten["assets"])
     assert out["classes"]["acoes"]["horizons"]["1"]["enough_history"]
+
+
+def test_unadjusted_split_is_fixed():
+    from app.longterm.history import fix_unadjusted_splits
+
+    prices, fixed = fix_unadjusted_splits([10.0, 10.5, None, 11.0, 88.0, 90.0])
+    assert fixed == [4]
+    # O histórico antes do grupamento (8 para 1) é multiplicado por 8; o resto fica igual.
+    assert prices[:4] == [80.0, 84.0, None, 88.0] and prices[4:] == [88.0, 90.0]

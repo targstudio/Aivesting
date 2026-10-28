@@ -30,8 +30,17 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
    `SUPABASE_URL` e `SUPABASE_SECRET_KEY`, grava cada ranking no banco para o histórico de acertos.
 4. **IA** (`api/app/ai/explain.py`, limitada por IP via `AI_REQUESTS_PER_HOUR`): o Claude recebe só os números calculados e os indicadores macro e
    explica a posição do ativo em português, sem recomendar compra ou venda.
-5. **Assistente** (`api/app/ai/assistant.py`, tela `/assistente`): chat em que a Claude usa ferramentas
-   (`get_ranking`, `get_asset`, `get_macro`) para consultar os dados do app antes de responder.
+5. **Horizontes de 1, 3, 5 e 10 anos** (`api/app/longterm`, tela `/horizontes`): o workflow
+   "Calibrar horizontes" baixa todo mês o histórico mensal desde 2000 (preços ajustados por proventos no
+   Yahoo; CDI, Selic e IPCA no Banco Central; dólar, S&P 500 e juro americano) e grava `api/data/`. O modelo
+   calcula fatores sem olhar o futuro, estima a chance de cada ativo superar o índice e o CDI em cada horizonte
+   e é validado fora da amostra, ano a ano. Se não acerta melhor que a frequência histórica, ele não é usado:
+   a probabilidade vira a frequência da classe e a ordem segue o Sharpe de 10 anos. A página do ativo mostra
+   risco e retorno de 10 anos, retorno ano a ano, comportamento nas crises (2008, 2015-16, 2018, Covid, alta
+   de juros, estresse fiscal de 2024) e o desempenho em cenários macro parecidos com o atual.
+   Para recalibrar à mão: `python scripts/fetch_history.py && python -m app.longterm.build` (em `api/`).
+6. **Assistente** (`api/app/ai/assistant.py`, tela `/assistente`): chat em que a Claude usa ferramentas
+   (`get_ranking`, `get_asset`, `get_macro`, `get_horizon_ranking`, `get_asset_history`) para consultar os dados do app antes de responder.
 
 ## Rodando localmente
 
@@ -67,5 +76,8 @@ Site na Vercel, API no Render (`render.yaml`) e banco no Supabase. Passo a passo
 - **Histórico**: o modelo precisa de cerca de 6 meses de preços diários por ativo; o plano gratuito da
   brapi pode limitar o período disponível.
 - **Login**: a tela `/entrar` é só visual; a autenticação com Supabase Auth ainda não está ligada.
+- **Viés de sobrevivência**: o histórico usa os ativos grandes de hoje; quem encolheu ou saiu da bolsa fica
+  de fora, então as frequências históricas são otimistas. Os FIIs têm pouco histórico (a maioria desde 2014 ou
+  depois) e o IFIX não está no Yahoo: a referência deles é a média dos FIIs do app.
 - **Modelo**: ainda sem fundamentos, dados de FIIs (vacância, P/VP) nem macro como fatores; esses entram na
   próxima versão, junto com treino e calibração com histórico.

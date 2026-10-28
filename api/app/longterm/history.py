@@ -34,6 +34,8 @@ class History:
     benchmarks: dict[str, Benchmark]
     cdi: Series  # retorno do CDI no mês, em decimal
     macro: dict[str, Series] = field(default_factory=dict)
+    # Meses em que um grupamento ou desdobramento não ajustado pela fonte foi corrigido, por ativo.
+    adjustments: dict[str, list[str]] = field(default_factory=dict)
     source: str = ""
     fetched_at: str = ""
 
@@ -56,6 +58,27 @@ def _align(raw: dict[str, float], first: int, size: int) -> Series:
         if 0 <= i < size and value is not None:
             out[i] = float(value)
     return out
+
+
+# Variação mensal acima de +150% ou abaixo de -65% num ativo grande é quase sempre um grupamento ou
+# desdobramento que a fonte não ajustou (ex.: XPML11 em jan/2026). O histórico anterior é reescalado.
+SPLIT_UP, SPLIT_DOWN = 2.5, 0.35
+
+
+def fix_unadjusted_splits(prices: Series) -> tuple[Series, list[int]]:
+    out = list(prices)
+    fixed = []
+    for i in range(1, len(out)):
+        a, b = out[i - 1], out[i]
+        if a is None or b is None or a <= 0:
+            continue
+        ratio = b / a
+        if ratio > SPLIT_UP or ratio < SPLIT_DOWN:
+            for k in range(i):
+                if out[k] is not None:
+                    out[k] *= ratio
+            fixed.append(i)
+    return out, fixed
 
 
 def equal_weight_index(series: list[Series]) -> Series:
@@ -81,7 +104,11 @@ def from_dict(data: dict) -> History:
     first, last = min(map(month_index, all_months)), max(map(month_index, all_months))
     size = last - first + 1
 
-    prices = {t: _align(a["monthly"], first, size) for t, a in data["assets"].items()}
+    prices, adjustments = {}, {}
+    for t, a in data["assets"].items():
+        prices[t], fixed = fix_unadjusted_splits(_align(a["monthly"], first, size))
+        if fixed:
+            adjustments[t] = [month_label(first + i) for i in fixed]
     classes = {t: a["class"] for t, a in data["assets"].items()}
     names = {t: a.get("name") or t for t, a in data["assets"].items()}
 
@@ -111,6 +138,7 @@ def from_dict(data: dict) -> History:
         benchmarks=benchmarks,
         cdi=cdi,
         macro=macro,
+        adjustments=adjustments,
         source=data.get("source", ""),
         fetched_at=data.get("fetched_at", ""),
     )
