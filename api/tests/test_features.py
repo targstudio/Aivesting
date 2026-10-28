@@ -168,3 +168,15 @@ def test_asset_explanation_is_cached(monkeypatch):
     for _ in range(2):
         assert c.post(f"/assets/{top}/explain?nivel=avancado").json()["explanation"] == f"explicação de {top}"
     assert len(calls) == 1 and "técnica" in calls[0]
+
+
+def test_cors_accepts_origin_with_trailing_slash():
+    from fastapi.testclient import TestClient
+
+    from app.config import Settings
+    from app.main import create_app
+
+    app = create_app(Settings(_env_file=None, demo_mode=True, web_origin="https://site.vercel.app/"), start_scheduler=False)
+    with TestClient(app) as c:
+        r = c.get("/health", headers={"Origin": "https://site.vercel.app"})
+    assert r.headers.get("access-control-allow-origin") == "https://site.vercel.app"
