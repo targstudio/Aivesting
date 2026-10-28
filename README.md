@@ -14,7 +14,7 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
 | Pasta | O que é |
 |---|---|
 | `api/` | Backend em Python (FastAPI): fontes de dados, motor de ranking, agendador de 5 min e explicações com Claude |
-| `web/` | Front-end em Next.js + Tailwind, com o design system no estilo internet banking (header azul, menu lateral, cards) |
+| `web/` | Front-end em Next.js + Tailwind. Design system: preto como cor principal, bege de destaque, botões em pílula e cards bem arredondados |
 | `supabase/migrations/` | Esquema do banco: histórico de rankings (para medir acertos) e watchlist |
 
 ## Como funciona
@@ -29,6 +29,8 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
 3. **Agendador**: recalcula a cada `RANKING_INTERVAL_MINUTES` (5) dentro do horário do pregão.
 4. **IA** (`api/app/ai/explain.py`): o Claude recebe só os números calculados e os indicadores macro e
    explica a posição do ativo em português, sem recomendar compra ou venda.
+5. **Assistente** (`api/app/ai/assistant.py`, tela `/assistente`): chat em que a Claude usa ferramentas
+   (`get_ranking`, `get_asset`, `get_macro`) para consultar os dados do app antes de responder.
 
 ## Rodando localmente
 
@@ -59,5 +61,6 @@ npm run dev                    # http://localhost:3000
   dados estão atrasados.
 - **Histórico**: o modelo precisa de cerca de 6 meses de preços diários por ativo; o plano gratuito da
   brapi pode limitar o período disponível.
+- **Login**: a tela `/entrar` é só visual; a autenticação com Supabase Auth ainda não está ligada.
 - **Modelo**: ainda sem fundamentos, dados de FIIs (vacância, P/VP) nem macro como fatores; esses entram na
   próxima versão, junto com treino e calibração com histórico.

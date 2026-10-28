@@ -22,7 +22,7 @@ export function RankingList({
       {assets.map((a) => {
         const expanded = open === a.ticker;
         return (
-          <div key={a.ticker} className="rounded border border-border bg-surface">
+          <div key={a.ticker} className="rounded-3xl border border-border bg-surface">
             <button
               onClick={() => setOpen(expanded ? null : a.ticker)}
               className={`grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-3 px-4 py-4 text-left md:px-6 ${
@@ -30,9 +30,9 @@ export function RankingList({
               }`}
               aria-expanded={expanded}
             >
-              <span className="tabular text-lg text-muted">{a.rank}º</span>
+              <span className="tabular flex h-9 w-9 items-center justify-center rounded-full bg-track text-sm font-bold">{a.rank}</span>
               <span className="min-w-0">
-                <span className="block truncate font-medium">{a.ticker}</span>
+                <span className="block truncate font-bold">{a.ticker}</span>
                 <span className="block truncate text-sm text-muted">{a.name}</span>
               </span>
               <span className={compact ? "hidden" : "hidden md:block"}>
@@ -45,7 +45,7 @@ export function RankingList({
               </span>
               <span className="text-right md:text-left">
                 <span className="block text-xs text-muted">Prob. vs {benchmark}</span>
-                <span className="tabular block text-primary">{formatProbability(a.probability_outperform)}</span>
+                <span className="tabular block font-bold text-accent-text">{formatProbability(a.probability_outperform)}</span>
               </span>
               <ChevronDown size={20} className={`hidden transition-transform md:block ${expanded ? "rotate-180" : ""}`} />
             </button>
@@ -62,7 +62,10 @@ export function RankingList({
                     </li>
                   ))}
                 </ul>
-                <Link href={`/ativo/${a.ticker}`} className="text-primary hover:underline">
+                <Link
+                  href={`/ativo/${a.ticker}`}
+                  className="inline-flex rounded-full bg-primary px-5 py-2.5 font-semibold text-on-primary"
+                >
                   Ver análise completa
                 </Link>
               </div>

@@ -1,6 +1,6 @@
 import { getMacro } from "@/lib/api";
 import { changeColor, formatNumber } from "@/lib/format";
-import { Breadcrumbs, Card, EmptyState, PageTitle, Stat } from "../components/ui";
+import { Breadcrumbs, Card, EmptyState, PageTitle, Stat } from "@/app/components/ui";
 
 // O ranking muda durante o pregão: renderiza a cada acesso em vez de gerar a página no build.
 export const dynamic = "force-dynamic";

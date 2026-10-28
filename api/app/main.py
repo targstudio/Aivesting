@@ -1,15 +1,28 @@
 from contextlib import asynccontextmanager
 from dataclasses import asdict
 
+from typing import Literal
+
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
+from .ai.assistant import Assistant
 from .ai.explain import Explainer
 from .config import Settings, get_settings
 from .providers.bcb import BcbClient
 from .providers.brapi import BrapiProvider
 from .providers.demo import DemoMacro, DemoProvider
 from .ranking.service import CLASSES, RankingService
+
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=4000)
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage] = Field(min_length=1, max_length=40)
+
 
 DISCLAIMER = (
     "Conteúdo informativo gerado por modelo estatístico. Não é recomendação de investimento. "
@@ -98,6 +111,16 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             asset, snapshot, macro
         )
         return {"ticker": asset.ticker, "explanation": text, "disclaimer": DISCLAIMER}
+
+    @app.post("/assistant/chat")
+    async def chat(body: ChatRequest, svc: RankingService = Depends(get_ranking)):
+        if not settings.anthropic_api_key:
+            raise HTTPException(503, "ANTHROPIC_API_KEY não configurada.")
+        if body.messages[-1].role != "user":
+            raise HTTPException(422, "A última mensagem precisa ser do usuário.")
+        assistant = Assistant(settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb)
+        result = await assistant.reply([m.model_dump() for m in body.messages])
+        return {**result, "disclaimer": DISCLAIMER}
 
     return app
 

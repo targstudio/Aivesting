@@ -26,7 +26,7 @@ export function ExplainButton({ ticker }: { ticker: string }) {
       <button
         onClick={run}
         disabled={state === "loading"}
-        className="inline-flex items-center gap-2 rounded border border-primary px-4 py-2 text-primary transition-colors hover:bg-primary hover:text-white disabled:opacity-60"
+        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-on-primary transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         <Sparkles size={18} />
         {state === "loading" ? "Analisando..." : "Por que está nessa posição?"}

@@ -1,24 +1,29 @@
 import type { Config } from "tailwindcss";
 
 // Tokens do design system (ver proposta, seção 7). Cores via variáveis CSS para suportar modo escuro.
+const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   darkMode: "media",
   theme: {
     extend: {
       colors: {
-        primary: "rgb(var(--primary) / <alpha-value>)",
-        background: "rgb(var(--background) / <alpha-value>)",
-        surface: "rgb(var(--surface) / <alpha-value>)",
-        border: "rgb(var(--border) / <alpha-value>)",
-        text: "rgb(var(--text) / <alpha-value>)",
-        muted: "rgb(var(--text-muted) / <alpha-value>)",
-        "info-bg": "rgb(var(--info-bg) / <alpha-value>)",
-        positive: "rgb(var(--positive) / <alpha-value>)",
-        negative: "rgb(var(--negative) / <alpha-value>)",
-        "nav-active": "rgb(var(--nav-active) / <alpha-value>)",
+        primary: token("primary"),
+        "on-primary": token("on-primary"),
+        background: token("background"),
+        surface: token("surface"),
+        border: token("border"),
+        text: token("text"),
+        muted: token("text-muted"),
+        "accent-bg": token("accent-bg"),
+        "accent-text": token("accent-text"),
+        track: token("track"),
+        positive: token("positive"),
+        negative: token("negative"),
       },
-      fontFamily: { sans: ["var(--font-inter)", "system-ui", "sans-serif"] },
+      fontFamily: { sans: ["var(--font-sans)", "system-ui", "sans-serif"] },
+      borderRadius: { card: "2rem" },
     },
   },
   plugins: [],

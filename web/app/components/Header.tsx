@@ -1,34 +1,29 @@
-import { Bell, ChevronDown, CircleHelp } from "lucide-react";
+import { Bell, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import { Logo } from "./Logo";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between bg-[#2B57B0] px-4 text-white md:h-20 md:px-10">
-      <Link href="/" className="flex items-center gap-2 text-xl font-semibold tracking-tight">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/70 text-sm font-bold">
-          AI
-        </span>
-        <span>
-          AI<span className="font-light">.vesting</span>
-        </span>
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-surface px-4 md:h-20 md:px-10">
+      <Link href="/" className="flex items-center gap-3">
+        <Logo size={36} />
+        <span className="text-lg font-bold tracking-tight">AI.vesting</span>
       </Link>
-      <div className="flex items-center gap-4 md:gap-6">
-        <button aria-label="Alertas" className="opacity-90 hover:opacity-100">
-          <Bell size={22} />
+      <div className="flex items-center gap-2 md:gap-3">
+        <button className="hidden items-center gap-2 rounded-full bg-accent-bg px-5 py-2.5 text-sm font-semibold text-accent-text sm:flex">
+          <MessageSquare size={18} /> Ajuda
         </button>
-        <button aria-label="Ajuda" className="hidden opacity-90 hover:opacity-100 sm:block">
-          <CircleHelp size={22} />
+        <button aria-label="Alertas" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-track">
+          <Bell size={20} />
         </button>
-        <div className="hidden h-10 w-px bg-white/30 sm:block" />
-        <button className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white font-semibold text-[#2B57B0]">
+        <button className="flex items-center gap-3 rounded-full py-1 pl-1 pr-1 hover:bg-track md:pr-4">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-on-primary">
             U
           </span>
           <span className="hidden text-left leading-tight md:block">
-            <span className="block font-medium">Investidor</span>
-            <span className="block text-xs text-white/80">Plano gratuito</span>
+            <span className="block text-sm font-semibold">Investidor</span>
+            <span className="block text-xs text-muted">Plano gratuito</span>
           </span>
-          <ChevronDown size={18} className="hidden md:block" />
         </button>
       </div>
     </header>

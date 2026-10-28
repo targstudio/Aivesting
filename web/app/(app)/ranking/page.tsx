@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { getRanking, type AssetClass } from "@/lib/api";
 import { formatTime } from "@/lib/format";
-import { RankingList } from "../components/RankingList";
-import { Breadcrumbs, EmptyState, InfoBanner, PageTitle } from "../components/ui";
+import { RankingList } from "@/app/components/RankingList";
+import { Breadcrumbs, EmptyState, InfoBanner, PageTitle, Segmented } from "@/app/components/ui";
 
 export default async function RankingPage({ searchParams }: { searchParams: Promise<{ classe?: string }> }) {
   const { classe } = await searchParams;
@@ -23,17 +22,12 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       </InfoBanner>
 
       <div className="mb-4 flex items-center justify-between">
-        <div className="flex gap-1 rounded border border-border bg-surface p-1 text-sm">
-          {(["acoes", "fiis"] as const).map((c) => (
-            <Link
-              key={c}
-              href={c === "fiis" ? "/ranking?classe=fiis" : "/ranking"}
-              className={`rounded px-4 py-1.5 ${c === assetClass ? "bg-primary text-white" : "hover:bg-nav-active"}`}
-            >
-              {c === "fiis" ? "FIIs" : "Ações"}
-            </Link>
-          ))}
-        </div>
+        <Segmented
+          options={[
+            { label: "Ações", href: "/ranking", active: assetClass === "acoes" },
+            { label: "FIIs", href: "/ranking?classe=fiis", active: assetClass === "fiis" },
+          ]}
+        />
         {snapshot && <span className="text-sm text-muted">Atualizado às {formatTime(snapshot.computed_at)}</span>}
       </div>
 

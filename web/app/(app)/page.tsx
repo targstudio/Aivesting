@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { getMacro, getRanking, type RankingSnapshot } from "@/lib/api";
 import { formatNumber, formatTime } from "@/lib/format";
-import { RankingList } from "./components/RankingList";
-import { Card, EmptyState, InfoBanner, PageTitle, Stat } from "./components/ui";
+import { RankingList } from "@/app/components/RankingList";
+import { Card, EmptyState, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 
 function TopRanking({ title, snapshot, href }: { title: string; snapshot: RankingSnapshot | null; href: string }) {
   return (
     <div>
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-lg">{title}</h2>
-        <Link href={href} className="text-sm text-primary hover:underline">
+        <h2 className="text-lg font-bold">{title}</h2>
+        <Link href={href} className="rounded-full bg-accent-bg px-4 py-1.5 text-sm font-semibold text-accent-text">
           Ver ranking completo
         </Link>
       </div>
@@ -32,7 +32,7 @@ export default async function Home() {
 
   return (
     <>
-      <PageTitle title="Início" subtitle="Ranking de ativos por probabilidade de superar o índice, recalculado a cada 5 minutos no pregão." />
+      <PageTitle eyebrow="Boas-vindas ao AI.vesting!" title="Como está o mercado hoje" subtitle="Ranking de ativos por probabilidade de superar o índice, recalculado a cada 5 minutos no pregão." />
       <InfoBanner>
         Conteúdo informativo gerado por modelo estatístico em calibração. Não é recomendação de investimento.
         {!realtime && " Cotações com atraso até a contratação do feed em tempo real."}
