@@ -5,6 +5,7 @@ from datetime import date, timedelta
 
 from .base import Bar, Quote
 from .bcb import MacroIndicator
+from .brapi import logo_url_for
 
 
 class DemoProvider:
@@ -31,6 +32,7 @@ class DemoProvider:
                     price=history[-1].close,
                     change_percent=round((history[-1].close / prev - 1) * 100, 2),
                     history=history,
+                    logo_url=logo_url_for(ticker),
                 )
             )
         return out

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { AssetLogo } from "@/app/components/AssetLogo";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { Breadcrumbs, Card, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAsset } from "@/lib/api";
@@ -18,7 +19,10 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
           { label: asset.ticker },
         ]}
       />
-      <PageTitle title={`${asset.ticker}`} subtitle={asset.name} />
+      <div className="flex items-center gap-4">
+        <AssetLogo ticker={asset.ticker} src={asset.logo_url} size={64} />
+        <PageTitle title={asset.ticker} subtitle={asset.name} />
+      </div>
       <InfoBanner>{detail.disclaimer}</InfoBanner>
 
       <Card className="mb-6">

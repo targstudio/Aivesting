@@ -82,6 +82,8 @@ def test_parse_brapi_quote():
     assert q.ticker == "PETR4" and q.price == 38.5
     assert [b.close for b in q.history] == [36.0, 37.0]
     assert q.fundamentals["price_earnings"] == 4.1
+    assert q.logo_url == "https://icons.brapi.dev/icons/PETR4.svg"
+    assert parse_quote({"symbol": "MXRF11", "logourl": "https://x/y.png"}).logo_url == "https://x/y.png"
 
 
 def test_demo_mode_runs_offline():
@@ -90,3 +92,4 @@ def test_demo_mode_runs_offline():
     c.post("/ranking/recompute")
     assert len(c.get("/ranking/fiis").json()["assets"]) == len(Settings(_env_file=None).fiis)
     assert len(c.get("/macro").json()["indicators"]) == 3
+    assert all(a["logo_url"] for a in c.get("/ranking/acoes").json()["assets"])

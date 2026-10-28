@@ -20,6 +20,7 @@ export type RankedAsset = {
   score: number;
   probability_outperform: number;
   top_factors: Contribution[];
+  logo_url: string | null;
 };
 
 export type RankingSnapshot = {

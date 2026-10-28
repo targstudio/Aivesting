@@ -47,3 +47,20 @@ def test_chat_endpoint_returns_reply(monkeypatch):
     c = TestClient(create_app(Settings(_env_file=None, demo_mode=True, anthropic_api_key="k"), start_scheduler=False))
     body = c.post("/assistant/chat", json={"messages": [{"role": "user", "content": "Quais FIIs lideram?"}]}).json()
     assert body["reply"].startswith("Os FIIs") and body["tools_used"] == ["get_ranking"]
+
+
+def test_chat_rate_limit(monkeypatch):
+    async def fake_reply(self, history):
+        return {"reply": "ok", "tools_used": []}
+
+    monkeypatch.setattr(Assistant, "reply", fake_reply)
+    s = Settings(_env_file=None, demo_mode=True, anthropic_api_key="k", ai_requests_per_hour=2)
+    c = TestClient(create_app(s, start_scheduler=False))
+    msg = {"messages": [{"role": "user", "content": "oi"}]}
+    assert [c.post("/assistant/chat", json=msg).status_code for _ in range(3)] == [200, 200, 429]
+
+
+def test_recompute_requires_admin_token_when_set():
+    c = TestClient(create_app(Settings(_env_file=None, demo_mode=True, admin_token="seg"), start_scheduler=False))
+    assert c.post("/ranking/recompute").status_code == 401
+    assert c.post("/ranking/recompute", headers={"X-Admin-Token": "seg"}).status_code == 200

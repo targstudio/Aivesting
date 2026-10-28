@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { RankedAsset } from "@/lib/api";
+import { AssetLogo } from "./AssetLogo";
 import { changeColor, formatBRL, formatPercent, formatProbability } from "@/lib/format";
 
 // `compact` esconde a coluna de preço, para listas em meia largura (ex.: página inicial).
@@ -25,15 +26,18 @@ export function RankingList({
           <div key={a.ticker} className="rounded-3xl border border-border bg-surface">
             <button
               onClick={() => setOpen(expanded ? null : a.ticker)}
-              className={`grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-3 px-4 py-4 text-left md:px-6 ${
-                compact ? "md:grid-cols-[2.5rem_1fr_5rem_7rem_1.5rem]" : "md:grid-cols-[3rem_1fr_7rem_7rem_8rem_2rem]"
+              className={`grid w-full grid-cols-[1.75rem_1fr_auto] items-center gap-3 px-4 py-4 text-left md:px-6 ${
+                compact ? "md:grid-cols-[1.75rem_1fr_5rem_7rem_1.5rem]" : "md:grid-cols-[2rem_1fr_7rem_7rem_8rem_2rem]"
               }`}
               aria-expanded={expanded}
             >
-              <span className="tabular flex h-9 w-9 items-center justify-center rounded-full bg-track text-sm font-bold">{a.rank}</span>
-              <span className="min-w-0">
+              <span className="tabular text-center text-sm font-bold text-muted">{a.rank}º</span>
+              <span className="flex min-w-0 items-center gap-3">
+                <AssetLogo ticker={a.ticker} src={a.logo_url} />
+                <span className="min-w-0">
                 <span className="block truncate font-bold">{a.ticker}</span>
                 <span className="block truncate text-sm text-muted">{a.name}</span>
+                </span>
               </span>
               <span className={compact ? "hidden" : "hidden md:block"}>
                 <span className="block text-xs text-muted">Preço</span>

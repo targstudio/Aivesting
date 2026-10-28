@@ -32,7 +32,17 @@ class Settings(BaseSettings):
     stocks: list[str] = DEFAULT_STOCKS
     fiis: list[str] = DEFAULT_FIIS
 
+    # Origens do front liberadas no CORS, separadas por vírgula (ex.: o domínio da Vercel).
     web_origin: str = "http://localhost:3000"
+
+    # Protege POST /ranking/recompute em produção (header X-Admin-Token). Vazio = liberado (dev).
+    admin_token: str = ""
+    # Limite de chamadas à IA (chat e explicação) por IP a cada hora, para controlar custo.
+    ai_requests_per_hour: int = 30
+
+    # Supabase (opcional): com os dois preenchidos, cada ranking é gravado no banco.
+    supabase_url: str = ""
+    supabase_secret_key: str = ""
 
     # Usa dados sintéticos (sem brapi nem BCB). Útil para desenvolvimento e demonstração.
     demo_mode: bool = False

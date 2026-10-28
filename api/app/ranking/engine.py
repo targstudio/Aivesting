@@ -49,6 +49,7 @@ class RankedAsset:
     score: float  # 0 a 100, percentil dentro da classe
     probability_outperform: float
     top_factors: list[Contribution] = field(default_factory=list)
+    logo_url: str | None = None
 
 
 @dataclass
@@ -111,6 +112,7 @@ def rank_assets(
                 score=round(100 * (n - position) / (n - 1), 1) if n > 1 else 50.0,
                 probability_outperform=round(0.5 + PROB_SPREAD * math.tanh(raw), 3),
                 top_factors=contributions[:3],
+                logo_url=quote.logo_url,
             )
         )
     return RankingSnapshot(asset_class, benchmark, MODEL_VERSION, computed_at, data_realtime, assets)

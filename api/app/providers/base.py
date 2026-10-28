@@ -19,6 +19,7 @@ class Quote:
     currency: str = "BRL"
     # Momento da cotação segundo o provedor. Com brapi há atraso; com feed licenciado é tempo real.
     as_of: str | None = None
+    logo_url: str | None = None
     history: list[Bar] = field(default_factory=list)
     fundamentals: dict[str, float | None] = field(default_factory=dict)
 

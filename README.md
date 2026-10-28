@@ -26,8 +26,9 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
    dentro de cada classe e gera posição, score de 0 a 100 e probabilidade de superar o índice.
    A versão atual (`baseline-v0`) usa pesos fixos e não é calibrada: a probabilidade fica entre 35% e 65%
    até existir histórico para treinar e calibrar o modelo.
-3. **Agendador**: recalcula a cada `RANKING_INTERVAL_MINUTES` (5) dentro do horário do pregão.
-4. **IA** (`api/app/ai/explain.py`): o Claude recebe só os números calculados e os indicadores macro e
+3. **Agendador**: recalcula a cada `RANKING_INTERVAL_MINUTES` (5) dentro do horário do pregão e, com
+   `SUPABASE_URL` e `SUPABASE_SECRET_KEY`, grava cada ranking no banco para o histórico de acertos.
+4. **IA** (`api/app/ai/explain.py`, limitada por IP via `AI_REQUESTS_PER_HOUR`): o Claude recebe só os números calculados e os indicadores macro e
    explica a posição do ativo em português, sem recomendar compra ou venda.
 5. **Assistente** (`api/app/ai/assistant.py`, tela `/assistente`): chat em que a Claude usa ferramentas
    (`get_ranking`, `get_asset`, `get_macro`) para consultar os dados do app antes de responder.
@@ -53,6 +54,10 @@ npm install
 cp .env.example .env.local
 npm run dev                    # http://localhost:3000
 ```
+
+## Publicação
+
+Site na Vercel, API no Render (`render.yaml`) e banco no Supabase. Passo a passo em [docs/PUBLICAR.md](docs/PUBLICAR.md).
 
 ## Limitações conhecidas
 

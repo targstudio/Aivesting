@@ -36,6 +36,14 @@ class BrapiProvider:
         return [r for r in results if isinstance(r, Quote)]
 
 
+LOGO_BASE_URL = "https://icons.brapi.dev/icons"
+
+
+def logo_url_for(ticker: str) -> str:
+    """Logotipo da empresa/fundo servido pela brapi. O front mostra as iniciais se a imagem não existir."""
+    return f"{LOGO_BASE_URL}/{ticker.upper()}.svg"
+
+
 def parse_quote(raw: dict) -> Quote:
     history = [
         Bar(
@@ -54,6 +62,7 @@ def parse_quote(raw: dict) -> Quote:
         change_percent=float(raw.get("regularMarketChangePercent") or 0),
         currency=raw.get("currency") or "BRL",
         as_of=raw.get("regularMarketTime"),
+        logo_url=raw.get("logourl") or logo_url_for(raw["symbol"]),
         history=history,
         fundamentals={
             "price_earnings": raw.get("priceEarnings"),

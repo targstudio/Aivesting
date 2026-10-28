@@ -29,9 +29,10 @@ def market_is_open(settings: Settings, now: datetime | None = None) -> bool:
 class RankingService:
     """Guarda o último ranking de cada classe e o recalcula a cada N minutos durante o pregão."""
 
-    def __init__(self, settings: Settings, provider: MarketDataProvider):
+    def __init__(self, settings: Settings, provider: MarketDataProvider, store=None):
         self.settings = settings
         self.provider = provider
+        self.store = store
         self.snapshots: dict[str, RankingSnapshot] = {}
         self.scheduler: AsyncIOScheduler | None = None
 
@@ -44,11 +45,16 @@ class RankingService:
         for asset_class, benchmark in CLASSES.items():
             try:
                 quotes = await self.provider.quotes(self.universe(asset_class))
-                self.snapshots[asset_class] = rank_assets(
-                    quotes, asset_class, benchmark, data_realtime=self.provider.realtime
-                )
+                snapshot = rank_assets(quotes, asset_class, benchmark, data_realtime=self.provider.realtime)
+                self.snapshots[asset_class] = snapshot
             except Exception:
                 log.exception("falha ao recalcular ranking de %s", asset_class)
+                continue
+            if self.store:
+                try:
+                    await self.store.save(snapshot)
+                except Exception:
+                    log.exception("falha ao gravar ranking de %s no banco", asset_class)
 
     def start(self) -> None:
         self.scheduler = AsyncIOScheduler(timezone=SAO_PAULO)
