@@ -1,14 +1,15 @@
+import logging
+import time
+from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from dataclasses import asdict
 from datetime import datetime
-
 from typing import Literal
 
-import time
-from collections import defaultdict, deque
-
+import anthropic
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from .advisor import QUESTIONS, PlanRequest, build_plan
@@ -74,6 +75,27 @@ DISCLAIMER = (
 )
 
 
+log = logging.getLogger(__name__)
+
+
+def describe_error(exc: Exception) -> tuple[int, str]:
+    """Traduz erros da Anthropic (e qualquer outro) numa mensagem que a pessoa entende."""
+    if isinstance(exc, anthropic.APIStatusError):
+        text = str(exc).lower()
+        if exc.status_code == 400 and "credit" in text:
+            return 402, "Os créditos da IA acabaram. Recarregue em console.anthropic.com → Billing e tente de novo."
+        if exc.status_code in (401, 403):
+            return 502, "A chave da Anthropic foi recusada. Confira a ANTHROPIC_API_KEY no Render."
+        if exc.status_code == 429:
+            return 429, "A IA recebeu muitas perguntas agora. Espere alguns segundos e tente de novo."
+        if exc.status_code >= 500:
+            return 503, "A IA da Anthropic está instável agora. Tente de novo em alguns segundos."
+        return 502, "A IA não conseguiu responder a esta pergunta. Tente reformular."
+    if isinstance(exc, (anthropic.APIConnectionError, anthropic.APITimeoutError)):
+        return 503, "Não consegui falar com a IA da Anthropic agora. Tente de novo em alguns segundos."
+    return 500, "Erro inesperado na API. Tente de novo; se continuar, avise o suporte."
+
+
 def create_app(settings: Settings | None = None, start_scheduler: bool = True) -> FastAPI:
     settings = settings or get_settings()
     if settings.demo_mode:
@@ -108,6 +130,18 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         ranking.stop()
 
     app = FastAPI(title="AI.vesting API", version="0.1.0", lifespan=lifespan)
+
+    # Registrado antes do CORS para ficar por dentro dele: um erro inesperado volta como JSON com os cabeçalhos de
+    # CORS, e o navegador mostra a mensagem em vez de um "falha de rede" genérico.
+    @app.middleware("http")
+    async def friendly_errors(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except Exception as exc:  # noqa: BLE001
+            status, detail = describe_error(exc)
+            log.exception("erro em %s %s", request.method, request.url.path)
+            return JSONResponse({"detail": detail}, status_code=status)
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[o.strip().rstrip("/") for o in settings.web_origin.split(",") if o.strip()],

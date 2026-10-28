@@ -2,6 +2,7 @@
 
 import { Bell, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { ApiStatusPill } from "./ApiStatus";
 import { useApp } from "./AppProvider";
 import { Logo } from "./Logo";
 
@@ -17,6 +18,7 @@ export function Header() {
         <span className="text-lg font-bold tracking-tight">AI.vesting</span>
       </Link>
       <div className="flex items-center gap-2 md:gap-3">
+        <ApiStatusPill />
         <button
           onClick={() => askAI()}
           className="hidden items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold text-accent-text transition-colors hover:bg-surface-2 sm:flex"

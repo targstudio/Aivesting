@@ -244,6 +244,16 @@ export type Level = "iniciante" | "intermediario" | "avancado";
 
 export const getMarket = () => get<MarketOverview>("/mercado");
 
+export const API_DOWN_EVENT = "aivesting:api-down";
+
+/** A API não respondeu (dormindo no plano gratuito, reiniciando ou fora do ar). */
+export class ApiNetworkError extends Error {
+  constructor() {
+    super("Não foi possível falar com a API agora. No plano gratuito ela leva até 1 minuto para acordar.");
+    this.name = "ApiNetworkError";
+  }
+}
+
 /** Chamadas feitas no navegador (sem cache do Next), com a mensagem de erro da API. */
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
@@ -253,7 +263,9 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
       headers: init?.body ? { "Content-Type": "application/json", ...init.headers } : init?.headers,
     });
   } catch {
-    throw new Error("Não foi possível falar com a API agora. No plano gratuito ela leva até 1 minuto para acordar.");
+    // Avisa o indicador do topo, que passa a mostrar a contagem enquanto a API acorda.
+    if (typeof window !== "undefined") window.dispatchEvent(new Event(API_DOWN_EVENT));
+    throw new ApiNetworkError();
   }
   const body = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(typeof body.detail === "string" ? body.detail : `Erro ${res.status}`);
