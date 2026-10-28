@@ -35,6 +35,8 @@ FEATURE_LABELS = {
     "leitura_macro": "Leitura do Macro",
     "leitura_horizontes": "Leitura dos Horizontes",
     "leitura_alertas": "Explicação de alerta",
+    "carteira_leitura": "Leitura de prints da carteira",
+    "carteira_analise": "Análise da carteira",
 }
 
 KEEP_DAYS = 90

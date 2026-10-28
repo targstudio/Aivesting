@@ -30,11 +30,17 @@ que vêm do ranking estatístico do app para o prazo dela; o que sobra da classe
 da classe. Não use títulos nem listas longas."""
 
 
-def advisor_system(plan: dict | None, level_note: str) -> str:
+def advisor_system(plan: dict | None, level_note: str, portfolio: dict | None = None) -> str:
     context = (
         "\n\nPerfil e plano da pessoa (JSON):\n" + json.dumps(plan, ensure_ascii=False, default=str)
         if plan
         else "\n\nA pessoa ainda não respondeu ao questionário de perfil: antes de sugerir alocação, peça que ela "
         "responda na tela Assessor ou pergunte o objetivo, o prazo e como reagiria a uma queda de 20%."
     )
+    if portfolio:
+        context += (
+            "\n\nCarteira atual da pessoa, importada dos prints da corretora (análise do app, JSON). Considere o que ela "
+            "já tem: sugira usar aportes para aproximar a carteira do plano antes de vender, aponte concentração e "
+            "lembre que vender pode gerar imposto.\n" + json.dumps(portfolio, ensure_ascii=False, default=str)
+        )
     return f"{ADVISOR_PROMPT}\n\n{level_note}{context}"

@@ -352,3 +352,106 @@ export type AiUsage = {
   model: string;
   ai: boolean;
 };
+
+// ---- Minha carteira ----
+
+export type HoldingClass = "acoes" | "fiis" | "etf" | "bdr" | "renda_fixa" | "fundos" | "internacional" | "cripto" | "caixa" | "outros";
+
+export const HOLDING_CLASSES: Record<HoldingClass, string> = {
+  acoes: "Ações",
+  fiis: "FIIs",
+  etf: "ETFs",
+  bdr: "BDRs",
+  renda_fixa: "Renda fixa",
+  fundos: "Fundos",
+  internacional: "Dólar e exterior",
+  cripto: "Cripto",
+  caixa: "Saldo em conta",
+  outros: "Outros",
+};
+
+export type Holding = {
+  ticker: string | null;
+  name: string;
+  asset_class: HoldingClass;
+  indexer: "pos" | "ipca" | "pre" | null;
+  quantity: number | null;
+  avg_price: number | null;
+  price: number | null;
+  value: number | null;
+  maturity: string | null;
+};
+
+export type PortfolioRead = {
+  broker: string | null;
+  holdings: Holding[];
+  section_totals: { label: string; value: number }[];
+  warnings: string[];
+  total: number;
+  totals_match: boolean | null;
+};
+
+export type PortfolioPosition = {
+  ticker: string | null;
+  name: string;
+  asset_class: HoldingClass;
+  class_label: string;
+  indexer: string | null;
+  maturity: string | null;
+  quantity: number | null;
+  avg_price: number | null;
+  price: number | null;
+  price_source: "app" | "print";
+  value: number;
+  cost: number | null;
+  result: number | null;
+  result_pct: number | null;
+  sector: string | null;
+  bucket: string;
+  logo_url: string | null;
+  weight: number;
+  ranking: { rank: number; total: number; probability: number; change_percent: number | null } | null;
+  risk_10y: RiskMetrics | null;
+};
+
+export type PortfolioGroup = { key: string; label: string; value: number; count: number; pct: number };
+
+export type PortfolioAnalysis = {
+  total: number;
+  positions: PortfolioPosition[];
+  by_class: PortfolioGroup[];
+  by_sector: PortfolioGroup[];
+  by_bucket: PortfolioGroup[];
+  variable_income_pct?: number;
+  concentration: {
+    positions: number;
+    largest: { ticker: string | null; name: string; pct: number };
+    top3_pct: number;
+    hhi: number;
+    effective_positions: number;
+  } | null;
+  alerts: { kind: string; level: "alto" | "medio" | "baixo"; text: string }[];
+  result: { cost: number; value: number; result: number; result_pct: number; covered_pct: number } | null;
+  risk: {
+    years: number[];
+    coverage: number;
+    annual: { year: number; return: number; coverage: number }[];
+    cagr: number | null;
+    volatility_annual: number | null;
+    worst_year: { year: number; return: number } | null;
+    best_year: { year: number; return: number } | null;
+    benchmark: string;
+    benchmark_annual: { year: number; return: number }[];
+    benchmark_cagr: number | null;
+    cdi_annual: { year: number; return: number }[];
+    cdi_cagr: number | null;
+    crises: { key: string; label: string; start: string; end: string; return: number; benchmark: number | null; coverage: number }[];
+    data_through: string;
+  } | null;
+  plan?: {
+    profile: string;
+    term_label: string;
+    comparison: { key: string; label: string; current_pct: number; target_pct: number; diff_value: number }[];
+  };
+  disclaimer: string;
+};

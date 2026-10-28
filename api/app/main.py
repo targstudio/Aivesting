@@ -1,5 +1,7 @@
+import asyncio
 import logging
 import time
+import uuid
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
 from dataclasses import asdict
@@ -16,6 +18,7 @@ from .advisor import QUESTIONS, PlanRequest, build_plan
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
+from .ai.portfolio_ai import MAX_IMAGES, ImageError, PortfolioAI, decode_image, slim_analysis
 from .ai.insights import LEVELS, REFRESH_MIN_SECONDS, Insights, valid_context
 from .ai.usage import UsageTracker
 from .alerts import Alert, evaluate
@@ -28,7 +31,8 @@ from .providers.brapi import BrapiProvider
 from .providers.demo import DemoMacro, DemoProvider
 from .providers.yahoo import YahooProvider
 from .ranking.service import CLASSES, RankingService, market_is_open
-from .storage import SupabaseStore
+from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
+from .storage import PortfolioStore, SupabaseStore
 
 class ChatMessage(BaseModel):
     role: Literal["user", "assistant"]
@@ -47,6 +51,29 @@ class ChatRequest(BaseModel):
 
 class AdvisorChatRequest(ChatRequest):
     plan: dict | None = None
+    # Análise da carteira importada (tela Minha carteira), para o assessor considerar o que a pessoa já tem.
+    portfolio: dict | None = None
+
+
+class PortfolioReadRequest(BaseModel):
+    # Prints como data URL ("data:image/png;base64,..."). Não são gravados: vão só para a IA.
+    images: list[str] = Field(min_length=1, max_length=MAX_IMAGES)
+
+
+class PortfolioAnalysisRequest(PortfolioRequest):
+    # Respostas do assessor (opcional): o plano é montado com o total da carteira para comparar.
+    advisor: PlanRequest | None = None
+    level: Level = "iniciante"
+
+
+class PortfolioSaveRequest(PortfolioRequest):
+    updated_at: datetime | None = None
+
+
+PORTFOLIO_DISCLAIMER = (
+    "Análise automática das posições que você informou, com dados do app e histórico desde 2000. Confira os valores "
+    "na sua corretora. Rentabilidade passada não garante rentabilidade futura."
+)
 
 
 class AlertsRequest(BaseModel):
@@ -109,6 +136,11 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         bcb = BcbClient(settings.bcb_base_url)
     store = (
         SupabaseStore(settings.supabase_url, settings.supabase_secret_key)
+        if settings.supabase_url and settings.supabase_secret_key
+        else None
+    )
+    portfolios = (
+        PortfolioStore(settings.supabase_url, settings.supabase_secret_key)
         if settings.supabase_url and settings.supabase_secret_key
         else None
     )
@@ -184,6 +216,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "market_open": market_is_open(settings),
             "longterm": app.state.longterm.data is not None,
             "advisor": settings.advisor_mode == "public",
+            "portfolio_storage": portfolios is not None,
         }
 
     # ---- Modo assessor ----
@@ -254,9 +287,111 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             [m.model_dump(include={"role", "content"}) for m in body.messages],
             page=body.page,
             level=body.level,
-            system=advisor_system(body.plan, LEVELS[body.level]),
+            system=advisor_system(body.plan, LEVELS[body.level], body.portfolio and slim_analysis(body.portfolio)),
         )
         return {**result, "disclaimer": ADVISOR_DISCLAIMER}
+
+    # ---- Minha carteira ----
+
+    price_cache: dict[str, tuple[float, float]] = {}
+
+    async def live_prices(tickers: set[str]) -> dict[str, float]:
+        """Cotação de ativos da carteira que não estão no ranking (cache de 5 minutos). Falha vira preço do print."""
+        if settings.demo_mode:
+            return {}
+        now = time.monotonic()
+        missing = [t for t in tickers if TICKER_RE.match(t) and now - price_cache.get(t, (-1e9, 0))[0] > 300]
+        if missing:
+            try:
+                quotes = await asyncio.wait_for(app.state.provider.quotes(missing[:40], history_days=30), 12)
+                for q in quotes:
+                    if q.price:
+                        price_cache[q.ticker] = (now, q.price)
+            except Exception:  # noqa: BLE001
+                log.warning("sem cotação para %d ativos da carteira", len(missing))
+        return {t: price_cache[t][1] for t in tickers if t in price_cache}
+
+    async def portfolio_analysis(body: PortfolioRequest, svc: RankingService) -> dict:
+        ranked = {
+            a.ticker: {**asdict(a), "total": len(s.assets)} for s in svc.snapshots.values() for a in s.assets
+        }
+        outside = {h.ticker for h in body.holdings if h.ticker and h.ticker not in ranked}
+        lt = app.state.longterm.data
+        return analyze(body.holdings, ranked, await live_prices(outside), lt)
+
+    @app.post("/carteira/ler")
+    async def portfolio_read(body: PortfolioReadRequest, request: Request):
+        """Lê prints da carteira com a IA e devolve as posições para a pessoa conferir. As imagens não são guardadas."""
+        require_ai()
+        try:
+            images = [decode_image(i) for i in body.images]
+        except ImageError as exc:
+            raise HTTPException(422, str(exc)) from None
+        ai_rate_limit(request)
+        try:
+            result = await PortfolioAI(settings.anthropic_api_key, settings.anthropic_model, usage).extract(images)
+        except ValueError as exc:
+            raise HTTPException(422, str(exc) or "A IA não devolveu uma carteira válida. Tente de novo.") from None
+        total = round(sum(h["value"] or 0 for h in result["holdings"]), 2)
+        seen = round(sum(t["value"] for t in result.get("section_totals", [])), 2)
+        return {**result, "total": total, "totals_match": abs(total - seen) <= max(1.0, seen * 0.005) if seen else None}
+
+    @app.post("/carteira/analise")
+    async def portfolio_analyze(body: PortfolioAnalysisRequest, svc: RankingService = Depends(get_ranking)):
+        analysis = await portfolio_analysis(body, svc)
+        if body.advisor and settings.advisor_mode == "public" and analysis["total"]:
+            macro = {i.key: i.value for i in await app.state.bcb.indicators()}
+            req = body.advisor.model_copy(update={"amount": analysis["total"]})
+            plan = build_plan(req, macro, advisor_picks(svc))
+            analysis["plan"] = {"profile": plan["profile"], "term_label": plan["term_label"],
+                                "comparison": compare_with_plan(analysis, plan)}
+        return {**analysis, "disclaimer": PORTFOLIO_DISCLAIMER}
+
+    @app.post("/carteira/explicar")
+    async def portfolio_explain(body: PortfolioAnalysisRequest, request: Request,
+                                svc: RankingService = Depends(get_ranking)):
+        require_ai()
+        ai_rate_limit(request)
+        analysis = (await portfolio_analyze(body, svc))
+        if not analysis["total"]:
+            raise HTTPException(422, "A carteira está vazia.")
+        if "plan" in analysis:
+            analysis["comparacao_plano"] = analysis.pop("plan")
+        text = await PortfolioAI(settings.anthropic_api_key, settings.anthropic_model, usage).explain(
+            analysis, settings.advisor_mode == "public", LEVELS[body.level]
+        )
+        return {"explanation": text, "disclaimer": PORTFOLIO_DISCLAIMER}
+
+    def require_portfolios() -> PortfolioStore:
+        if portfolios is None:
+            raise HTTPException(503, "Banco de dados não configurado: a carteira fica só neste navegador.")
+        return portfolios
+
+    def portfolio_id(raw: str) -> str:
+        try:
+            return str(uuid.UUID(raw))
+        except ValueError:
+            raise HTTPException(404, "Carteira não encontrada.") from None
+
+    @app.get("/carteira/{pid}")
+    async def portfolio_get(pid: str):
+        row = await require_portfolios().get(portfolio_id(pid))
+        if row is None:
+            raise HTTPException(404, "Carteira não encontrada.")
+        return row
+
+    @app.put("/carteira/{pid}")
+    async def portfolio_save(pid: str, body: PortfolioSaveRequest):
+        updated = (body.updated_at or datetime.now().astimezone()).isoformat()
+        await require_portfolios().save(
+            portfolio_id(pid), [h.model_dump() for h in body.holdings], updated
+        )
+        return {"ok": True, "updated_at": updated}
+
+    @app.delete("/carteira/{pid}")
+    async def portfolio_delete(pid: str):
+        await require_portfolios().delete(portfolio_id(pid))
+        return {"ok": True}
 
     def require_ai() -> None:
         if not settings.anthropic_api_key:

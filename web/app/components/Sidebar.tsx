@@ -12,6 +12,7 @@ import {
   LineChart,
   Settings,
   Trophy,
+  WalletCards,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -19,14 +20,14 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Logo } from "./Logo";
 
-type Item = { href: string; label: string; icon: LucideIcon; mobile?: boolean };
+type Item = { href: string; label: string; icon: LucideIcon; mobile?: boolean; short?: string };
 
 /** Menu dividido em seções, como no painel de referência. */
 export const NAV_SECTIONS: { title?: string; items: Item[] }[] = [
   {
     items: [
       { href: "/", label: "Início", icon: House, mobile: true },
-      { href: "/mercado", label: "Mercado", icon: LineChart, mobile: true },
+      { href: "/mercado", label: "Mercado", icon: LineChart },
       { href: "/ranking", label: "Ranking", icon: Trophy, mobile: true },
       { href: "/ranking?classe=fiis", label: "FIIs", icon: Building2 },
       { href: "/horizontes", label: "Horizontes", icon: Hourglass },
@@ -36,6 +37,7 @@ export const NAV_SECTIONS: { title?: string; items: Item[] }[] = [
   {
     title: "Inteligência",
     items: [
+      { href: "/carteira", label: "Minha carteira", short: "Carteira", icon: WalletCards, mobile: true },
       {
         href: "/assessor",
         label: "Assessor",
@@ -156,14 +158,14 @@ export function Sidebar() {
         <WithQuery>
           {(query) =>
             NAV_ITEMS.filter((i) => i.mobile).map(
-              ({ href, label, icon: Icon }) => (
+              ({ href, label, short, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
                   className={`flex flex-col items-center gap-1 px-2 text-[11px] ${isActive(pathname, query, href) ? "font-semibold text-primary" : "text-nav-muted"}`}
                 >
                   <Icon size={20} strokeWidth={1.75} />
-                  {label}
+                  {short ?? label}
                 </Link>
               ),
             )
