@@ -109,7 +109,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app = FastAPI(title="AI.vesting API", version="0.1.0", lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[o.strip() for o in settings.web_origin.split(",") if o.strip()],
+        allow_origins=[o.strip().rstrip("/") for o in settings.web_origin.split(",") if o.strip()],
         allow_methods=["*"], allow_headers=["*"]
     )
     app.state.ranking = ranking
