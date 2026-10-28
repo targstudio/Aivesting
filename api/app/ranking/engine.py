@@ -14,6 +14,7 @@ from ..providers.base import Quote
 from .factors import FACTOR_LABELS, compute_factors
 
 MODEL_VERSION = "baseline-v0"
+SPARK_DAYS = 30
 
 WEIGHTS = {
     "momentum_3m": 0.30,
@@ -50,6 +51,8 @@ class RankedAsset:
     probability_outperform: float
     top_factors: list[Contribution] = field(default_factory=list)
     logo_url: str | None = None
+    # Últimos fechamentos (até 30 pregões), para o minigráfico nas listas.
+    spark: list[float] = field(default_factory=list)
 
 
 @dataclass
@@ -113,6 +116,7 @@ def rank_assets(
                 probability_outperform=round(0.5 + PROB_SPREAD * math.tanh(raw), 3),
                 top_factors=contributions[:3],
                 logo_url=quote.logo_url,
+                spark=[round(b.close, 2) for b in quote.history[-SPARK_DAYS:]],
             )
         )
     return RankingSnapshot(asset_class, benchmark, MODEL_VERSION, computed_at, data_realtime, assets)

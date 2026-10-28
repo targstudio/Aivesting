@@ -1,5 +1,6 @@
 import { getRanking, type AssetClass } from "@/lib/api";
 import { formatTime } from "@/lib/format";
+import { AiInsight } from "@/app/components/AiInsight";
 import { RankingList } from "@/app/components/RankingList";
 import { Breadcrumbs, EmptyState, InfoBanner, PageTitle, Segmented } from "@/app/components/ui";
 
@@ -20,6 +21,12 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
         Modelo {snapshot?.model_version ?? "baseline"}: combina momentum, tendência, volatilidade e volume. Ainda não
         calibrado com histórico; trate as probabilidades como estimativas. Não é recomendação de investimento.
       </InfoBanner>
+
+      <AiInsight
+        context={`ranking:${assetClass}`}
+        title={`O que o ranking de ${label.toLowerCase()} mostra`}
+        askPrompt={`O que os primeiros do ranking de ${label.toLowerCase()} têm em comum?`}
+      />
 
       <div className="mb-4 flex items-center justify-between">
         <Segmented

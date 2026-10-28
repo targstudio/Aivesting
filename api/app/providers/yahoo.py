@@ -22,14 +22,19 @@ class YahooProvider:
         # O Yahoo recusa requisições sem User-Agent de navegador.
         self.client = client or httpx.AsyncClient(timeout=20, headers={"User-Agent": "Mozilla/5.0"})
 
-    async def _fetch(self, ticker: str, range_: str) -> Quote | None:
+    async def _fetch(self, ticker: str, range_: str, suffix: str = ".SA") -> Quote | None:
         resp = await self.client.get(
-            f"{self.base_url}/v8/finance/chart/{ticker}.SA", params={"range": range_, "interval": "1d"}
+            f"{self.base_url}/v8/finance/chart/{ticker}{suffix}", params={"range": range_, "interval": "1d"}
         )
         if resp.status_code != 200:
             return None
         results = (resp.json().get("chart") or {}).get("result") or []
         return parse_chart(ticker, results[0]) if results else None
+
+    async def symbols(self, symbols: list[str], range_: str = "3mo") -> list[Quote]:
+        """Cotações de símbolos do Yahoo sem o sufixo da B3 (índices, moedas, commodities: ^BVSP, BRL=X)."""
+        results = await asyncio.gather(*(self._fetch(s, range_, "") for s in symbols), return_exceptions=True)
+        return [r for r in results if isinstance(r, Quote)]
 
     async def quotes(self, tickers: list[str], history_days: int = 180) -> list[Quote]:
         range_ = "1y" if history_days > 180 else "6mo"

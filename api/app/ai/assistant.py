@@ -6,13 +6,14 @@ from dataclasses import asdict
 import anthropic
 
 from ..ranking.service import CLASSES, RankingService
+from .insights import LEVELS
 
 MAX_TOOL_ROUNDS = 6
 
 SYSTEM_PROMPT = """Você é a assistente do AI.vesting, um app brasileiro de informação sobre investimentos.
 Responda em português do Brasil, de forma direta e em linguagem simples.
 
-Use as ferramentas para buscar dados do app (ranking de ações e FIIs, detalhes de um ativo, indicadores macro,
+Use as ferramentas para buscar dados do app (ranking de ações e FIIs, detalhes de um ativo, panorama do mercado no Brasil e no mundo, indicadores macro,
 ranking por horizonte de 1, 3, 5 e 10 anos e o histórico de longo prazo de cada ativo, com o comportamento em crises)
 antes de citar qualquer número. Não invente preços, probabilidades, notícias ou eventos. Se o app não tem o dado,
 diga isso. As probabilidades vêm de modelos estatísticos; trate-as como estimativas incertas. No ranking por horizonte,
@@ -82,6 +83,14 @@ TOOLS = [
         "strict": True,
     },
     {
+        "name": "get_market",
+        "description": "Panorama do mercado agora: Ibovespa, dólar, euro, bolsas dos EUA, Europa e China, juro americano, "
+        "petróleo, ouro e bitcoin (valor e variação do dia), maiores altas e baixas entre os ativos do app e quantos "
+        "sobem ou caem.",
+        "input_schema": {"type": "object", "properties": {}, "additionalProperties": False},
+        "strict": True,
+    },
+    {
         "name": "get_macro",
         "description": "Indicadores macroeconômicos atuais do Banco Central: Selic, IPCA 12 meses e dólar.",
         "input_schema": {"type": "object", "properties": {}, "additionalProperties": False},
@@ -91,12 +100,13 @@ TOOLS = [
 
 
 class Assistant:
-    def __init__(self, api_key: str, model: str, ranking: RankingService, macro_source, longterm=None):
+    def __init__(self, api_key: str, model: str, ranking: RankingService, macro_source, longterm=None, market=None):
         self.client = anthropic.AsyncAnthropic(api_key=api_key)
         self.model = model
         self.ranking = ranking
         self.macro_source = macro_source
         self.longterm = longterm
+        self.market = market
 
     async def run_tool(self, name: str, args: dict) -> dict:
         if name == "get_ranking":
@@ -111,7 +121,7 @@ class Assistant:
                 "versao_modelo": snapshot.model_version,
                 "total_ativos": len(snapshot.assets),
                 "ativos": [
-                    {k: v for k, v in asdict(a).items() if k != "top_factors"} for a in snapshot.assets[:limit]
+                    {k: v for k, v in asdict(a).items() if k not in ("top_factors", "spark")} for a in snapshot.assets[:limit]
                 ],
             }
         if name == "get_asset":
@@ -119,7 +129,7 @@ class Assistant:
             for snapshot in self.ranking.snapshots.values():
                 for asset in snapshot.assets:
                     if asset.ticker == ticker:
-                        return {**asdict(asset), "indice_referencia": snapshot.benchmark, "total": len(snapshot.assets)}
+                        return {**{k: v for k, v in asdict(asset).items() if k != "spark"}, "indice_referencia": snapshot.benchmark, "total": len(snapshot.assets)}
             return {"erro": f"{ticker} não está no ranking do app."}
         if name == "get_horizon_ranking":
             result = self.longterm.horizon(args["asset_class"], args["years"]) if self.longterm else None
@@ -139,19 +149,34 @@ class Assistant:
             ticker = args["ticker"].upper().strip()
             result = self.longterm.asset(ticker) if self.longterm else None
             return result or {"erro": f"{ticker} não tem histórico de longo prazo no app."}
+        if name == "get_market":
+            if self.market is None:
+                return {"erro": "Panorama do mercado indisponível."}
+            overview = await self.market.overview(self.ranking)
+            for item in overview["indices"] + overview["altas"] + overview["baixas"]:
+                item.pop("spark", None)
+                item.pop("logo_url", None)
+            return overview
         if name == "get_macro":
             return {"indicadores": [asdict(i) for i in await self.macro_source.indicators()]}
         return {"erro": f"Ferramenta desconhecida: {name}"}
 
-    async def reply(self, history: list[dict]) -> dict:
-        """`history` é a conversa em texto: [{"role": "user"|"assistant", "content": str}, ...]."""
+    async def reply(self, history: list[dict], page: str | None = None, level: str = "iniciante") -> dict:
+        """`history` é a conversa em texto: [{"role": "user"|"assistant", "content": str}, ...].
+
+        `page` é a tela em que a pessoa abriu a IA, para ela entender "este ativo" ou "este ranking".
+        """
         messages: list = [{"role": m["role"], "content": m["content"]} for m in history]
+        system = f"{SYSTEM_PROMPT}\n\n{LEVELS.get(level, LEVELS['iniciante'])}"
+        if page:
+            system += f"\n\nA pessoa está na tela {page!r} do app. Use isso para entender referências como " \
+                "\"este ativo\" ou \"este ranking\"."
         tools_used: list[str] = []
         for _ in range(MAX_TOOL_ROUNDS):
             response = await self.client.beta.messages.create(
                 model=self.model,
                 max_tokens=4000,
-                system=SYSTEM_PROMPT,
+                system=system,
                 tools=TOOLS,
                 output_config={"effort": "low"},
                 betas=["server-side-fallback-2026-07-01"],

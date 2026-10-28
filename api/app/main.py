@@ -12,14 +12,17 @@ from pydantic import BaseModel, Field
 
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
+from .ai.insights import LEVELS, Insights, valid_context
+from .alerts import Alert, evaluate
 from .config import Settings, get_settings
 from .longterm.model import HORIZONS
 from .longterm.service import LongTermService
+from .market import MarketService
 from .providers.bcb import BcbClient
 from .providers.brapi import BrapiProvider
 from .providers.demo import DemoMacro, DemoProvider
 from .providers.yahoo import YahooProvider
-from .ranking.service import CLASSES, RankingService
+from .ranking.service import CLASSES, RankingService, market_is_open
 from .storage import SupabaseStore
 
 class ChatMessage(BaseModel):
@@ -27,8 +30,23 @@ class ChatMessage(BaseModel):
     content: str = Field(min_length=1, max_length=4000)
 
 
+Level = Literal["iniciante", "intermediario", "avancado"]
+
+
 class ChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(min_length=1, max_length=40)
+    # Tela em que a pessoa abriu a IA (ex.: "/ativo/PETR4") e nível de linguagem escolhido nas configurações.
+    page: str | None = Field(default=None, max_length=200)
+    level: Level = "iniciante"
+
+
+class AlertsRequest(BaseModel):
+    alerts: list[Alert] = Field(max_length=100)
+
+
+class AlertExplainRequest(BaseModel):
+    alert: Alert
+    level: Level = "iniciante"
 
 
 LONGTERM_DISCLAIMER = (
@@ -61,6 +79,11 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     )
     ranking = RankingService(settings, provider, store)
     longterm = LongTermService(settings.longterm_path)
+    # O panorama (índices, moedas, commodities) vem do Yahoo, gratuito, mesmo quando as ações vêm da brapi.
+    market = MarketService(
+        None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else YahooProvider()
+    )
+    insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -80,11 +103,14 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.bcb = bcb
     app.state.provider = provider
     app.state.longterm = longterm
+    app.state.market = market
+    app.state.insights = insights
 
     def get_ranking() -> RankingService:
         return app.state.ranking
 
     ai_calls: dict[str, deque] = defaultdict(deque)
+    explain_cache: dict[tuple, str] = {}
 
     def ai_rate_limit(request: Request) -> None:
         """Janela deslizante de 1 hora por IP. Em memória: vale por instância da API."""
@@ -105,7 +131,69 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "realtime": provider.realtime,
             "database": store is not None,
             "ai": bool(settings.anthropic_api_key),
+            "ai_requests_per_hour": settings.ai_requests_per_hour,
+            "ranking_interval_minutes": settings.ranking_interval_minutes,
+            "market_open": market_is_open(settings),
+            "longterm": app.state.longterm.data is not None,
         }
+
+    def require_ai() -> None:
+        if not settings.anthropic_api_key:
+            raise HTTPException(503, "ANTHROPIC_API_KEY não configurada.")
+
+    @app.get("/mercado")
+    async def market_overview(svc: RankingService = Depends(get_ranking)):
+        return {
+            **await app.state.market.overview(svc),
+            "pregao_aberto": market_is_open(settings),
+            "disclaimer": DISCLAIMER,
+        }
+
+    @app.get("/ativos")
+    async def list_assets(svc: RankingService = Depends(get_ranking)):
+        """Lista enxuta dos ativos do app, para buscas e para criar alertas."""
+        return {
+            "ativos": [
+                {"ticker": a.ticker, "name": a.name, "asset_class": a.asset_class, "price": a.price,
+                 "change_percent": a.change_percent, "rank": a.rank,
+                 "probability_outperform": a.probability_outperform, "logo_url": a.logo_url}
+                for s in svc.snapshots.values()
+                for a in s.assets
+            ]
+        }
+
+    @app.get("/ia/leitura")
+    async def ai_reading(request: Request, contexto: str, nivel: Level = "iniciante"):
+        """Leitura da IA para uma tela: inicio, mercado, macro, ranking:acoes, horizontes:fiis:5..."""
+        if not valid_context(contexto):
+            raise HTTPException(404, "Contexto desconhecido.")
+        require_ai()
+        cached = app.state.insights.cached(contexto, nivel)
+        if cached:
+            return {**cached, "disclaimer": DISCLAIMER}
+        ai_rate_limit(request)
+        result = await app.state.insights.insight(contexto, nivel)
+        if result is None:
+            raise HTTPException(404, "Sem dados para essa leitura agora.")
+        return {**result, "disclaimer": DISCLAIMER}
+
+    @app.post("/alertas/avaliar")
+    async def evaluate_alerts(body: AlertsRequest, svc: RankingService = Depends(get_ranking)):
+        assets = {a.ticker: a for s in svc.snapshots.values() for a in s.assets}
+        computed = [s.computed_at for s in svc.snapshots.values()]
+        return {
+            "resultados": [evaluate(a, assets.get(a.ticker.upper())).model_dump() for a in body.alerts],
+            "calculado_em": max(computed) if computed else None,
+        }
+
+    @app.post("/alertas/explicar")
+    async def explain_alert(body: AlertExplainRequest, request: Request, svc: RankingService = Depends(get_ranking)):
+        require_ai()
+        ai_rate_limit(request)
+        assets = {a.ticker: a for s in svc.snapshots.values() for a in s.assets}
+        result = evaluate(body.alert, assets.get(body.alert.ticker.upper()))
+        text = await app.state.insights.explain_alert(body.alert, result, body.level)
+        return {"id": body.alert.id, "explanation": text, "result": result.model_dump(), "disclaimer": DISCLAIMER}
 
     @app.get("/macro")
     async def macro():
@@ -178,28 +266,38 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         }
 
     @app.post("/assets/{ticker}/explain")
-    async def explain_asset(ticker: str, request: Request, svc: RankingService = Depends(get_ranking)):
-        if not settings.anthropic_api_key:
-            raise HTTPException(503, "ANTHROPIC_API_KEY não configurada.")
-        ai_rate_limit(request)
+    async def explain_asset(
+        ticker: str, request: Request, nivel: Level = "iniciante", svc: RankingService = Depends(get_ranking)
+    ):
+        require_ai()
         asset, snapshot = find_asset(svc, ticker)
+        # Mesma explicação enquanto o ranking não for recalculado: abrir a página de novo não gasta cota.
+        key = (asset.ticker, nivel, snapshot.computed_at)
+        if key in explain_cache:
+            return {"ticker": asset.ticker, "explanation": explain_cache[key], "disclaimer": DISCLAIMER}
+        ai_rate_limit(request)
         macro = await app.state.bcb.indicators()
         text = await Explainer(settings.anthropic_api_key, settings.anthropic_model).explain(
-            asset, snapshot, macro
+            asset, snapshot, macro, LEVELS[nivel]
         )
+        if len(explain_cache) > 500:
+            explain_cache.clear()
+        explain_cache[key] = text
         return {"ticker": asset.ticker, "explanation": text, "disclaimer": DISCLAIMER}
 
     @app.post("/assistant/chat")
     async def chat(body: ChatRequest, request: Request, svc: RankingService = Depends(get_ranking)):
-        if not settings.anthropic_api_key:
-            raise HTTPException(503, "ANTHROPIC_API_KEY não configurada.")
+        require_ai()
         if body.messages[-1].role != "user":
             raise HTTPException(422, "A última mensagem precisa ser do usuário.")
         ai_rate_limit(request)
         assistant = Assistant(
-            settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm
+            settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
+            app.state.market,
         )
-        result = await assistant.reply([m.model_dump() for m in body.messages])
+        result = await assistant.reply(
+            [m.model_dump(include={"role", "content"}) for m in body.messages], page=body.page, level=body.level
+        )
         return {**result, "disclaimer": DISCLAIMER}
 
     return app

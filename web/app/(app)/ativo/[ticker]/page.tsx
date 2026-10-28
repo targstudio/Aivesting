@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { AssetActions } from "@/app/components/AssetActions";
 import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { ExplainButton } from "@/app/components/ExplainButton";
@@ -24,6 +25,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
         <AssetLogo ticker={head.ticker} src={head.logo_url} size={64} />
         <PageTitle title={head.ticker} subtitle={head.name} />
       </div>
+      <AssetActions ticker={head.ticker} />
       <InfoBanner>{detail?.disclaimer ?? history!.disclaimer}</InfoBanner>
       {detail && <LiveSection detail={detail} />}
       {history && <AssetHistorySection h={history} />}

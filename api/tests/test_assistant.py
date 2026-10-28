@@ -39,7 +39,7 @@ def test_chat_endpoint_validation():
 
 
 def test_chat_endpoint_returns_reply(monkeypatch):
-    async def fake_reply(self, history):
+    async def fake_reply(self, history, page=None, level="iniciante"):
         assert history[-1]["content"] == "Quais FIIs lideram?"
         return {"reply": "Os FIIs no topo são...", "tools_used": ["get_ranking"]}
 
@@ -50,7 +50,7 @@ def test_chat_endpoint_returns_reply(monkeypatch):
 
 
 def test_chat_rate_limit(monkeypatch):
-    async def fake_reply(self, history):
+    async def fake_reply(self, history, page=None, level="iniciante"):
         return {"reply": "ok", "tools_used": []}
 
     monkeypatch.setattr(Assistant, "reply", fake_reply)
