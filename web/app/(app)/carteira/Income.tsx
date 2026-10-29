@@ -18,7 +18,7 @@ export function IncomeCard({ holdings }: { holdings: Holding[] }) {
     let alive = true;
     apiFetch<PortfolioDividends>("/carteira/proventos", { method: "POST", body: JSON.stringify({ holdings }) })
       .then((r) => alive && setData(r))
-      .catch((e) => alive && setError(e instanceof Error ? e.message : "Erro ao buscar os proventos."));
+      .catch((e) => alive && setError(e instanceof Error ? e.message : "Não foi possível buscar os dividendos."));
     return () => {
       alive = false;
     };
@@ -29,7 +29,7 @@ export function IncomeCard({ holdings }: { holdings: Holding[] }) {
   if (!data) {
     return (
       <Card>
-        <CardHeader title="Renda de proventos" subtitle="Buscando dividendos e rendimentos..." />
+        <CardHeader title="Dividendos que você recebe" subtitle="Buscando os pagamentos..." />
       </Card>
     );
   }
@@ -40,8 +40,8 @@ export function IncomeCard({ holdings }: { holdings: Holding[] }) {
   return (
     <Card>
       <CardHeader
-        title="Renda de proventos"
-        subtitle="Dividendos, JCP e rendimentos das suas ações e FIIs, pela data com"
+        title="Dividendos que você recebe"
+        subtitle="Parte do lucro que suas ações e fundos imobiliários dividiram com você"
         value={
           <>
             {formatBRL(data.monthly_avg)}
@@ -54,7 +54,7 @@ export function IncomeCard({ holdings }: { holdings: Holding[] }) {
           <div className="mb-5 grid grid-cols-2 gap-2.5 md:grid-cols-3">
             <MiniStat label="Últimos 12 meses" value={formatBRL(data.income_12m)} color="rgb(var(--chart-1))" />
             <MiniStat label="Próximos 12 meses (estimativa)" value={formatBRL(data.forecast.reduce((a, f) => a + f.value, 0))} color="rgb(var(--chart-4))" />
-            {next && <MiniStat label={`Próximo mês com provento`} value={`${formatMonth(next.month)}: ${formatBRL(next.value)}`} color="rgb(var(--chart-3))" />}
+            {next && <MiniStat label={`Próximo pagamento`} value={`${formatMonth(next.month)}: ${formatBRL(next.value)}`} color="rgb(var(--chart-3))" />}
           </div>
           <PairedBars
             suffix=""
@@ -81,10 +81,10 @@ export function IncomeCard({ holdings }: { holdings: Holding[] }) {
           </table>
         </>
       ) : (
-        <p className="text-sm text-muted">Nenhum provento nos últimos 12 meses para as ações e FIIs da carteira.</p>
+        <p className="text-sm text-muted">Suas ações e fundos imobiliários não pagaram dividendos nos últimos 12 meses.</p>
       )}
       <p className="mt-4 text-xs text-muted">
-        {missingQty > 0 && `${missingQty} ativo(s) sem quantidade ficaram de fora. `}
+        {missingQty > 0 && `${missingQty} investimento(s) sem quantidade ficaram de fora. `}
         {data.disclaimer}
       </p>
     </Card>

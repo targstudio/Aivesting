@@ -24,7 +24,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
   const quote = detail ? null : await getB3Quote(ticker);
   if (!detail && !history && !quote) notFound();
   const head = detail?.asset ?? history ?? quote!;
-  const crumb = { label: "Ranking", href: detail?.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" };
+  const crumb = { label: "Melhores", href: detail?.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" };
 
   return (
     <>
@@ -49,7 +49,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
   const { asset } = detail;
   return (
     <>
-      <h2 className="mb-3 text-lg font-bold">Curto prazo · recalculado a cada 5 minutos</h2>
+      <h2 className="mb-3 text-lg font-bold">Agora · atualizado a cada 5 minutos</h2>
 
       <Card className="mb-6">
         <div className="grid grid-cols-2 gap-6 md:flex md:gap-0 md:divide-x md:divide-border">
@@ -57,15 +57,15 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
             <Stat value={formatBRL(asset.price)} label="Preço" accent sub={detail.data_realtime ? "tempo real" : "com atraso"} />
           </div>
           <div className="md:px-8">
-            <Stat value={formatPercent(asset.change_percent)} label="Variação no dia" />
+            <Stat value={formatPercent(asset.change_percent)} label="Quanto mudou hoje" />
           </div>
           <div className="md:px-8">
-            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={<><Term k="score">score</Term> {formatNumber(asset.score)}/100</>} />
+            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição na lista" sub={<>nota {formatNumber(asset.score)} de 100</>} />
           </div>
           <div className="md:px-8">
             <Stat
               value={formatProbability(asset.probability_outperform)}
-              label={<Term k="probabilidade">Prob. de superar o {detail.benchmark}</Term>}
+              label={<Term k="probabilidade">Chance de render mais que a bolsa</Term>}
               sub={`atualizado às ${formatTime(detail.computed_at)}`}
             />
           </div>
@@ -76,7 +76,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
         <Card className="mb-6">
           <CardHeader
             title="Preço"
-            subtitle="Últimos 30 pregões"
+            subtitle="Últimos 30 dias de bolsa"
             value={<span className={changeColor(asset.spark[asset.spark.length - 1] / asset.spark[0] - 1)}>{formatPercent((asset.spark[asset.spark.length - 1] / asset.spark[0] - 1) * 100)}</span>}
           />
           <AreaChart values={asset.spark} prefix="R$ " color="var(--chart-2)" />
@@ -85,7 +85,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
 
       <div className="mb-6 grid gap-6 lg:grid-cols-2">
         <Card>
-          <h2 className="mb-4 text-lg">Fatores que mais pesaram</h2>
+          <h2 className="mb-4 text-lg">O que mais pesou na nota</h2>
           <ul className="flex flex-col divide-y divide-border">
             {asset.top_factors.map((f) => (
               <li key={f.factor} className="flex items-center justify-between gap-4 py-3 text-sm">
@@ -97,12 +97,12 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-muted">Contribuição de cada fator para o score (modelo {detail.model_version}).</p>
+          <p className="mt-3 text-xs text-muted">Quanto cada ponto ajudou ou atrapalhou a nota.</p>
         </Card>
         <Card>
           <h2 className="mb-4 text-lg">Análise da IA</h2>
           <p className="mb-4 text-sm text-muted">
-            A IA explica o ranking a partir dos números calculados e dos indicadores macro, sem recomendar compra ou venda.
+            A IA explica em palavras simples por que este investimento está nessa posição.
           </p>
           <ExplainButton ticker={asset.ticker} />
         </Card>
@@ -124,12 +124,12 @@ function QuoteSection({ quote }: { quote: B3Quote }) {
       <Card className="mb-6">
         <div className="grid grid-cols-2 gap-6 md:flex md:gap-0 md:divide-x md:divide-border">
           <div className="md:pr-8">
-            <Stat value={formatBRL(quote.price)} label="Preço" accent sub={quote.live ? "com atraso" : "último pregão"} />
+            <Stat value={formatBRL(quote.price)} label="Preço" accent sub={quote.live ? "com atraso" : "último dia de bolsa"} />
           </div>
           <div className="md:px-8">
             <Stat
               value={quote.change_percent != null ? formatPercent(quote.change_percent) : "–"}
-              label="Variação no dia"
+              label="Quanto mudou hoje"
               sub={asOf}
             />
           </div>
@@ -145,7 +145,7 @@ function QuoteSection({ quote }: { quote: B3Quote }) {
         <Card className="mb-6">
           <CardHeader
             title="Preço"
-            subtitle="Últimos 30 pregões"
+            subtitle="Últimos 30 dias de bolsa"
             value={<span className={changeColor(spark[spark.length - 1] / spark[0] - 1)}>{formatPercent((spark[spark.length - 1] / spark[0] - 1) * 100)}</span>}
           />
           <AreaChart values={spark} prefix="R$ " color="var(--chart-2)" />
@@ -153,7 +153,7 @@ function QuoteSection({ quote }: { quote: B3Quote }) {
       )}
 
       <Card className="mb-6 text-sm text-muted">
-        Este ativo não faz parte do ranking de 5 minutos, que cobre só os papéis mais líquidos. Você ainda pode perguntar à
+        Este investimento não está na lista de melhores, que cobre só os mais negociados. Você ainda pode perguntar à
         IA sobre ele ou criar um alerta.
       </Card>
     </>

@@ -11,9 +11,9 @@ export default async function MacroPage() {
   const indicators = macro?.indicators ?? [];
   return (
     <>
-      <Breadcrumbs items={[{ label: "Macro" }]} />
-      <PageTitle title="Cenário macroeconômico" subtitle="Indicadores do Banco Central usados pelo modelo e pelas explicações da IA." />
-      <AiInsight context="macro" title="O cenário explicado pela IA" askPrompt="Como o cenário macro atual costuma afetar ações e FIIs?" />
+      <Breadcrumbs items={[{ label: "Economia" }]} />
+      <PageTitle title="Como está a economia" subtitle="Juros, inflação e dólar segundo o Banco Central. Eles mexem com quanto rendem os seus investimentos." />
+      <AiInsight context="macro" title="O cenário explicado pela IA" askPrompt="Como os juros e a inflação de hoje afetam quem quer investir?" />
       {indicators.length ? (
         <div className="grid gap-4 md:grid-cols-3">
           {indicators.map((m) => {

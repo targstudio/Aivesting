@@ -19,7 +19,7 @@ export default function EncyclopediaPage() {
       <Breadcrumbs items={[{ label: "Enciclopédia" }]} />
       <PageTitle
         title="Enciclopédia do investidor"
-        subtitle="O que é cada investimento, como rende, o risco, a liquidez e o imposto. Tire qualquer dúvida com a IA."
+        subtitle="O que é cada investimento, como rende, o risco, em quanto tempo dá para resgatar e o imposto. Tire qualquer dúvida com a IA."
       />
       <InfoBanner>
         Quer saber quanto colocar em cada um? O <Link href="/assessor" className="underline">Assessor</Link> monta um plano a

@@ -26,18 +26,18 @@ export function FundamentalsCard({ f, isFii }: { f: Fundamentals; isFii: boolean
       term: "pvp",
       label: "P/VP",
       value: x(f.price_to_book),
-      hint: f.price_to_book < 1 ? "negocia abaixo do valor patrimonial" : f.price_to_book < 1.1 ? "perto do valor patrimonial" : "negocia acima do valor patrimonial",
+      hint: f.price_to_book < 1 ? "custa menos do que vale no balanço" : f.price_to_book < 1.1 ? "custa perto do que vale no balanço" : "custa mais do que vale no balanço",
     });
-  if (f.roe != null) items.push({ term: "roe", label: "ROE", value: formatRatio(f.roe, false) });
+  if (f.roe != null) items.push({ term: "roe", label: "Lucro sobre o patrimônio (ROE)", value: formatRatio(f.roe, false) });
   if (f.net_margin != null) items.push({ term: "margem_liquida", label: "Margem líquida", value: formatRatio(f.net_margin, false) });
-  if (f.debt_to_equity != null) items.push({ term: "divida_patrimonio", label: "Dívida / patrimônio", value: `${formatNumber(Math.round(f.debt_to_equity))}%` });
+  if (f.debt_to_equity != null) items.push({ term: "divida_patrimonio", label: "Dívida sobre patrimônio", value: `${formatNumber(Math.round(f.debt_to_equity))}%` });
   if (f.revenue_growth != null) items.push({ label: "Crescimento da receita", value: formatRatio(f.revenue_growth), hint: "no último ano" });
   if (f.market_cap != null) items.push({ label: "Valor de mercado", value: bigMoney(f.market_cap) });
   if (!items.length) return null;
 
   return (
     <Card className="mb-6">
-      <CardHeader title="Fundamentos" subtitle="Indicadores do último balanço. Toque no nome para entender cada um." />
+      <CardHeader title="Saúde da empresa" subtitle="Números do último balanço. Toque no nome para entender cada um." />
       <div className="grid grid-cols-2 gap-x-6 gap-y-5 md:grid-cols-4">
         {items.map((i) => (
           <div key={i.label}>

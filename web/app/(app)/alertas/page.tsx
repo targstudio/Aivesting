@@ -8,7 +8,7 @@ export default async function AlertsPage({ searchParams }: { searchParams: Promi
       <Breadcrumbs items={[{ label: "Alertas" }]} />
       <PageTitle
         title="Alertas"
-        subtitle="Avise-me quando um ativo atingir um preço, variar forte no dia ou subir no ranking. A IA explica cada alerta que disparar."
+        subtitle="Receba um aviso quando uma ação ou fundo chegar a um preço, subir ou cair muito no dia ou entrar entre os melhores. A IA explica cada alerta que disparar."
       />
       <InfoBanner>
         Os alertas ficam salvos neste navegador e são conferidos a cada poucos minutos enquanto o app está aberto. Alertas

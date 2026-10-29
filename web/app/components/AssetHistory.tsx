@@ -32,10 +32,10 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
   return (
     <div className="mt-6 flex flex-col gap-6">
       <Card>
-        <h2 className="mb-1 text-lg">Chances por horizonte</h2>
+        <h2 className="mb-1 text-lg">Chances em cada prazo</h2>
         <p className="mb-5 text-sm text-muted">
-          Probabilidade estimada de superar o {h.benchmark} e o CDI. Onde o modelo não foi validado fora da amostra, o
-          número é a frequência histórica da classe.
+          Chance de render mais que a bolsa ({h.benchmark}) e que a renda fixa (CDI). Quando a conta não pôde ser
+          testada, o número é a média do que aconteceu no passado.
         </p>
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {years.map((y) => {
@@ -45,12 +45,12 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
                 {v ? (
                   <Stat
                     value={formatProbability(v.prob_beat_benchmark)}
-                    label={`Em ${plural(y)}, vs ${h.benchmark}`}
+                    label={`Em ${plural(y)}, contra a bolsa`}
                     accent
                     sub={
                       <>
-                        {formatProbability(v.prob_beat_cdi)} vs CDI · {v.rank}º de {v.total}
-                        {!h.model_used[y] && " · frequência histórica"}
+                        {formatProbability(v.prob_beat_cdi)} de bater o CDI · {v.rank}º de {v.total}
+                        {!h.model_used[y] && " · média do passado"}
                       </>
                     }
                   />
@@ -65,8 +65,8 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <h2 className="mb-1 text-lg">Risco e retorno em 10 anos</h2>
-          <p className="mb-4 text-sm text-muted">Com proventos reinvestidos, até {formatMonth(h.data_through)}.</p>
+          <h2 className="mb-1 text-lg">Quanto rendeu e quanto oscilou em 10 anos</h2>
+          <p className="mb-4 text-sm text-muted">Contando os dividendos reinvestidos, até {formatMonth(h.data_through)}.</p>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="text-xs text-muted">
@@ -75,7 +75,7 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
                   <th className="pb-2 pr-3 font-normal"><Term k="retorno_ano" /></th>
                   <th className="pb-2 pr-3 font-normal"><Term k="volatilidade" /></th>
                   <th className="pb-2 pr-3 font-normal"><Term k="pior_queda" /></th>
-                  <th className="pb-2 font-normal"><Term k="sharpe">Sharpe</Term></th>
+                  <th className="pb-2 font-normal"><Term k="sharpe">Retorno por risco</Term></th>
                 </tr>
               </thead>
               <tbody>
@@ -86,11 +86,11 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
             </table>
           </div>
           {h.risk_10y && h.risk_10y.months < 120 && (
-            <p className="mt-3 text-xs text-muted">O ativo tem só {Math.round(h.risk_10y.months / 12)} anos de histórico.</p>
+            <p className="mt-3 text-xs text-muted">Este investimento só existe há {Math.round(h.risk_10y.months / 12)} anos.</p>
           )}
           {h.in_scenario && (
             <p className="mt-4 text-sm">
-              Em meses com cenário parecido com o atual ({h.scenario.label}), {h.ticker} rendeu em média{" "}
+              Em momentos parecidos com o de hoje ({h.scenario.label}), {h.ticker} rendeu em média{" "}
               <strong className={changeColor(h.in_scenario.avg_annual)}>{formatRatio(h.in_scenario.avg_annual)} ao ano</strong>
               {h.benchmark_in_scenario && (
                 <>

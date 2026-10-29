@@ -12,7 +12,7 @@ export default async function FixedIncomePage() {
       <PageTitle
         eyebrow="Renda fixa"
         title="Quanto rende cada aplicação"
-        subtitle="Compare poupança, CDB, LCI/LCA e Tesouro Direto já com imposto de renda, custódia e inflação, para o seu valor e o seu prazo."
+        subtitle="Compare poupança, CDB, LCI/LCA e Tesouro Direto já descontando imposto e taxas, para o seu valor e o seu prazo."
       />
       <FixedIncome rates={rates} />
     </>

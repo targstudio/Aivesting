@@ -75,7 +75,7 @@ export function Simulator() {
       adjust_contributions: adjust,
     };
     if (!input.initial && !input.monthly) {
-      setError("Informe um valor inicial ou um aporte mensal.");
+      setError("Informe quanto já tem ou quanto vai guardar por mês.");
       return;
     }
     run(input);
@@ -87,7 +87,7 @@ export function Simulator() {
         <form onSubmit={submit} className="flex flex-col gap-5">
           <MoneyField label="Sua meta (opcional)" value={goal} onChange={setGoal} />
           <MoneyField label="Quanto já tem para começar" value={initial} onChange={setInitial} />
-          <MoneyField label="Quanto consegue aportar por mês" value={monthly} onChange={setMonthly} />
+          <MoneyField label="Quanto consegue guardar por mês" value={monthly} onChange={setMonthly} />
           <div className="flex flex-col gap-2 text-sm font-semibold">
             Em quanto tempo
             <div className="flex flex-wrap gap-2">
@@ -112,7 +112,7 @@ export function Simulator() {
               onChange={(e) => setAdjust(e.target.checked)}
               className="mt-0.5 h-5 w-5 shrink-0 accent-[rgb(var(--primary))]"
             />
-            Corrigir o aporte pela inflação todo ano (o esforço fica igual em dinheiro de hoje)
+            Aumentar o valor mensal pela inflação todo ano (o esforço fica igual em dinheiro de hoje)
           </label>
           {error && <p className="text-sm text-negative">{error}</p>}
           <button
@@ -141,7 +141,7 @@ function Intro() {
       <CardHeader title="Como funciona" />
       <div className="flex flex-col gap-3 text-sm text-muted">
         <p>
-          O simulador repete o seu plano em cada mês de início possível desde 2000: entra com o valor inicial, aporta
+          O simulador repete o seu plano em cada mês de início possível desde 2000: entra com o valor inicial, investe
           todo mês e vê quanto teria no fim do prazo em cinco carteiras, da renda fixa pura até só ações.
         </p>
         <p>
@@ -302,7 +302,7 @@ function GoalCard({ result, usable }: { result: SimulationResult; usable: Simula
     <Card>
       <CardHeader
         title={`Para chegar em ${money(result.goal)} em ${plural(result.years)}`}
-        subtitle="Aporte mensal que teria batido a meta em pelo menos 8 de cada 10 períodos do histórico"
+        subtitle="Quanto guardar por mês para ter batido a meta em pelo menos 8 de cada 10 períodos do histórico"
       />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {usable.map((s) => {
@@ -320,8 +320,8 @@ function GoalCard({ result, usable }: { result: SimulationResult; usable: Simula
                   : needed === 0
                     ? "O valor inicial já basta"
                     : ok
-                      ? "Seu aporte atual já basta"
-                      : `${money(needed - result.monthly)} a mais que o seu aporte`}
+                      ? "O que você guarda por mês já basta"
+                      : `${money(needed - result.monthly)} a mais por mês do que você guarda hoje`}
               </div>
             </div>
           );

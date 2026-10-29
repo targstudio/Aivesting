@@ -65,15 +65,15 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
     const inflation = num(ipca);
     const selic = c + 0.1;
     const options: FixedOption[] = [
-      { key: "poupanca", label: "Poupança", detail: "isenta de IR, rende sem TR", annualGross: savingsAnnual(selic), taxFree: true, custody: 0 },
-      { key: "cdb", label: `CDB ${cdbPct}% do CDI`, detail: "garantido pelo FGC até R$ 250 mil por banco", annualGross: (c * num(cdbPct)) / 100, taxFree: false, custody: 0 },
-      { key: "lci", label: `LCI/LCA ${lciPct}% do CDI`, detail: "isenta de IR, FGC; costuma ter carência de 90 dias ou mais", annualGross: (c * num(lciPct)) / 100, taxFree: true, custody: 0 },
+      { key: "poupanca", label: "Poupança", detail: "sem imposto de renda", annualGross: savingsAnnual(selic), taxFree: true, custody: 0 },
+      { key: "cdb", label: `CDB ${cdbPct}% do CDI`, detail: "tem garantia do FGC até R$ 250 mil por banco", annualGross: (c * num(cdbPct)) / 100, taxFree: false, custody: 0 },
+      { key: "lci", label: `LCI/LCA ${lciPct}% do CDI`, detail: "sem imposto de renda e com garantia do FGC; o dinheiro costuma ficar preso por 90 dias ou mais", annualGross: (c * num(lciPct)) / 100, taxFree: true, custody: 0 },
     ];
     const tSelic = pickBond(bonds, "selic", months);
     options.push({
       key: "selic",
       label: "Tesouro Selic",
-      detail: tSelic ? `vence em ${fmtDate(tSelic.maturity)}; resgate a qualquer dia sem perda relevante` : "resgate a qualquer dia sem perda relevante",
+      detail: tSelic ? `vence em ${fmtDate(tSelic.maturity)}; dá para resgatar a qualquer dia sem perder dinheiro` : "dá para resgatar a qualquer dia sem perder dinheiro",
       annualGross: (1 + selic / 100) * (1 + (tSelic?.rate ?? 0.05) / 100) * 100 - 100,
       taxFree: false,
       custody: 0.2,
@@ -136,8 +136,8 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
           <div className="grid grid-cols-2 gap-3">
             <NumberField label="CDB paga" value={cdbPct} onChange={setCdbPct} suffix="% CDI" />
             <NumberField label="LCI/LCA paga" value={lciPct} onChange={setLciPct} suffix="% CDI" />
-            <NumberField label="CDI esperado" value={cdi} onChange={setCdi} suffix="% a.a." />
-            <NumberField label="Inflação esperada" value={ipca} onChange={setIpca} suffix="% a.a." />
+            <NumberField label="CDI esperado" value={cdi} onChange={setCdi} suffix="% ao ano" />
+            <NumberField label="Inflação esperada" value={ipca} onChange={setIpca} suffix="% ao ano" />
           </div>
           <p className="text-xs text-muted">
             CDI e inflação começam com os números de hoje (Selic {rates?.selic != null ? pctText(rates.selic) : "–"}, IPCA 12 meses{" "}
@@ -150,7 +150,7 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
         <Card>
           <CardHeader
             title={`${formatBRL(value)} por ${monthsLabel(months)}`}
-            subtitle={`Valores líquidos, depois do IR (${pctText(ir * 100)} nesse prazo) e da custódia do Tesouro. Ordenado do maior para o menor.`}
+            subtitle={`Quanto sobra no seu bolso, já tirando o imposto de renda (${pctText(ir * 100)} nesse prazo) e a taxa do Tesouro. Do que rende mais para o que rende menos.`}
           />
           <ul className="flex flex-col divide-y divide-border">
             {results.map((r, i) => (
@@ -166,7 +166,7 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
                 <div className="tabular text-sm md:text-right">
                   <div className="text-lg font-bold">{formatBRL(r.net)}</div>
                   <div className="text-xs text-muted">
-                    +{formatBRL(r.netGain)} · {pctText(r.netAnnual)} ao ano líquido
+                    +{formatBRL(r.netGain)} · {pctText(r.netAnnual)} ao ano no bolso
                     {r.tax > 0 && ` · IR ${formatBRL(r.tax)}`}
                     {r.custodyCost >= 0.5 && ` · custódia ${formatBRL(r.custodyCost)}`}
                   </div>
@@ -191,7 +191,7 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
           <Card>
             <CardHeader
               title="Taxas do Tesouro Direto"
-              subtitle={`Taxa de compra${rates?.tesouro_date ? ` em ${fmtDate(rates.tesouro_date)}` : ""}, segundo o Tesouro Transparente`}
+              subtitle={`Quanto cada título paga${rates?.tesouro_date ? ` em ${fmtDate(rates.tesouro_date)}` : ""}, segundo o Tesouro Transparente`}
             />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[420px] text-sm">
@@ -199,7 +199,7 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
                   <tr className="text-left text-xs text-muted">
                     <th className="pb-2 font-medium">Título</th>
                     <th className="pb-2 font-medium">Vencimento</th>
-                    <th className="pb-2 text-right font-medium">Taxa ao ano</th>
+                    <th className="pb-2 text-right font-medium">Paga por ano</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -219,7 +219,7 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
         )}
 
         <InfoBanner>
-          Simulação com taxas constantes, sem IOF (só em resgates antes de 30 dias) e sem TR na poupança. Títulos e CDBs
+          Simulação com as taxas de hoje fixas no prazo todo, sem o imposto de resgates antes de 30 dias (IOF). Títulos e CDBs
           com prazo maior que o seu podem valer mais ou menos se vendidos antes. Não é recomendação de investimento.
         </InfoBanner>
       </div>

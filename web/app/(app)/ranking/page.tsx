@@ -13,20 +13,20 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <Breadcrumbs items={[{ label: "Ranking" }]} />
+      <Breadcrumbs items={[{ label: "Melhores" }]} />
       <PageTitle
-        title={`Ranking de ${label.toLowerCase()}`}
-        subtitle={`Probabilidade estimada de cada ativo superar o ${snapshot?.benchmark ?? "índice"}.`}
+        title={`Melhores ${label.toLowerCase()} agora`}
+        subtitle={`Chance de cada um render mais que a média da bolsa (${snapshot?.benchmark ?? "índice"}) no curto prazo.`}
       />
       <InfoBanner>
-        Modelo {snapshot?.model_version ?? "baseline"}: combina momentum, tendência, volatilidade e volume. Ainda não
-        calibrado com histórico; trate as probabilidades como estimativas. Não é recomendação de investimento.
+        A lista olha como o preço de cada um vem se comportando: se vem subindo, se oscila muito e se tem muita gente
+        comprando. É uma estimativa, não uma certeza, e não é recomendação de investimento.
       </InfoBanner>
 
       <AiInsight
         context={`ranking:${assetClass}`}
-        title={`O que o ranking de ${label.toLowerCase()} mostra`}
-        askPrompt={`O que os primeiros do ranking de ${label.toLowerCase()} têm em comum?`}
+        title={`O que essa lista mostra`}
+        askPrompt={`Explique de forma simples por que essas ${label.toLowerCase()} estão no topo da lista`}
       />
 
       <div className="mb-4 flex items-center justify-between">
@@ -42,7 +42,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       {snapshot && snapshot.assets.length ? (
         <RankingList assets={snapshot.assets} benchmark={snapshot.benchmark} yields={yields} />
       ) : (
-        <EmptyState>Ranking ainda não calculado. Verifique se a API está rodando.</EmptyState>
+        <EmptyState>A lista ainda está sendo preparada. Tente de novo em alguns minutos.</EmptyState>
       )}
     </>
   );

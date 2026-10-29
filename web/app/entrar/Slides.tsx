@@ -10,7 +10,7 @@ const SLIDES = [
     tag: "Ranking com IA",
     photo: "/entrar/ranking.webp",
     title: "Veja quais ações e FIIs mais se destacam agora",
-    text: "Atualizado a cada 5 minutos no pregão, com a explicação da IA em linguagem simples.",
+    text: "Atualizado a cada 5 minutos enquanto a bolsa está aberta, com a explicação da IA em linguagem simples.",
     art: <RankingArt />,
   },
   {
@@ -24,7 +24,7 @@ const SLIDES = [
     tag: "Minha carteira",
     photo: "/entrar/carteira.webp",
     title: "Sua carteira inteira em um só lugar, em qualquer aparelho",
-    text: "Importe por print, acompanhe os proventos e saiba onde colocar o próximo aporte.",
+    text: "Importe por print, acompanhe os dividendos e saiba onde colocar o próximo dinheiro.",
     art: <PortfolioArt />,
   },
   {
@@ -202,11 +202,11 @@ function PortfolioArt() {
         </ul>
       </div>
       <div className="mt-5 flex justify-between rounded-xl bg-white/[0.06] px-4 py-3 text-sm">
-        <span className="text-white/70">Proventos em 12 meses</span>
+        <span className="text-white/70">Dividendos em 12 meses</span>
         <span className="font-semibold text-emerald-400">R$ 3.920</span>
       </div>
       <div className="mt-2 flex justify-between rounded-xl bg-white/[0.06] px-4 py-3 text-sm">
-        <span className="text-white/70">Próximo aporte</span>
+        <span className="text-white/70">Próximo investimento</span>
         <span className="font-semibold">R$ 500 em FIIs</span>
       </div>
     </Panel>

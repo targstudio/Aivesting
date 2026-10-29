@@ -26,9 +26,9 @@ import { Donut } from "@/app/components/charts";
 const KEY = "aivesting.assessor";
 
 const PROFILE_TEXT = {
-  conservador: "Prioriza segurança e liquidez. A maior parte fica em renda fixa.",
-  moderado: "Equilibra segurança e crescimento, com uma parte relevante em renda variável.",
-  arrojado: "Aceita oscilações fortes em busca de mais retorno no longo prazo.",
+  conservador: "Prioriza segurança e poder resgatar rápido. A maior parte fica em renda fixa.",
+  moderado: "Equilibra segurança e crescimento, com uma boa parte em ações e fundos.",
+  arrojado: "Aceita ver o dinheiro subir e cair bastante em busca de ganhar mais no longo prazo.",
 };
 
 // Cores das classes no gráfico de alocação (paleta dos gráficos).
@@ -299,7 +299,7 @@ export function Advisor() {
                   }
                 />
                 <div className="text-center text-sm text-muted">
-                  {formatNumber(100 - plan.variable_income_pct)}% renda fixa · {formatNumber(plan.variable_income_pct)}% renda variável
+                  {formatNumber(100 - plan.variable_income_pct)}% renda fixa · {formatNumber(plan.variable_income_pct)}% em ações, fundos e dólar
                 </div>
               </div>
               <ul className="mt-4 space-y-2 text-sm">
@@ -368,7 +368,7 @@ export function Advisor() {
 
           {plan.monthly_contribution && (
             <Card>
-              <h2 className="mb-3 text-lg font-bold">Aporte mensal sugerido</h2>
+              <h2 className="mb-3 text-lg font-bold">Como dividir o que você guarda por mês</h2>
               <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-5">
                 {plan.monthly_contribution.map((c) => (
                   <div key={c.key}>
@@ -382,7 +382,7 @@ export function Advisor() {
 
           {portfolio && portfolio.total > 0 ? (
             <InfoBanner>
-              O assessor conhece a carteira que você importou ({formatBRL(portfolio.total)} em {portfolio.positions.length} posições). Veja
+              O assessor conhece a carteira que você importou ({formatBRL(portfolio.total)} em {portfolio.positions.length} investimentos). Veja
               quanto falta ou sobra em cada classe em <Link href="/carteira" className="underline">Minha carteira</Link>.
             </InfoBanner>
           ) : (
@@ -427,7 +427,7 @@ function Picks({ allocation: a, plan }: { allocation: AdvisorAllocation; plan: A
   const list = isMine ? a.suggested : (a.picks[term] ?? []).slice(0, 5);
   return (
     <div className="mt-4 border-t border-border pt-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-muted">Ativos sugeridos</div>
+      <div className="text-xs font-semibold uppercase tracking-wide text-muted">Sugestões</div>
       <div className="mt-2 flex flex-wrap gap-1.5" role="tablist">
         {terms.map((t) => (
           <button
@@ -457,7 +457,7 @@ function Picks({ allocation: a, plan }: { allocation: AdvisorAllocation; plan: A
       </div>
       {isMine && a.suggested_rest != null && a.suggested_rest > 1 && (
         <p className="mt-2 text-xs text-muted">
-          {formatBRL(a.suggested_rest)} restantes no ETF da classe, para não passar de 10% do total em um único ativo.
+          {formatBRL(a.suggested_rest)} restantes num fundo que acompanha a bolsa (ETF), para não passar de 10% do total em um só investimento.
         </p>
       )}
       {!isMine && term !== plan.term && (

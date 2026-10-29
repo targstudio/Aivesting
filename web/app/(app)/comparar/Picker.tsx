@@ -41,8 +41,8 @@ export function Picker({ selected, options }: { selected: string[]; options: { t
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && matches[0]) add(matches[0].ticker);
                 }}
-                placeholder="Adicionar ativo"
-                aria-label="Adicionar ativo"
+                placeholder="Adicionar (ex.: PETR4)"
+                aria-label="Adicionar investimento"
                 className="w-36 bg-transparent outline-none"
               />
             </span>

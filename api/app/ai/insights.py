@@ -17,8 +17,11 @@ from ..market import MarketService
 from ..ranking.service import CLASSES, RankingService
 
 LEVELS = {
-    "iniciante": "A pessoa está começando a investir: evite jargão, explique termos como Selic, IFIX ou volatilidade "
-    "em poucas palavras quando aparecerem e use comparações do dia a dia.",
+    "iniciante": "A pessoa não é investidora e não conhece o mercado: escreva como um guia paciente para leigos. "
+    "Troque jargão por palavras do dia a dia (\"quanto o preço sobe e desce\" em vez de volatilidade, \"aplicar\" em vez "
+    "de aportar, \"lucro distribuído\" em vez de dividend yield). Se um termo for inevitável (Selic, CDI, FII), explique "
+    "entre parênteses em poucas palavras. Arredonde os números, use R$ e % e diga o que aquilo significa na prática "
+    "para o bolso da pessoa.",
     "intermediario": "A pessoa conhece o básico de investimentos: pode usar os termos comuns do mercado sem defini-los.",
     "avancado": "A pessoa tem experiência: seja técnica e concisa, cite os números e os fatores do modelo.",
 }

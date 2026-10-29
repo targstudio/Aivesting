@@ -7,6 +7,7 @@ import { useApp } from "@/app/components/AppProvider";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { Donut, PairedBars } from "@/app/components/charts";
 import { Markdown } from "@/app/components/Markdown";
+import { MoneyInput } from "@/app/components/fields";
 import { Card, CardHeader, InfoBanner, MiniStat } from "@/app/components/ui";
 import {
   apiFetch,
@@ -140,7 +141,7 @@ export function Portfolio() {
       const images = await Promise.all(files.slice(0, MAX_IMAGES).map(imageToDataUrl));
       const read = await apiFetch<PortfolioRead>("/carteira/ler", { method: "POST", body: JSON.stringify({ images }) });
       if (!read.holdings.length) {
-        setError(read.warnings[0] ?? "Não encontrei posições nesses prints. Tente um recorte com a tabela da carteira.");
+        setError(read.warnings[0] ?? "Não encontrei investimentos nesses prints. Tente um recorte com a tabela da carteira.");
         return;
       }
       setDraft({ holdings: read.holdings, read });
@@ -281,13 +282,13 @@ function Uploader({
         <div>
           <h2 className="text-lg font-bold">{hasCurrent ? "Atualizar a carteira" : "Importe sua carteira por print"}</h2>
           <p className="mt-1 max-w-2xl text-sm text-muted">
-            Tire print da tela de posições da sua corretora (ações, FIIs, renda fixa, Tesouro). A IA lê ativo, quantidade, preço
-            médio e saldo, e você confere tudo antes de salvar.
+            Tire print da tela da sua corretora que mostra seus investimentos (ações, fundos imobiliários, renda fixa, Tesouro). A IA lê o nome, a quantidade, o preço
+            que você pagou e o saldo, e você confere tudo antes de salvar.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button onClick={onManual} className="inline-flex items-center gap-2 rounded-full bg-track px-4 py-2 text-sm font-semibold">
-            <Plus size={16} /> {hasCurrent ? "Editar posições" : "Digitar posições"}
+            <Plus size={16} /> {hasCurrent ? "Editar investimentos" : "Digitar investimentos"}
           </button>
           {hasCurrent && (
             <button onClick={onDelete} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-negative hover:bg-negative/10">
@@ -362,7 +363,7 @@ function Uploader({
       {error && <p className="mt-3 text-sm text-negative">{error}</p>}
       <p className="mt-4 flex items-start gap-2 text-xs text-muted">
         <ShieldCheck size={14} className="mt-0.5 shrink-0" />
-        Os prints vão só para a IA ler e não ficam guardados. Ficam salvas apenas as posições que você confirmar. Se o print mostrar
+        Os prints vão só para a IA ler e não ficam guardados. Ficam salvos apenas os investimentos que você confirmar. Se o print mostrar
         nome ou número de conta, pode recortar antes.
       </p>
     </Card>
@@ -374,7 +375,7 @@ function Uploader({
 function numberOrNull(v: string): number | null {
   const s = v.trim();
   if (!s) return null;
-  const n = Number(s.includes(",") ? s.replace(/\./g, "").replace(",", ".") : s);
+  const n = Number(s.replace(/\./g, "").replace(",", "."));
   return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
@@ -382,11 +383,11 @@ function NumberCell({ value, onChange, label }: { value: number | null; onChange
   const [text, setText] = useState(value == null ? "" : formatNumber(value));
   useEffect(() => setText(value == null ? "" : formatNumber(value)), [value]);
   return (
-    <input
+    <MoneyInput
       aria-label={label}
-      inputMode="decimal"
+      cents={false}
       value={text}
-      onChange={(e) => setText(e.target.value)}
+      onChange={setText}
       onBlur={() => onChange(numberOrNull(text))}
       className="tabular w-full min-w-[84px] rounded-lg border border-border bg-background px-2 py-1.5 text-right outline-none focus:border-primary"
     />
@@ -418,8 +419,8 @@ function Review({
     <div className="flex flex-col gap-4">
       <Card>
         <CardHeader
-          title={read ? "Confira o que a IA leu" : "Suas posições"}
-          subtitle={read ? `${holdings.length} posições${read.broker ? ` · ${read.broker}` : ""}. Corrija o que estiver errado antes de salvar.` : "Digite ou corrija as posições da sua carteira."}
+          title={read ? "Confira o que a IA leu" : "Seus investimentos"}
+          subtitle={read ? `${holdings.length} investimentos${read.broker ? ` · ${read.broker}` : ""}. Corrija o que estiver errado antes de salvar.` : "Digite ou corrija os investimentos da sua carteira."}
           value={formatBRL(total)}
         />
         {read && seen > 0 && (
@@ -445,11 +446,11 @@ function Review({
           <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-muted">
-                <th className="py-2 pr-2 font-semibold">Ativo</th>
+                <th className="py-2 pr-2 font-semibold">Investimento</th>
                 <th className="py-2 pr-2 font-semibold">Nome</th>
                 <th className="py-2 pr-2 font-semibold">Classe</th>
                 <th className="py-2 pr-2 text-right font-semibold">Quantidade</th>
-                <th className="py-2 pr-2 text-right font-semibold">Preço médio</th>
+                <th className="py-2 pr-2 text-right font-semibold">Preço médio pago</th>
                 <th className="py-2 pr-2 text-right font-semibold">Preço atual</th>
                 <th className="py-2 pr-2 text-right font-semibold">Saldo (R$)</th>
                 <th className="py-2" />
@@ -490,14 +491,14 @@ function Review({
                     </select>
                     {h.asset_class === "renda_fixa" && (
                       <select
-                        aria-label="Indexador"
+                        aria-label="Como rende"
                         value={h.indexer ?? "pos"}
                         onChange={(e) => update(i, { indexer: e.target.value as Holding["indexer"] })}
                         className="ml-1 rounded-lg border border-border bg-background px-2 py-1.5 outline-none focus:border-primary"
                       >
-                        <option value="pos">Pós (CDI)</option>
-                        <option value="ipca">IPCA+</option>
-                        <option value="pre">Prefixado</option>
+                        <option value="pos">Segue o CDI</option>
+                        <option value="ipca">Inflação + taxa</option>
+                        <option value="pre">Taxa fixa</option>
                       </select>
                     )}
                   </td>
@@ -541,7 +542,7 @@ function Review({
         </div>
         {hasCurrent && read && (
           <p className="mt-3 text-xs text-muted">
-            Juntar: as posições destes prints entram na carteira e substituem as do mesmo ativo. Use para somar prints de outra
+            Juntar: os investimentos destes prints entram na carteira e substituem os iguais que já estavam lá. Use para somar prints de outra
             corretora ou de outra seção.
           </p>
         )}
@@ -586,7 +587,7 @@ function Dashboard({
         <div className="grid gap-6 p-6 md:p-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
           <div>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-nav-text">
-              <span>Patrimônio na carteira</span>
+              <span>Total investido hoje</span>
               <span className="text-nav-muted">· atualizada em {new Date(updatedAt).toLocaleDateString("pt-BR")}</span>
             </div>
             <div className="tabular mt-2 text-4xl font-bold tracking-tight md:text-5xl">{formatBRL(a.total)}</div>
@@ -596,10 +597,10 @@ function Dashboard({
                   className={`tabular rounded-full px-3 py-1 font-semibold ${a.result.result >= 0 ? "bg-positive/20 text-[rgb(110_220_160)]" : "bg-negative/25 text-[rgb(255_140_140)]"}`}
                 >
                   {a.result.result >= 0 ? "+" : "−"}
-                  {formatBRL(Math.abs(a.result.result))} ({formatRatio(a.result.result_pct)}) sobre o preço médio
+                  {formatBRL(Math.abs(a.result.result))} ({formatRatio(a.result.result_pct)}) sobre o que você pagou
                 </span>
               )}
-              <span className="rounded-full bg-white/10 px-3 py-1 text-nav-text">{a.positions.length} posições</span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-nav-text">{a.positions.length} investimentos</span>
             </div>
             <div className="mt-6">
               <div className="flex h-3 overflow-hidden rounded-full bg-white/10">
@@ -619,10 +620,10 @@ function Dashboard({
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 self-center">
-            <HeroStat label="Retorno ao ano em 10 anos" value={formatRatio(risk?.cagr)} hint={risk ? `${risk.benchmark} ${formatRatio(risk.benchmark_cagr)} · CDI ${formatRatio(risk.cdi_cagr)}` : "sem histórico no app"} accent />
+            <HeroStat label="Quanto rendeu por ano (10 anos)" value={formatRatio(risk?.cagr)} hint={risk ? `${risk.benchmark} ${formatRatio(risk.benchmark_cagr)} · CDI ${formatRatio(risk.cdi_cagr)}` : "sem histórico no app"} accent />
             <HeroStat label="Pior ano da carteira" value={risk?.worst_year ? formatRatio(risk.worst_year.return) : "–"} hint={risk?.worst_year ? `em ${risk.worst_year.year}` : ""} />
-            <HeroStat label="Oscilação anual" value={risk?.volatility_annual != null ? pct(risk.volatility_annual) : "–"} hint="desvio dos retornos anuais" />
-            <HeroStat label="Histórico coberto" value={risk ? pct(risk.coverage) : "–"} hint="parte da carteira com dados" />
+            <HeroStat label="Quanto sobe e desce por ano" value={risk?.volatility_annual != null ? pct(risk.volatility_annual) : "–"} hint="quanto maior, mais sustos no caminho" />
+            <HeroStat label="Parte com histórico" value={risk ? pct(risk.coverage) : "–"} hint="parte da carteira com dados" />
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 border-t border-white/10 px-6 py-3 md:px-8">
@@ -630,23 +631,23 @@ function Dashboard({
             <ImagePlus size={16} /> Enviar novos prints
           </button>
           <button onClick={onEdit} className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-nav-text hover:bg-white/10">
-            <Plus size={16} /> Editar posições
+            <Plus size={16} /> Editar investimentos
           </button>
         </div>
       </section>
 
       {/* Indicadores */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Kpi label="Maior posição" value={a.concentration?.largest.ticker ?? a.concentration?.largest.name ?? "–"} hint={a.concentration ? `${pct(a.concentration.largest.pct)} do total` : ""} warn={(a.concentration?.largest.pct ?? 0) > 0.1} />
-        <Kpi label="3 maiores posições" value={a.concentration ? pct(a.concentration.top3_pct) : "–"} hint="do patrimônio" />
-        <Kpi label="Posições efetivas" value={a.concentration ? formatNumber(a.concentration.effective_positions) : "–"} hint={a.concentration ? `de ${a.concentration.positions}; quanto maior, mais diversificada` : ""} />
+        <Kpi label="Maior investimento" value={a.concentration?.largest.ticker ?? a.concentration?.largest.name ?? "–"} hint={a.concentration ? `${pct(a.concentration.largest.pct)} do total` : ""} warn={(a.concentration?.largest.pct ?? 0) > 0.1} />
+        <Kpi label="3 maiores investimentos" value={a.concentration ? pct(a.concentration.top3_pct) : "–"} hint="do total" />
+        <Kpi label="Diversificação" value={a.concentration ? formatNumber(a.concentration.effective_positions) : "–"} hint={a.concentration ? `de ${a.concentration.positions}; quanto maior, mais diversificada` : ""} />
         <Kpi label="Pontos de atenção" value={String(high)} hint={high ? "veja abaixo" : "nenhum relevante"} warn={high > 0} />
       </div>
 
       {/* Composição e desempenho */}
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
         <Card>
-          <CardHeader title="Composição" subtitle="Por classe e, nas ações, por setor" />
+          <CardHeader title="Como seu dinheiro está dividido" subtitle="Por tipo de investimento e, nas ações, por setor" />
           <div className="flex flex-col items-center gap-5 sm:flex-row xl:flex-col 2xl:flex-row">
             <Donut
               size={168}
@@ -674,7 +675,7 @@ function Dashboard({
           </div>
           {a.by_sector.length > 0 && (
             <div className="mt-6 border-t border-border pt-5">
-              <h3 className="mb-3 text-sm font-semibold">Ações por setor (% do patrimônio)</h3>
+              <h3 className="mb-3 text-sm font-semibold">Ações por setor (% do total)</h3>
               <div className="space-y-3">
                 {a.by_sector.map((s) => (
                   <div key={s.key}>
@@ -691,14 +692,14 @@ function Dashboard({
             </div>
           )}
         </Card>
-        {risk ? <PerformanceCard risk={risk} /> : <Card className="text-sm text-muted">Nenhum ativo da carteira tem histórico no app ainda.</Card>}
+        {risk ? <PerformanceCard risk={risk} /> : <Card className="text-sm text-muted">Nenhum investimento da carteira tem histórico no app ainda.</Card>}
       </div>
 
       {/* IA e alertas */}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <AiCard reading={reading} onExplain={onExplain} />
         <Card>
-          <CardHeader title="Pontos de atenção" subtitle="Até 10% por ativo e até 35% por setor" />
+          <CardHeader title="Pontos de atenção" subtitle="O ideal é não ter mais de 10% em um só investimento nem mais de 35% em um só setor" />
           {a.alerts.length ? (
             <ul className="space-y-3 text-sm">
               {a.alerts.map((x) => (
@@ -730,7 +731,7 @@ function Dashboard({
             <CardHeader title="Sua carteira x seu perfil" />
             <p className="text-sm text-muted">
               {hasAdvisor ? (
-                "O modo assessor está desligado na API."
+                "As sugestões de investimento estão desligadas no momento."
               ) : (
                 <>
                   Responda o perfil no{" "}
@@ -754,12 +755,12 @@ function Dashboard({
           page="/carteira"
           suggestions={[
             "Minha carteira está concentrada demais?",
-            "Onde coloco meu próximo aporte?",
+            "Onde coloco o próximo dinheiro que eu guardar?",
             "Como minha carteira se sairia numa crise?",
             "O que falta para ela ficar mais equilibrada?",
           ]}
           placeholder="Pergunte sobre a sua carteira"
-          footer="Análise automática. Todo investimento tem riscos; rentabilidade passada não garante futura."
+          footer="Análise automática. Todo investimento tem riscos; o que rendeu no passado não garante o futuro."
         />
       </div>
     </>
@@ -825,17 +826,17 @@ function AiCard({ reading, onExplain }: { reading: Reading; onExplain: () => voi
 function PositionsCard({ positions }: { positions: PortfolioAnalysis["positions"] }) {
   return (
     <Card>
-      <CardHeader title="Posições" subtitle="Preço do app quando o ativo está no ranking ou tem cotação; senão, o do print" />
+      <CardHeader title="Seus investimentos" subtitle="Usamos o preço atualizado do app quando temos; senão, o do print" />
       <div className="-mx-5 overflow-x-auto px-5 md:-mx-6 md:px-6">
         <table className="w-full min-w-[820px] text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-muted">
-              <th className="py-2 pr-3 font-semibold">Ativo</th>
+              <th className="py-2 pr-3 font-semibold">Investimento</th>
               <th className="py-2 pr-3 text-right font-semibold">Saldo</th>
               <th className="py-2 pr-3 font-semibold">Peso</th>
               <th className="py-2 pr-3 text-right font-semibold">Resultado</th>
-              <th className="py-2 pr-3 text-right font-semibold">Ranking curto prazo</th>
-              <th className="py-2 pr-3 text-right font-semibold">Retorno 10 anos (a.a.)</th>
+              <th className="py-2 pr-3 text-right font-semibold">Posição na lista</th>
+              <th className="py-2 pr-3 text-right font-semibold">Rendeu por ano (10 anos)</th>
               <th className="py-2 text-right font-semibold">Pior queda</th>
             </tr>
           </thead>
@@ -881,7 +882,7 @@ function PositionsCard({ positions }: { positions: PortfolioAnalysis["positions"
                         <span className="block text-xs text-muted">{formatProbability(p.ranking.probability)} de superar o índice</span>
                       </>
                     ) : (
-                      <span className="text-muted">fora do ranking</span>
+                      <span className="text-muted">fora da lista</span>
                     )}
                   </td>
                   <td className={`tabular py-2.5 pr-3 text-right ${changeColor(p.risk_10y?.cagr ?? 0)}`}>
@@ -905,12 +906,12 @@ function PerformanceCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]
     <Card>
       <CardHeader
         title="Se você tivesse esta carteira nos últimos 10 anos"
-        subtitle={`Histórico de cada ativo no app (${pct(risk.coverage)} da carteira; renda fixa pelo CDI), dados até ${risk.data_through}`}
+        subtitle={`Histórico de cada investimento no app (${pct(risk.coverage)} da carteira; renda fixa pelo CDI), dados até ${risk.data_through}`}
       />
       <div className="mb-5 grid grid-cols-3 gap-3">
-        <MiniStat label="Sua carteira (a.a.)" value={formatRatio(risk.cagr)} color="rgb(var(--chart-1))" />
-        <MiniStat label={`${risk.benchmark} (a.a.)`} value={formatRatio(risk.benchmark_cagr)} color="rgb(var(--chart-2))" />
-        <MiniStat label="CDI (a.a.)" value={formatRatio(risk.cdi_cagr)} color="rgb(var(--chart-3))" />
+        <MiniStat label="Sua carteira (por ano)" value={formatRatio(risk.cagr)} color="rgb(var(--chart-1))" />
+        <MiniStat label={`${risk.benchmark} (por ano)`} value={formatRatio(risk.benchmark_cagr)} color="rgb(var(--chart-2))" />
+        <MiniStat label="CDI (por ano)" value={formatRatio(risk.cdi_cagr)} color="rgb(var(--chart-3))" />
       </div>
       <PairedBars
         groups={risk.annual.map((x) => ({
@@ -923,7 +924,7 @@ function PerformanceCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]
           { label: "CDI", color: "rgb(var(--chart-3))" },
         ]}
       />
-      <p className="mt-3 text-xs text-muted">Simulação com os pesos de hoje, sem aportes nem rebalanceamento. Rentabilidade passada não garante rentabilidade futura.</p>
+      <p className="mt-3 text-xs text-muted">Simulação com a carteira de hoje, sem colocar nem tirar dinheiro. O que rendeu no passado não garante o futuro.</p>
     </Card>
   );
 }
@@ -960,7 +961,7 @@ function CrisesCard({ risk }: { risk: NonNullable<PortfolioAnalysis["risk"]> }) 
           );
         })}
       </div>
-      <p className="mt-4 text-xs text-muted">Barra amarela: sua carteira. Barra cinza: {risk.benchmark}. Ativos mais novos que a crise ficam de fora do cálculo.</p>
+      <p className="mt-4 text-xs text-muted">Barra amarela: sua carteira. Barra cinza: {risk.benchmark}. Investimentos mais novos que a crise ficam de fora da conta.</p>
     </Card>
   );
 }
@@ -969,7 +970,7 @@ function PlanCard({ plan }: { plan: NonNullable<PortfolioAnalysis["plan"]> }) {
   return (
     <Card>
       <CardHeader
-        title="Sua carteira x plano do assessor"
+        title="Sua carteira x seu plano"
         subtitle={`Perfil ${plan.profile} · ${plan.term_label.toLowerCase()}`}
         action={
           <Link href="/assessor" className="text-sm font-semibold text-accent-text hover:underline">
