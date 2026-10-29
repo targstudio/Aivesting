@@ -1,3 +1,4 @@
+import { AccountSync } from "@/app/components/AccountSync";
 import { ApiStatusProvider } from "@/app/components/ApiStatus";
 import { AppProvider } from "@/app/components/AppProvider";
 import { AskAI } from "@/app/components/AskAI";
@@ -18,6 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <AskAI />
+        <AccountSync />
       </AppProvider>
     </ApiStatusProvider>
   );

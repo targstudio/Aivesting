@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
+from .account import AccountData, AccountService, AuthError, RefreshRequest, SignInRequest
 from .advisor import QUESTIONS, PlanRequest, build_plan
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
@@ -222,6 +223,12 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.market = market
     app.state.insights = insights
     app.state.simulator = Simulator()
+    accounts = (
+        AccountService(settings.supabase_url, settings.supabase_secret_key)
+        if settings.supabase_url and settings.supabase_secret_key
+        else None
+    )
+    app.state.accounts = accounts
     app.state.fundamentals = FundamentalsService(settings.brapi_base_url, settings.brapi_token, demo=settings.demo_mode)
     app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
@@ -260,6 +267,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "market_open": market_is_open(settings),
             "longterm": app.state.longterm.data is not None,
             "fundamentals": app.state.fundamentals.enabled,
+            "accounts": app.state.accounts is not None,
             "advisor": settings.advisor_mode == "public",
             "portfolio_storage": portfolios is not None,
             "b3_assets": len(catalog.assets),
@@ -598,6 +606,63 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(404, "Sem dados para essa classe.")
         return {**result, "disclaimer": LONGTERM_DISCLAIMER}
+
+    # ---- Conta (login por link mágico) ----
+
+    sign_in_calls: dict[str, deque] = defaultdict(deque)
+
+    def account_service() -> AccountService:
+        if app.state.accounts is None:
+            raise HTTPException(503, "Login indisponível: a API está sem banco de dados.")
+        return app.state.accounts
+
+    async def current_user(authorization: str | None = Header(default=None)) -> dict:
+        svc = account_service()
+        if not authorization or not authorization.lower().startswith("bearer "):
+            raise HTTPException(401, "Entre na sua conta.")
+        try:
+            return await svc.user(authorization[7:].strip())
+        except AuthError as exc:
+            raise HTTPException(exc.status, str(exc)) from None
+
+    @app.post("/conta/entrar")
+    async def account_sign_in(body: SignInRequest, request: Request):
+        svc = account_service()
+        origins = [o.strip().rstrip("/") for o in settings.web_origin.split(",") if o.strip()]
+        # O link só pode voltar para o próprio site, nunca para um endereço qualquer.
+        if not any(body.redirect_to == o or body.redirect_to.startswith(o + "/") for o in origins):
+            raise HTTPException(400, "Endereço de retorno não permitido.")
+        ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "?").split(",")[0]
+        calls, now = sign_in_calls[ip], time.monotonic()
+        while calls and now - calls[0] > 3600:
+            calls.popleft()
+        if len(calls) >= 10:
+            raise HTTPException(429, "Muitos pedidos de link. Tente de novo mais tarde.")
+        calls.append(now)
+        try:
+            await svc.send_link(body.email.strip().lower(), body.redirect_to)
+        except AuthError as exc:
+            raise HTTPException(exc.status, str(exc)) from None
+        return {"sent": True}
+
+    @app.post("/conta/renovar")
+    async def account_refresh(body: RefreshRequest):
+        try:
+            return await account_service().refresh(body.refresh_token)
+        except AuthError as exc:
+            raise HTTPException(exc.status, str(exc)) from None
+
+    @app.get("/conta/dados")
+    async def account_load(user: dict = Depends(current_user)):
+        row = await account_service().load(user["id"])
+        return {"email": user["email"], "data": (row or {}).get("data") or {}, "updated_at": (row or {}).get("updated_at")}
+
+    @app.put("/conta/dados")
+    async def account_save(body: AccountData, user: dict = Depends(current_user)):
+        if sum(len(v) for v in body.data.values()) > 500_000:
+            raise HTTPException(413, "Dados grandes demais.")
+        await account_service().save(user["id"], body.data, body.updated_at)
+        return {"saved": True}
 
     @app.get("/renda-fixa/taxas")
     async def fixed_income_rates():

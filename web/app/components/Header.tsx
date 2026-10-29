@@ -1,7 +1,9 @@
 "use client";
 
-import { Bell, Sparkles } from "lucide-react";
+import { Bell, LogIn, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ACCOUNT_EVENT, loadSession } from "@/lib/account";
 import { ApiStatusPill } from "./ApiStatus";
 import { useApp } from "./AppProvider";
 import { Logo } from "./Logo";
@@ -10,7 +12,14 @@ const LEVEL_LABELS = { iniciante: "IA: linguagem simples", intermediario: "IA: n
 
 export function Header() {
   const { prefs, unseen, askAI, ready } = useApp();
-  const name = prefs.name.trim();
+  const [account, setAccount] = useState<string | null | undefined>(undefined);
+  useEffect(() => {
+    const read = () => setAccount(loadSession() ? (loadSession()?.email ?? "") : null);
+    read();
+    window.addEventListener(ACCOUNT_EVENT, read);
+    return () => window.removeEventListener(ACCOUNT_EVENT, read);
+  }, []);
+  const name = prefs.name.trim() || (account ? account.split("@")[0] : "");
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-surface px-4 md:justify-end md:px-8">
       <Link href="/" className="flex items-center gap-2.5 md:hidden">
@@ -33,13 +42,21 @@ export function Header() {
             </span>
           )}
         </Link>
+        {account === null && (
+          <Link
+            href="/entrar"
+            className="flex items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-semibold hover:bg-surface-2"
+          >
+            <LogIn size={16} /> <span className="hidden sm:inline">Entrar</span>
+          </Link>
+        )}
         <Link href="/configuracoes" className="flex items-center gap-3 rounded-full py-1 pl-1 pr-1 hover:bg-surface md:pr-4">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-bg text-sm font-bold text-accent-text ring-1 ring-accent-text/30">
             {(name[0] ?? "U").toUpperCase()}
           </span>
           <span className="hidden text-left leading-tight md:block">
             <span className="block text-sm font-semibold">{name || "Investidor"}</span>
-            <span className="block text-xs text-muted">{ready ? LEVEL_LABELS[prefs.level] : "Plano gratuito"}</span>
+            <span className="block text-xs text-muted">{account ? "Conta conectada" : ready ? LEVEL_LABELS[prefs.level] : "Plano gratuito"}</span>
           </span>
         </Link>
       </div>
