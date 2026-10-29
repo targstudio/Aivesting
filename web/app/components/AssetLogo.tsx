@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Logotipo do ativo; se a imagem não existir ou falhar, mostra as quatro letras do ticker.
 export function AssetLogo({ ticker, src, size = 40 }: { ticker: string; src?: string | null; size?: number }) {
   const [failed, setFailed] = useState(false);
+  const img = useRef<HTMLImageElement>(null);
+  // Se a imagem falhar antes da hidratação, o onError do React não dispara: confere ao montar.
+  useEffect(() => {
+    const el = img.current;
+    if (el?.complete && el.naturalWidth === 0) setFailed(true);
+  }, [src]);
   const box = { width: size, height: size };
   if (!src || failed) {
     return (
@@ -20,6 +26,7 @@ export function AssetLogo({ ticker, src, size = 40 }: { ticker: string; src?: st
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      ref={img}
       src={src}
       alt={`Logotipo de ${ticker}`}
       style={box}

@@ -23,10 +23,11 @@ export function AskAI() {
 
   return (
     <>
+      {/* No celular o cabeçalho não tem o botão; a partir de sm ele já aparece lá e o flutuante cobriria o conteúdo. */}
       {!ai.open && (
         <button
           onClick={() => askAI()}
-          className="fixed bottom-20 right-4 z-30 flex items-center gap-2 rounded-full bg-chart-1 px-5 py-3 font-semibold text-on-primary shadow-lg shadow-black/40 md:bottom-8 md:right-8"
+          className="fixed bottom-20 right-4 z-30 flex items-center gap-2 rounded-full bg-chart-1 px-5 py-3 font-semibold text-on-primary shadow-lg shadow-black/40 sm:hidden"
         >
           <Sparkles size={18} /> Pergunte à IA
         </button>
