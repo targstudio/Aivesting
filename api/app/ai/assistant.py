@@ -15,6 +15,14 @@ MAX_TOOL_ROUNDS = 6
 UNSUPPORTED_STRICT_KEYS = {"minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf", "minLength",
                            "maxLength", "minItems", "maxItems"}
 
+FORMAT_RULES = """Formato da resposta (aparece num chat estreito, inclusive no celular):
+- Comece pela resposta em uma ou duas frases, com o principal em **negrito**.
+- Depois, no máximo 3 a 5 itens curtos em lista, cada um com o número que importa (ex.: "**Renda fixa IPCA+**: falta
+  R$ 57,8 mil para os 25% do plano").
+- Use tabela só para comparar números de várias linhas, com no máximo 4 colunas curtas, e explique a tabela numa frase.
+- Valores grandes arredondados (R$ 57,8 mil, R$ 1,2 mi) e percentuais com uma casa (12,5%).
+- Sem títulos longos, sem repetir o que a pessoa perguntou e sem parágrafos maiores que 3 linhas."""
+
 SYSTEM_PROMPT = """Você é a assistente do AI.vesting, um app brasileiro de informação sobre investimentos.
 Responda em português do Brasil, de forma direta e em linguagem simples.
 
@@ -182,6 +190,7 @@ class Assistant:
         messages: list = [{"role": m["role"], "content": m["content"]} for m in history]
         # `system` substitui o papel padrão (ex.: modo assessor); o nível e a tela valem para os dois.
         system = system or f"{SYSTEM_PROMPT}\n\n{LEVELS.get(level, LEVELS['iniciante'])}"
+        system = f"{system}\n\n{FORMAT_RULES}"
         if page:
             system += f"\n\nA pessoa está na tela {page!r} do app. Use isso para entender referências como " \
                 "\"este ativo\" ou \"este ranking\"."
