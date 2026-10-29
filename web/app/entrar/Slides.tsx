@@ -7,30 +7,35 @@ import { useEffect, useState } from "react";
 const SLIDES = [
   {
     tag: "Ranking com IA",
+    photo: "/entrar/ranking.webp",
     title: "Veja quais ações e FIIs mais se destacam agora",
     text: "Atualizado a cada 5 minutos no pregão, com a explicação da IA em linguagem simples.",
     art: <RankingArt />,
   },
   {
     tag: "Simulador de metas",
+    photo: "/entrar/simulador.webp",
     title: "Descubra quanto investir por mês para chegar lá",
     text: "Seu plano testado em mais de 20 anos de mercado, do pior ao melhor caso, já descontando a inflação.",
     art: <GoalArt />,
   },
   {
     tag: "Minha carteira",
+    photo: "/entrar/carteira.webp",
     title: "Sua carteira inteira em um só lugar, em qualquer aparelho",
     text: "Importe por print, acompanhe os proventos e saiba onde colocar o próximo aporte.",
     art: <PortfolioArt />,
   },
   {
     tag: "Renda fixa",
+    photo: "/entrar/renda-fixa.webp",
     title: "Tesouro, CDB ou LCI: qual rende mais no seu prazo?",
     text: "Compare o rendimento líquido, já com imposto e taxas, antes de decidir.",
     art: <FixedIncomeArt />,
   },
   {
     tag: "Assistente e alertas",
+    photo: "/entrar/assistente.webp",
     title: "Pergunte qualquer coisa e seja avisado na hora certa",
     text: "A IA lê os números de cada tela e responde sem jargão. Os alertas avisam quando o preço chega onde você quer.",
     art: <AssistantArt />,
@@ -54,7 +59,17 @@ export function Slides() {
       onMouseLeave={() => setPaused(false)}
       className="relative overflow-hidden bg-[#111] text-white lg:w-[45%]"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,#3a3020_0%,transparent_55%),radial-gradient(circle_at_80%_70%,#1f2a3a_0%,transparent_50%)]" />
+      {/* Todas as fotos ficam carregadas e trocam com fade; o degradê escuro mantém o texto legível. */}
+      {SLIDES.map((s, i) => (
+        <img
+          key={s.photo}
+          src={s.photo}
+          alt=""
+          fetchPriority={i === 0 ? "high" : "low"}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${i === slide ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/90" />
       <div className="relative flex h-full flex-col p-6 md:p-12">
         <div className="hidden flex-1 items-center justify-center py-8 sm:flex">
           <div key={slide} className="w-full max-w-md animate-[fadein_.5s_ease-out]">
@@ -89,7 +104,7 @@ export function Slides() {
 }
 
 function Panel({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 shadow-2xl backdrop-blur">{children}</div>;
+  return <div className="rounded-2xl border border-white/15 bg-black/45 p-5 shadow-2xl backdrop-blur-md">{children}</div>;
 }
 
 function RankingArt() {
