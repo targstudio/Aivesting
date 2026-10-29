@@ -47,7 +47,7 @@ def test_classify_types():
 
 def test_parse_cotahist_reads_fixed_width():
     lines = [
-        cotahist_line("PETR4", "PN N2", close=38.52, name="PETROBRAS", volume=1_234_567.89, trades=12345),
+        cotahist_line("PETR4", "PN      N2", close=38.52, name="PETROBRAS", volume=1_234_567.89, trades=12345),
         cotahist_line("MXRF11", "CI", codbdi="12", close=9.81, name="FII MAXI REN"),
         cotahist_line("PETR4F", "PN N2", codbdi="96"),  # fracionário
         cotahist_line("PETRK400", "PN", tpmerc="070"),  # opção
@@ -58,6 +58,7 @@ def test_parse_cotahist_reads_fixed_width():
     assert (petr.name, petr.type, petr.price, petr.volume, petr.trades, petr.date) == (
         "PETROBRAS", "acao", 38.52, 1_234_567.89, 12345, "2026-10-28"
     )
+    assert petr.spec == "PN N2"
     assert rows["MXRF11"].type == "fii"
 
 
@@ -83,7 +84,7 @@ def test_search_orders_exact_prefix_then_name(tmp_path):
     ], None)
     assert [a["ticker"] for a in c.search("petr3")["ativos"]] == ["PETR3"]
     assert [a["ticker"] for a in c.search("petr")["ativos"]] == ["PETR4", "PETR3"]  # empate: maior volume
-    assert [a["ticker"] for a in c.search("magazine")["ativos"]] == []
+    assert [a["ticker"] for a in c.search("magazine luiza")["ativos"]] == ["MGLU3"]  # nome de pregão cortado
     assert [a["ticker"] for a in c.search("magaz")["ativos"]] == ["MGLU3"]
     assert [a["ticker"] for a in c.search("", "fii")["ativos"]] == ["MXRF11"]
     assert c.search("")["ativos"][0]["ticker"] == "PETR4"  # sem busca: maior volume primeiro

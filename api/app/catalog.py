@@ -89,7 +89,7 @@ def parse_cotahist(text: str) -> list[Listed]:
         if len(line) < 245 or line[:2] != "01" or line[24:27] != "010":
             continue
         ticker = line[12:24].strip()
-        spec = line[39:49].strip()
+        spec = " ".join(line[39:49].split())
         kind = classify(line[10:12], ticker, spec)
         if kind is None or not ticker:
             continue
@@ -252,6 +252,9 @@ class Catalog:
                     return 2
                 if query in name or query in a.ticker:
                     return 3
+                # O nome de pregão é cortado em 12 letras ("MAGAZ LUIZA"): "magazine" acha pelo começo da palavra.
+                if len(query) >= 4 and any(len(w) >= 4 and query.startswith(w) for w in name.split()):
+                    return 4
                 return None
 
             scored = [(s, a) for a in items if (s := score(a)) is not None]
