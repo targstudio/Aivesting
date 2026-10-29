@@ -6,6 +6,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 
+from .ranking.engine import latest_as_of
 from .ranking.service import RankingService
 
 log = logging.getLogger(__name__)
@@ -37,6 +38,7 @@ class MarketItem:
     value: float
     change_percent: float
     spark: list[float] = field(default_factory=list)
+    as_of: str | None = None
 
 
 def items_from_quotes(quotes) -> list[MarketItem]:
@@ -49,7 +51,7 @@ def items_from_quotes(quotes) -> list[MarketItem]:
         out.append(
             MarketItem(
                 symbol, label, group, unit, round(q.price, 4), q.change_percent,
-                [round(b.close, 4) for b in q.history[-SPARK_DAYS:]],
+                [round(b.close, 4) for b in q.history[-SPARK_DAYS:]], q.as_of,
             )
         )
     return out
@@ -119,5 +121,10 @@ class MarketService:
         return {
             "indices": [asdict(i) for i in items],
             "atualizado_em": self.updated_at,
+            # Horário da cotação mais nova da bolsa brasileira (Ibovespa e ativos do app), para o "preços de".
+            "precos_de": latest_as_of(
+                [i.as_of for i in items if i.symbol == "^BVSP"]
+                + [s.prices_as_of for s in ranking.snapshots.values()]
+            ),
             **movers(ranking),
         }

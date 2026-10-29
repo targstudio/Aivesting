@@ -282,3 +282,12 @@ def test_swot_clean_keeps_shape():
                    "ameacas": []}
     # Schemas strict da Anthropic não aceitam minimum/maximum/minItems (ver PR #14).
     assert "minItems" not in json.dumps(SCHEMA) and "minimum" not in json.dumps(SCHEMA)
+
+
+def test_latest_as_of_picks_newest_and_skips_empty():
+    from app.ranking.engine import latest_as_of
+
+    assert latest_as_of([None, "2026-10-28T20:07:00+00:00", "2026-10-29T13:20:00+00:00", "lixo"]) == (
+        "2026-10-29T13:20:00+00:00"
+    )
+    assert latest_as_of([None, ""]) is None

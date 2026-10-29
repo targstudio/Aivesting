@@ -1,5 +1,5 @@
 import { getDividendYields, getRanking, type AssetClass } from "@/lib/api";
-import { formatTime } from "@/lib/format";
+import { formatUpdated } from "@/lib/format";
 import { AiInsight } from "@/app/components/AiInsight";
 import { RankingList } from "@/app/components/RankingList";
 import { Breadcrumbs, EmptyState, InfoBanner, PageTitle, Segmented } from "@/app/components/ui";
@@ -36,7 +36,11 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
             { label: "FIIs", href: "/ranking?classe=fiis", active: assetClass === "fiis" },
           ]}
         />
-        {snapshot && <span className="text-sm text-muted">Atualizado às {formatTime(snapshot.computed_at)}</span>}
+        {snapshot && (
+          <span className="text-sm text-muted">
+            Última atualização: {formatUpdated(snapshot.prices_as_of ?? snapshot.computed_at)}
+          </span>
+        )}
       </div>
 
       {snapshot && snapshot.assets.length ? (

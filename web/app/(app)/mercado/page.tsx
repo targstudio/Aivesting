@@ -4,7 +4,7 @@ import { AssetLogo } from "@/app/components/AssetLogo";
 import { Sparkline } from "@/app/components/Sparkline";
 import { Breadcrumbs, Card, EmptyState, InfoBanner, PageTitle } from "@/app/components/ui";
 import { getMacro, getMarket, type MarketItem, type Mover } from "@/lib/api";
-import { changeColor, formatBRL, formatNumber, formatPercent, formatTime } from "@/lib/format";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatUpdated } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -99,7 +99,8 @@ export default async function MarketPage() {
                 <h2 className="text-lg font-bold">Como está a bolsa hoje</h2>
                 <span className="text-sm text-muted">
                   {breadth.altas} sobem · {breadth.baixas} caem · {breadth.estaveis} estáveis
-                  {market.atualizado_em && ` · atualizado às ${formatTime(market.atualizado_em)}`}
+                  {(market.precos_de ?? market.atualizado_em) &&
+                    ` · última atualização: ${formatUpdated((market.precos_de ?? market.atualizado_em)!)}`}
                 </span>
               </div>
               <div className="flex h-3 overflow-hidden rounded-full bg-track">
