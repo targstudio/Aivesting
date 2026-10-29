@@ -14,8 +14,20 @@ def fake_supabase(store: dict, calls: list):
     def handler(request: httpx.Request):
         calls.append((request.method, request.url.path, dict(request.url.params)))
         path = request.url.path
-        if path == "/auth/v1/otp":
+        if path in ("/auth/v1/otp", "/auth/v1/recover"):
             return httpx.Response(200, json={})
+        if path == "/auth/v1/settings":
+            return httpx.Response(200, json={"external": {"email": True, "google": True, "apple": False}})
+        if path == "/auth/v1/signup":
+            body = json.loads(request.content)
+            if body["email"] == "ana@exemplo.com":
+                return httpx.Response(422, json={"msg": "User already registered"})
+            return httpx.Response(200, json={"id": "x", "email": body["email"]})
+        if path == "/auth/v1/token" and request.url.params.get("grant_type") == "password":
+            body = json.loads(request.content)
+            if body["password"] != "senha-certa":
+                return httpx.Response(400, json={"error": "invalid_grant"})
+            return httpx.Response(200, json={"access_token": "token-bom", "refresh_token": "r" * 20, "expires_in": 3600, "user": USER})
         if path == "/auth/v1/user":
             ok = request.headers["authorization"] == "Bearer token-bom"
             return httpx.Response(200, json=USER) if ok else httpx.Response(401, json={})
@@ -64,3 +76,33 @@ def test_data_round_trip_requires_valid_token():
 def test_without_database_login_is_off():
     c = TestClient(create_app(Settings(_env_file=None, demo_mode=True), start_scheduler=False))
     assert c.post("/conta/entrar", json={"email": "a@b.com", "redirect_to": "http://localhost:3000"}).status_code == 503
+
+
+def test_providers_and_google_link():
+    c = client({}, [])
+    assert c.get("/conta/provedores").json() == {"available": True, "email": True, "google": True}
+    url = c.get("/conta/oauth/google", params={"redirect_to": "https://app.exemplo.com/entrar"}).json()["url"]
+    assert url.startswith("https://sb.exemplo.co/auth/v1/authorize?provider=google&redirect_to=https")
+    assert c.get("/conta/oauth/google", params={"redirect_to": "https://malicioso.com"}).status_code == 400
+    assert c.get("/conta/oauth/apple", params={"redirect_to": "https://app.exemplo.com/entrar"}).status_code == 404
+
+
+def test_password_sign_up_and_login():
+    calls = []
+    c = client({}, calls)
+    new = c.post("/conta/cadastrar", json={"email": "bia@exemplo.com", "password": "12345678", "redirect_to": "https://app.exemplo.com/entrar"})
+    assert new.json() == {"session": None, "confirm_email": True}
+    dup = c.post("/conta/cadastrar", json={"email": "ana@exemplo.com", "password": "12345678", "redirect_to": "https://app.exemplo.com/entrar"})
+    assert dup.status_code == 409
+    assert c.post("/conta/cadastrar", json={"email": "bia@exemplo.com", "password": "curta"}).status_code == 422
+    assert c.post("/conta/login", json={"email": "ana@exemplo.com", "password": "errada123"}).status_code == 401
+    ok = c.post("/conta/login", json={"email": "Ana@exemplo.com", "password": "senha-certa"}).json()
+    assert ok["access_token"] == "token-bom" and ok["email"] == USER["email"]
+
+
+def test_password_recovery():
+    calls = []
+    c = client({}, calls)
+    sent = c.post("/conta/esqueci-senha", json={"email": "ana@exemplo.com", "redirect_to": "https://app.exemplo.com/entrar"})
+    assert sent.status_code == 200 and calls[-1][1] == "/auth/v1/recover"
+    assert c.post("/conta/nova-senha", json={"password": "nova-senha-1"}).status_code == 401

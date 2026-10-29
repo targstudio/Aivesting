@@ -1,13 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { ACCOUNT_EVENT, currentSnapshot, loadSession, pullData, pushData } from "@/lib/account";
+import { ACCOUNT_EVENT, currentSnapshot, loadSession, pullData, pushData, shouldShowWelcome } from "@/lib/account";
 
 /**
  * Com sessão ativa, traz os dados da conta ao abrir o app e sobe as mudanças. Em vez de mexer em cada lugar que
  * grava no navegador, confere as chaves a cada poucos segundos e envia quando algo mudou.
  */
 export function AccountSync() {
+  useEffect(() => {
+    // Primeira visita sem conta: começa pela tela de entrada. Quem escolhe "Explorar sem conta" não volta para ela.
+    if (shouldShowWelcome()) {
+      const here = window.location.pathname + window.location.search;
+      window.location.replace(`/entrar${here === "/" ? "" : `?volta=${encodeURIComponent(here)}`}`);
+    }
+  }, []);
+
   useEffect(() => {
     let last: string | null = null;
     let busy = false;

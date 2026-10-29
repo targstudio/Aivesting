@@ -1,6 +1,6 @@
 import { apiFetch } from "./api";
 
-// Conta por link mágico. O navegador guarda a sessão e espelha no banco as chaves abaixo, para a pessoa ver a mesma
+// Conta (Google, e-mail e senha ou link no e-mail). O navegador guarda a sessão e espelha no banco as chaves abaixo, para a pessoa ver a mesma
 // carteira, alertas, perfil e preferências em qualquer aparelho.
 
 export const SYNC_KEYS = ["aivesting.carteira", "aivesting.alerts", "aivesting.assessor", "aivesting.prefs", "aivesting.simulador"];
@@ -27,18 +27,78 @@ function saveSession(s: Session | null) {
   window.dispatchEvent(new Event(ACCOUNT_EVENT));
 }
 
+const EXPLORE_KEY = "aivesting.explorar";
+const backTo = () => `${window.location.origin}/entrar`;
+
+type SessionReply = { access_token: string; refresh_token: string; expires_in: number; email: string | null };
+
+function startSession(r: SessionReply) {
+  saveSession({ access_token: r.access_token, refresh_token: r.refresh_token, expires_at: Date.now() + r.expires_in * 1000, email: r.email });
+}
+
+export type Providers = { available: boolean; email: boolean; google: boolean };
+export const getProviders = () => apiFetch<Providers>("/conta/provedores");
+
+/** Leva para a tela do Google; ele devolve a pessoa para /entrar com a sessão no endereço. */
+export async function signInWithGoogle() {
+  const r = await apiFetch<{ url: string }>(`/conta/oauth/google?redirect_to=${encodeURIComponent(backTo())}`);
+  window.location.assign(r.url);
+}
+
 export async function sendLoginLink(email: string) {
-  await apiFetch("/conta/entrar", {
+  await apiFetch("/conta/entrar", { method: "POST", body: JSON.stringify({ email, redirect_to: backTo() }) });
+}
+
+export async function signInWithPassword(email: string, password: string) {
+  startSession(await apiFetch<SessionReply>("/conta/login", { method: "POST", body: JSON.stringify({ email, password }) }));
+}
+
+/** Cria a conta. Devolve true quando já entrou; false quando falta confirmar o e-mail. */
+export async function signUp(email: string, password: string): Promise<boolean> {
+  const r = await apiFetch<{ session: SessionReply | null }>("/conta/cadastrar", {
     method: "POST",
-    body: JSON.stringify({ email, redirect_to: `${window.location.origin}/entrar` }),
+    body: JSON.stringify({ email, password, redirect_to: backTo() }),
+  });
+  if (r.session) startSession(r.session);
+  return !!r.session;
+}
+
+export async function sendPasswordReset(email: string) {
+  await apiFetch("/conta/esqueci-senha", { method: "POST", body: JSON.stringify({ email, redirect_to: backTo() }) });
+}
+
+export async function setNewPassword(password: string) {
+  const s = loadSession();
+  await apiFetch("/conta/nova-senha", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${s?.access_token ?? ""}` },
+    body: JSON.stringify({ password }),
   });
 }
 
-/** O link do e-mail volta para /entrar com a sessão no fragmento (#access_token=...). */
-export function consumeLoginRedirect(): { ok: boolean; error?: string } | null {
+/** Quem escolheu "Explorar sem conta" não volta a ser mandado para a tela de entrada. */
+export function chooseExplore() {
+  try {
+    localStorage.setItem(EXPLORE_KEY, "1");
+  } catch {}
+}
+
+export function shouldShowWelcome(): boolean {
+  try {
+    return !loadSession() && !localStorage.getItem(EXPLORE_KEY);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * O e-mail (link, confirmação ou troca de senha) e o Google voltam para /entrar com a sessão no fragmento
+ * (#access_token=...). `recovery` indica que a pessoa veio pelo e-mail de troca de senha.
+ */
+export function consumeLoginRedirect(): { ok: boolean; error?: string; recovery?: boolean } | null {
   const hash = new URLSearchParams(window.location.hash.slice(1));
   if (!hash.has("access_token") && !hash.has("error")) return null;
-  history.replaceState(null, "", window.location.pathname);
+  history.replaceState(null, "", window.location.pathname + window.location.search);
   if (hash.has("error")) return { ok: false, error: hash.get("error_description") ?? "O link expirou ou já foi usado." };
   const token = hash.get("access_token")!;
   let email: string | null = null;
@@ -51,7 +111,7 @@ export function consumeLoginRedirect(): { ok: boolean; error?: string } | null {
     expires_at: Date.now() + Number(hash.get("expires_in") ?? 3600) * 1000,
     email,
   });
-  return { ok: true };
+  return { ok: true, recovery: hash.get("type") === "recovery" };
 }
 
 export function signOut() {
