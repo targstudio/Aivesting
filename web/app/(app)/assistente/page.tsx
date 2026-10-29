@@ -7,9 +7,9 @@ export default function AssistantPage() {
       <PageTitle
         eyebrow="Assistente IA"
         title="Pergunte à Claude sobre o mercado"
-        subtitle="Ela consulta o ranking, os ativos e os dados macro do app antes de responder."
+        subtitle="Pergunte do seu jeito. Ela consulta os dados do app e responde em palavras simples."
       />
-      <InfoBanner>A assistente apresenta e explica dados; ela não recomenda compra ou venda de ativos.</InfoBanner>
+      <InfoBanner>A assistente explica os dados; ela não manda comprar nem vender.</InfoBanner>
       <Chat />
     </>
   );

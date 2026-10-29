@@ -45,15 +45,15 @@ export function RebalanceCard({ plan, total }: { plan: NonNullable<PortfolioAnal
   return (
     <Card>
       <CardHeader
-        title="Onde colocar o próximo aporte"
-        action={<span className="text-xs text-muted"><Term k="rebalanceamento">O que é rebalancear?</Term></span>}
-        subtitle="Aproxima a carteira do plano do assessor sem precisar vender nada"
+        title="Onde colocar o próximo dinheiro"
+        action={<span className="text-xs text-muted"><Term k="rebalanceamento">Como funciona?</Term></span>}
+        subtitle="Deixa a carteira mais perto do seu plano sem precisar vender nada"
       />
       <div className="grid gap-6 md:grid-cols-[280px_1fr]">
         <div className="flex flex-col gap-3">
-          <MoneyField label="Quanto vai aportar agora" value={amount} onChange={setAmount} />
+          <MoneyField label="Quanto vai investir agora" value={amount} onChange={setAmount} />
           <p className="text-xs text-muted">
-            O valor vai primeiro para as classes que estão abaixo do plano. Se sobrar, segue as proporções do plano.
+            O dinheiro vai primeiro para o que está abaixo do plano. Se sobrar, é dividido como no plano.
           </p>
           {toBalance >= 1 && (
             <button
@@ -61,7 +61,7 @@ export function RebalanceCard({ plan, total }: { plan: NonNullable<PortfolioAnal
               onClick={() => setAmount(formatNumber(Math.ceil(toBalance)))}
               className="w-fit text-left text-xs font-semibold text-accent-text hover:underline"
             >
-              Para chegar ao plano só com aportes: {formatBRL(Math.ceil(toBalance))}
+              Para deixar a carteira igual ao plano, faltam: {formatBRL(Math.ceil(toBalance))}
             </button>
           )}
         </div>
@@ -83,12 +83,12 @@ export function RebalanceCard({ plan, total }: { plan: NonNullable<PortfolioAnal
           </ul>
         ) : (
           <div className="flex items-center gap-3 rounded-xl border border-dashed border-border p-4 text-sm text-muted">
-            <PiggyBank size={20} className="shrink-0" /> Digite o valor do aporte para ver a divisão entre as classes.
+            <PiggyBank size={20} className="shrink-0" /> Digite quanto vai investir para ver onde colocar.
           </div>
         )}
       </div>
       <p className="mt-4 text-xs text-muted">
-        Divisão por classe a partir do seu perfil no assessor. Não considera impostos, custos nem a escolha de cada ativo.
+        Divisão feita a partir do seu perfil. Não considera impostos, taxas nem qual ação ou título escolher.
       </p>
     </Card>
   );

@@ -4,6 +4,7 @@ import { Cpu, Pencil, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiFetch, type AiUsage, type UsageWindow } from "@/lib/api";
 import { formatNumber } from "@/lib/format";
+import { MoneyInput } from "./fields";
 import { Card } from "./ui";
 
 const usd = (v: number) => `US$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: v < 1 ? 4 : 2 })}`;
@@ -64,10 +65,9 @@ function CreditBalance({ data, credit, onSave }: { data: AiUsage; credit: Credit
         <div className="flex flex-wrap gap-2">
           <span className="flex flex-1 items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 focus-within:border-primary">
             <span className="text-muted">US$</span>
-            <input
-              inputMode="decimal"
+            <MoneyInput
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={setValue}
               placeholder="Ex.: 25,00"
               aria-label="Saldo de créditos em dólares"
               className="w-full min-w-[6rem] bg-transparent outline-none"

@@ -19,20 +19,20 @@ function TopRanking({ title, snapshot, href }: { title: string; snapshot: Rankin
       {snapshot && snapshot.assets.length ? (
         <RankingList assets={snapshot.assets.slice(0, 5)} benchmark={snapshot.benchmark} compact />
       ) : (
-        <EmptyState>Ranking ainda não calculado. Verifique se a API está rodando.</EmptyState>
+        <EmptyState>A lista ainda está sendo preparada. Tente de novo em alguns minutos.</EmptyState>
       )}
     </div>
   );
 }
 
 function IndexChart({ item, color, name, height = 200 }: { item: MarketItem | undefined; color: string; name: string; height?: number }) {
-  if (!item) return <EmptyState>{name}: a fonte de índices não respondeu agora.</EmptyState>;
+  if (!item) return <EmptyState>{name}: os dados não chegaram agora. Tente de novo em alguns minutos.</EmptyState>;
   const money = item.unit === "R$";
   return (
     <Card className="h-full">
       <CardHeader
         title={item.label}
-        subtitle="Últimos 30 pregões"
+        subtitle="Últimos 30 dias de bolsa"
         value={
           <>
             {money ? "R$ " : ""}
@@ -70,7 +70,7 @@ export default async function Home() {
           <IndexChart item={ibov} color="var(--chart-2)" name="Ibovespa" height={260} />
         </div>
         <Card>
-          <CardHeader title="Termômetro do app" subtitle={computedAt ? `Ranking recalculado às ${formatTime(computedAt)}` : "Ativos que sobem e caem hoje"} />
+          <CardHeader title="Como está a bolsa hoje" subtitle={computedAt ? `Atualizado às ${formatTime(computedAt)}` : "Quantos investimentos sobem e caem hoje"} />
           <div className="flex justify-center">
             <Donut
               size={180}
@@ -91,8 +91,8 @@ export default async function Home() {
           <div className="mt-5 grid grid-cols-2 gap-2.5">
             <MiniStat label="Sobem" value={breadth?.altas ?? "–"} color="rgb(var(--chart-3))" />
             <MiniStat label="Caem" value={breadth?.baixas ?? "–"} color="rgb(var(--chart-1))" />
-            <MiniStat label="Selic" value={pct("selic")} color="rgb(var(--chart-2))" />
-            <MiniStat label="IPCA 12 meses" value={pct("ipca_12m")} color="rgb(var(--chart-5))" />
+            <MiniStat label="Juros básicos (Selic)" value={pct("selic")} color="rgb(var(--chart-2))" />
+            <MiniStat label="Inflação em 12 meses" value={pct("ipca_12m")} color="rgb(var(--chart-5))" />
           </div>
         </Card>
       </div>
@@ -110,7 +110,7 @@ export default async function Home() {
             </span>
             <span className="block text-lg font-semibold">Onde colocar o seu dinheiro?</span>
             <span className="mt-1 block text-sm text-muted">
-              Diga quanto quer investir e por quantos meses: o Assessor IA monta o plano e sugere ações e FIIs para o seu prazo.
+              Diga quanto quer investir e por quantos meses: a IA monta um plano simples e mostra as melhores opções para o seu prazo.
             </span>
           </span>
           <span className="inline-flex items-center gap-2 text-sm font-semibold text-accent-text">
@@ -122,13 +122,13 @@ export default async function Home() {
       <AiInsight context="inicio" title="Resumo do dia pela IA" askPrompt="Como está o mercado hoje no Brasil e lá fora?" />
 
       <div className="mb-6 grid gap-6 xl:grid-cols-2">
-        <TopRanking title="Ações com maior chance de superar o índice" snapshot={acoes} href="/ranking" />
+        <TopRanking title="Ações com mais chance de render bem" snapshot={acoes} href="/ranking" />
         <TopRanking title="Fundos imobiliários" snapshot={fiis} href="/ranking?classe=fiis" />
       </div>
 
       <InfoBanner>
-        Conteúdo informativo gerado por modelo estatístico em calibração. Não é recomendação de investimento.
-        {!realtime && " Cotações com atraso até a contratação do feed em tempo real."}
+        As chances são calculadas por estatística a partir do passado e podem errar. Não é recomendação de investimento.
+        {!realtime && " Os preços aparecem com cerca de 15 minutos de atraso."}
       </InfoBanner>
     </>
   );

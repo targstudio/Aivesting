@@ -79,24 +79,24 @@ export default async function MarketPage() {
     <>
       <Breadcrumbs items={[{ label: "Mercado" }]} />
       <PageTitle
-        title="Mercado agora"
-        subtitle="Bolsas, moedas, juros e commodities do Brasil e do mundo, e o que mais se moveu entre os ativos do app."
+        title="Como está o mercado agora"
+        subtitle="Bolsa, dólar, juros e matérias-primas no Brasil e no mundo, e o que mais subiu e caiu hoje."
       />
       <InfoBanner>
-        {market?.pregao_aberto ? "Pregão da B3 aberto." : "Pregão da B3 fechado: valores do último fechamento."} Cotações com
-        atraso de cerca de 15 minutos. Conteúdo informativo, não é recomendação de investimento.
+        {market?.pregao_aberto ? "A bolsa está aberta agora." : "A bolsa está fechada: valores do último dia."} Preços com
+        atraso de cerca de 15 minutos. Só para informação, não é recomendação de investimento.
       </InfoBanner>
 
-      <AiInsight context="mercado" title="Resumo do pregão pela IA" askPrompt="O que mais explica o movimento do mercado hoje?" />
+      <AiInsight context="mercado" title="Resumo do dia pela IA" askPrompt="O que mais explica o movimento do mercado hoje?" />
 
       {!market ? (
-        <EmptyState>Não foi possível carregar o panorama do mercado. Verifique se a API está rodando.</EmptyState>
+        <EmptyState>Não foi possível carregar os dados do mercado. Tente de novo em alguns minutos.</EmptyState>
       ) : (
         <>
           {breadth && total > 0 && (
             <Card className="mb-6">
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="text-lg font-bold">Termômetro do app</h2>
+                <h2 className="text-lg font-bold">Como está a bolsa hoje</h2>
                 <span className="text-sm text-muted">
                   {breadth.altas} sobem · {breadth.baixas} caem · {breadth.estaveis} estáveis
                   {market.atualizado_em && ` · atualizado às ${formatTime(market.atualizado_em)}`}
@@ -118,13 +118,13 @@ export default async function MarketPage() {
             </div>
           ) : (
             <div className="mb-8">
-              <EmptyState>A fonte de índices não respondeu agora. Tente de novo em alguns minutos.</EmptyState>
+              <EmptyState>Os dados não chegaram agora. Tente de novo em alguns minutos.</EmptyState>
             </div>
           )}
 
           <div className="mb-8 grid gap-6 lg:grid-cols-2">
-            <MoverList title="Maiores altas do dia" items={market.altas} empty="Nenhum ativo do app sobe hoje." />
-            <MoverList title="Maiores baixas do dia" items={market.baixas} empty="Nenhum ativo do app cai hoje." />
+            <MoverList title="Maiores altas do dia" items={market.altas} empty="Nenhum investimento da lista sobe hoje." />
+            <MoverList title="Maiores baixas do dia" items={market.baixas} empty="Nenhum investimento da lista cai hoje." />
           </div>
         </>
       )}

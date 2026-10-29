@@ -6,12 +6,12 @@ from statistics import fmean, pstdev
 from ..providers.base import Quote
 
 FACTOR_LABELS = {
-    "momentum_3m": "Momentum de 3 meses",
-    "momentum_6m_ex1m": "Momentum de 6 meses (sem o último mês)",
-    "reversal_1w": "Movimento da última semana",
-    "trend_50d": "Preço em relação à média de 50 dias",
-    "volatility_3m": "Volatilidade de 3 meses",
-    "volume_surge": "Volume recente vs. média",
+    "momentum_3m": "Quanto subiu nos últimos 3 meses",
+    "momentum_6m_ex1m": "Quanto subiu nos últimos 6 meses",
+    "reversal_1w": "Como foi a última semana",
+    "trend_50d": "Preço acima ou abaixo do normal dos últimos 2 meses",
+    "volatility_3m": "Quanto o preço sobe e desce (últimos 3 meses)",
+    "volume_surge": "Procura recente (quantos estão comprando e vendendo)",
 }
 
 MIN_HISTORY = 70

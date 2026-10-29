@@ -15,11 +15,11 @@ export function DividendsCard({ d }: { d: AssetDividends }) {
   const perThousand = d.dy_12m != null ? 1000 * d.dy_12m : null;
   return (
     <Card className="mb-6">
-      <CardHeader title="Proventos" subtitle="Dividendos, JCP e rendimentos pagos por ação ou cota" />
+      <CardHeader title="Dividendos" subtitle="Parte do lucro que a empresa ou o fundo divide com quem tem a ação ou cota" />
       {d.total_12m > 0 ? (
         <div className="grid items-start gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div className="grid grid-cols-2 gap-6">
-            <Stat value={formatRatio(d.dy_12m, false)} label={<Term k="dividend_yield">Dividend yield 12 meses</Term>} accent sub="proventos do último ano ÷ preço" />
+            <Stat value={formatRatio(d.dy_12m, false)} label={<Term k="dividend_yield">Rendimento em dividendos (12 meses)</Term>} accent sub="o que pagou no último ano ÷ preço" />
             <Stat value={formatBRL(d.total_12m)} label="Por ação ou cota em 12 meses" sub={d.frequency ? FREQUENCY_TEXT[d.frequency] : undefined} />
             {perThousand != null && (
               <p className="col-span-2 rounded-xl bg-accent-bg/60 px-4 py-3 text-sm text-accent-text">
@@ -49,7 +49,7 @@ export function DividendsCard({ d }: { d: AssetDividends }) {
         </div>
       ) : (
         <p className="text-sm text-muted">
-          Sem proventos nos últimos 12 meses
+          Não pagou dividendos nos últimos 12 meses
           {d.payments.length ? ` (o último foi em ${formatMonth(d.payments[d.payments.length - 1].date.slice(0, 7))})` : ""}.
         </p>
       )}

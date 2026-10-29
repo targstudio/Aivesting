@@ -34,7 +34,7 @@ export function ExplainButton({ ticker }: { ticker: string }) {
         } catch {}
         setState("done");
       } catch (e) {
-        setText(e instanceof Error ? e.message : "Erro ao gerar explicação.");
+        setText(e instanceof Error ? e.message : "Não foi possível gerar a explicação.");
         setState("error");
       }
     },
@@ -87,7 +87,7 @@ export function ExplainButton({ ticker }: { ticker: string }) {
           {when && <span>gerada {when}</span>}
           <button
             onClick={() => run(true)}
-            title="Pede uma explicação nova à IA (gasta tokens)"
+            title="Pede uma explicação nova à IA"
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 font-semibold text-text hover:bg-track"
           >
             <RefreshCw size={13} /> Atualizar

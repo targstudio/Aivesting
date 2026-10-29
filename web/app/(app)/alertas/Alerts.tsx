@@ -9,20 +9,21 @@ import { Card } from "@/app/components/ui";
 import { apiFetch, type AlertKind, type AssetSummary } from "@/lib/api";
 import { formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
 import { Markdown } from "@/app/components/Markdown";
+import { MoneyInput } from "@/app/components/fields";
 
 const KINDS: { kind: AlertKind; label: string; unit: string; hint: string }[] = [
   { kind: "preco_acima", label: "Preço chegar a ou passar de", unit: "R$", hint: "Ex.: 40,00" },
   { kind: "preco_abaixo", label: "Preço chegar a ou cair abaixo de", unit: "R$", hint: "Ex.: 30,00" },
   { kind: "alta_dia", label: "Subir no dia pelo menos", unit: "%", hint: "Ex.: 3" },
   { kind: "queda_dia", label: "Cair no dia pelo menos", unit: "%", hint: "Ex.: 3" },
-  { kind: "entrou_top", label: "Entrar no top do ranking", unit: "posição", hint: "Ex.: 5" },
-  { kind: "prob_acima", label: "Probabilidade de superar o índice acima de", unit: "%", hint: "Ex.: 60" },
+  { kind: "entrou_top", label: "Entrar entre os melhores da lista", unit: "posição", hint: "Ex.: 5" },
+  { kind: "prob_acima", label: "Chance de render mais que a bolsa passar de", unit: "%", hint: "Ex.: 60" },
 ];
 
 function ruleText(a: Pick<StoredAlert, "kind" | "value">) {
   const k = KINDS.find((x) => x.kind === a.kind)!;
   if (k.unit === "R$") return `${k.label} ${formatBRL(a.value)}`;
-  if (k.unit === "posição") return `Entrar no top ${a.value} do ranking`;
+  if (k.unit === "posição") return `Entrar entre os ${a.value} melhores da lista`;
   return `${k.label} ${formatNumber(a.value)}%`;
 }
 
@@ -78,7 +79,7 @@ export function Alerts({ initialTicker }: { initialTicker?: string }) {
   function add(e: React.FormEvent) {
     e.preventDefault();
     const v = Number(value.replace(/\./g, "").replace(",", "."));
-    if (!selected) return setError("Escolha um ativo da lista.");
+    if (!selected) return setError("Escolha uma ação ou fundo da lista.");
     if (!Number.isFinite(v) || v <= 0) return setError("Informe um valor maior que zero.");
     setError("");
     const alert: StoredAlert = {
@@ -126,7 +127,7 @@ export function Alerts({ initialTicker }: { initialTicker?: string }) {
         </h2>
         <form onSubmit={add} className="flex flex-col gap-4">
           <label className="flex flex-col gap-2 text-sm font-semibold">
-            Ativo
+            Ação ou fundo
             <input
               list="ativos"
               value={ticker}
@@ -170,10 +171,10 @@ export function Alerts({ initialTicker }: { initialTicker?: string }) {
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold">
             Valor ({KINDS.find((k) => k.kind === kind)!.unit})
-            <input
-              inputMode="decimal"
+            <MoneyInput
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={setValue}
+              cents={kind.startsWith("preco")}
               placeholder={KINDS.find((k) => k.kind === kind)!.hint}
               className="rounded-2xl border border-border bg-background px-4 py-3 font-normal outline-none focus:border-primary"
             />
@@ -275,7 +276,7 @@ export function Alerts({ initialTicker }: { initialTicker?: string }) {
             </div>
           ) : (
             <Card className="text-sm text-muted">
-              Nenhum alerta ativo. Crie o primeiro ao lado, ou abra um ativo e toque em &quot;Criar alerta&quot;.
+              Nenhum alerta ativo. Crie o primeiro ao lado, ou abra uma ação ou fundo e toque em &quot;Criar alerta&quot;.
             </Card>
           )}
         </section>

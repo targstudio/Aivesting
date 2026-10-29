@@ -27,7 +27,7 @@ function suggestionsFor(page?: string): string[] {
       `Compare ${ticker} com o índice nos últimos 10 anos`,
     ];
   if (page.startsWith("/mercado"))
-    return ["Resuma o pregão de hoje", "O que mais subiu e caiu entre os ativos do app?", "Como estão as bolsas lá fora?"];
+    return ["Resuma o dia na bolsa", "O que mais subiu e caiu hoje?", "Como estão as bolsas lá fora?"];
   if (page.startsWith("/ranking"))
     return ["O que os primeiros do ranking têm em comum?", "Compare as 3 primeiras ações do ranking", "Como o modelo calcula a probabilidade?"];
   if (page.startsWith("/horizontes"))
@@ -37,7 +37,7 @@ function suggestionsFor(page?: string): string[] {
   if (page.startsWith("/macro"))
     return ["O que a Selic atual significa para quem investe?", "Como a inflação afeta os FIIs?", "O dólar subiu ou caiu?"];
   if (page.startsWith("/alertas"))
-    return ["Que tipo de alerta posso criar?", "Quais ativos variaram mais hoje?", "O que significa a probabilidade de superar o índice?"];
+    return ["Que tipo de alerta posso criar?", "O que mais subiu ou caiu hoje?", "O que quer dizer a chance de render mais que a bolsa?"];
   return SUGGESTIONS;
 }
 
@@ -57,7 +57,7 @@ export function Chat({
   endpoint = "/assistant/chat",
   extra,
   suggestions,
-  placeholder = "Pergunte sobre um ativo, o mercado ou o cenário macro",
+  placeholder = "Pergunte qualquer coisa sobre investimentos, em palavras simples",
   footer = "A IA explica dados; ela não recomenda compra ou venda.",
 }: {
   compact?: boolean;

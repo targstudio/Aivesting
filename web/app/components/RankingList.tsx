@@ -53,7 +53,7 @@ export function RankingList({
                 <span className="tabular block">{formatBRL(a.price)}</span>
               </span>
               {!compact && (
-                <span className="hidden md:block" title="Últimos 30 pregões">
+                <span className="hidden md:block" title="Últimos 30 dias de bolsa">
                   <Sparkline values={a.spark ?? []} width={88} height={30} />
                 </span>
               )}
@@ -62,26 +62,26 @@ export function RankingList({
                 <span className={`tabular block ${changeColor(a.change_percent)}`}>{formatPercent(a.change_percent)}</span>
               </span>
               {showYield && (
-                <span className="hidden md:block" title="Proventos dos últimos 12 meses ÷ preço">
+                <span className="hidden md:block" title="Dividendos dos últimos 12 meses ÷ preço">
                   <span className="block text-xs text-muted">DY 12m</span>
                   <span className="tabular block">{formatRatio(yields?.[a.ticker]?.dy_12m, false)}</span>
                 </span>
               )}
               <span className="text-right md:text-left">
-                <span className="block text-xs text-muted">Prob. vs {benchmark}</span>
+                <span className="block text-xs text-muted">Chance de render mais</span>
                 <span className="tabular block font-bold text-accent-text">{formatProbability(a.probability_outperform)}</span>
               </span>
               <ChevronDown size={20} className={`hidden transition-transform md:block ${expanded ? "rotate-180" : ""}`} />
             </button>
             {expanded && (
               <div className="border-t border-border px-4 py-4 text-sm md:px-6">
-                <p className="mb-3 text-muted">Score {formatNumber(a.score)}/100. Fatores que mais pesaram:</p>
+                <p className="mb-3 text-muted">Nota {formatNumber(a.score)} de 100. O que mais pesou:</p>
                 <ul className="mb-4 flex flex-col gap-2">
                   {a.top_factors.map((f) => (
                     <li key={f.factor} className="flex justify-between gap-4">
                       <span>{f.label}</span>
                       <span className={`tabular ${changeColor(f.contribution)}`}>
-                        {f.contribution > 0 ? "favorece" : "pesa contra"}
+                        {f.contribution > 0 ? "ajuda" : "atrapalha"}
                       </span>
                     </li>
                   ))}
@@ -90,7 +90,7 @@ export function RankingList({
                   href={`/ativo/${a.ticker}`}
                   className="inline-flex rounded-full bg-primary px-5 py-2.5 font-semibold text-on-primary"
                 >
-                  Ver análise completa
+                  Ver detalhes
                 </Link>
               </div>
             )}

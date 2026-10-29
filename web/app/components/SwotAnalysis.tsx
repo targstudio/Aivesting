@@ -13,8 +13,8 @@ type Swot = { resumo: string; forcas: Item[]; fraquezas: Item[]; oportunidades: 
 type SwotResponse = { swot: Swot; generated_at: string };
 
 const QUADRANTS: { key: keyof Omit<Swot, "resumo">; title: string; hint: string; icon: ReactNode; tone: string }[] = [
-  { key: "forcas", title: "Forças", hint: "do próprio ativo", icon: <ThumbsUp size={16} />, tone: "bg-positive/10 text-positive" },
-  { key: "fraquezas", title: "Fraquezas", hint: "do próprio ativo", icon: <ThumbsDown size={16} />, tone: "bg-negative/10 text-negative" },
+  { key: "forcas", title: "Forças", hint: "do próprio investimento", icon: <ThumbsUp size={16} />, tone: "bg-positive/10 text-positive" },
+  { key: "fraquezas", title: "Fraquezas", hint: "do próprio investimento", icon: <ThumbsDown size={16} />, tone: "bg-negative/10 text-negative" },
   { key: "oportunidades", title: "Oportunidades", hint: "do cenário", icon: <TrendingUp size={16} />, tone: "bg-chart-5/10 text-chart-5" },
   { key: "ameacas", title: "Ameaças", hint: "do cenário", icon: <ShieldAlert size={16} />, tone: "bg-accent-bg text-accent-text" },
 ];

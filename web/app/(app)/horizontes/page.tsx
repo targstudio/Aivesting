@@ -16,28 +16,28 @@ function ModelNote({ data }: { data: HorizonRanking }) {
   if (!data.enough_history) {
     return (
       <p>
-        <strong>Histórico insuficiente para {plural(data.years)}.</strong> A maioria d{classLabel} do app negocia há
-        poucos anos, então ainda não há janelas de {plural(data.years)} suficientes para estimar uma probabilidade. A ordem
-        segue o retorno ajustado ao risco dos últimos 10 anos.
+        <strong>Ainda não há história suficiente para {plural(data.years)}.</strong> A maioria d{classLabel} do app existe na bolsa há
+        poucos anos, então não dá para calcular a chance com segurança. A ordem segue quem rendeu mais nos últimos 10 anos
+        sem sustos grandes demais.
       </p>
     );
   }
   if (data.model_used) {
     return (
       <p>
-        <strong>Modelo validado fora da amostra.</strong> Testado ano a ano só com dados que existiam na época: entre os
-        30% de maior probabilidade, {formatProbability(v.hit_rate_top ?? 0)} superaram o {data.benchmark} em{" "}
-        {plural(data.years)}; entre os 30% de menor, {formatProbability(v.hit_rate_bottom ?? 0)}.
+        <strong>Conta testada no passado.</strong> Simulamos ano a ano como se estivéssemos naquela época: entre os
+        30% com mais chance, {formatProbability(v.hit_rate_top ?? 0)} renderam mais que o {data.benchmark} em{" "}
+        {plural(data.years)}; entre os 30% com menos chance, {formatProbability(v.hit_rate_bottom ?? 0)}.
       </p>
     );
   }
   return (
     <p>
-      <strong>Nesse horizonte, nenhum fator previu melhor que a média histórica</strong>
-      {v.oos_samples ? "" : " (ainda não há janelas suficientes para testar"}
-      {v.oos_samples ? "." : ")."} A probabilidade exibida é a frequência com que {classLabel} superaram o{" "}
-      {data.benchmark} em janelas de {plural(data.years)} ({formatProbability(data.beat_benchmark.base_rate)}) e a ordem
-      segue o retorno ajustado ao risco dos últimos 10 anos (índice de Sharpe contra o CDI).
+      <strong>Para esse prazo, nenhuma conta previu melhor do que olhar a média do passado</strong>
+      {v.oos_samples ? "" : " (ainda não há história suficiente para testar"}
+      {v.oos_samples ? "." : ")."} A chance mostrada é quantas vezes {classLabel} renderam mais que o{" "}
+      {data.benchmark} em períodos de {plural(data.years)} ({formatProbability(data.beat_benchmark.base_rate)}), e a ordem
+      segue quem rendeu mais nos últimos 10 anos sem sustos grandes demais.
     </p>
   );
 }
@@ -55,14 +55,14 @@ export default async function HorizonsPage({
 
   return (
     <>
-      <Breadcrumbs items={[{ label: "Horizontes" }]} />
+      <Breadcrumbs items={[{ label: "Longo prazo" }]} />
       <PageTitle
-        title="Ranking por horizonte"
-        subtitle="Chance estimada de cada ativo superar o índice e o CDI em 1, 3, 5 e 10 anos, a partir do histórico desde 2000 (crise de 2008, recessão de 2015-16, pandemia, alta de juros)."
+        title="Melhores para o longo prazo"
+        subtitle="Chance de cada investimento render mais que a média da bolsa e que a renda fixa (CDI) em 1, 3, 5 e 10 anos, olhando o que aconteceu desde 2000, inclusive nas crises."
       />
       <InfoBanner>
         {data?.disclaimer ??
-          "Probabilidades estimadas por modelo estatístico. Não é recomendação de investimento. Rentabilidade passada não garante rentabilidade futura."}
+          "As chances vêm de estatística sobre o passado. O que rendeu antes não garante o futuro. Não é recomendação de investimento."}
       </InfoBanner>
 
       <div className="mb-6 flex flex-wrap items-center gap-3">
@@ -78,13 +78,13 @@ export default async function HorizonsPage({
       </div>
 
       {!data ? (
-        <EmptyState>O modelo de horizontes ainda não foi calibrado. Verifique se a API está rodando.</EmptyState>
+        <EmptyState>Os dados de longo prazo ainda estão sendo preparados. Tente de novo em alguns minutos.</EmptyState>
       ) : (
         <>
           <AiInsight
             context={`horizontes:${assetClass}:${years}`}
-            title={`O horizonte de ${plural(years)} explicado pela IA`}
-            askPrompt={`Explique de forma simples o ranking de ${plural(years)} de ${assetClass === "fiis" ? "FIIs" : "ações"}`}
+            title={`O prazo de ${plural(years)} explicado pela IA`}
+            askPrompt={`Explique de forma simples a lista de ${plural(years)} de ${assetClass === "fiis" ? "FIIs" : "ações"}`}
           />
           <div className="mb-6 grid gap-6 lg:grid-cols-2">
             <ScenarioCard scenario={data.scenario} />
@@ -93,14 +93,14 @@ export default async function HorizonsPage({
               <div className="flex flex-col gap-3 text-sm text-muted">
                 <ModelNote data={data} />
                 <p>
-                  &quot;Retorno típico&quot; é a mediana do retorno anual do ativo em todas as janelas de{" "}
-                  {plural(data.years)} desde que ele existe, com a faixa entre os 10% piores e os 10% melhores casos.
+                  &quot;Quanto costuma render&quot; é o rendimento por ano mais comum em todos os períodos de{" "}
+                  {plural(data.years)} desde que ele existe, com a faixa entre os casos ruins e os bons.
                   Dados até {data.data_through}.
                   {data.benchmark_is_proxy && ` Sem o índice oficial na fonte, a referência é a ${data.benchmark}.`}
                 </p>
                 <p>
-                  O universo é formado pelos ativos grandes de hoje. Empresas e fundos que encolheram ou sumiram ficam de
-                  fora, então as frequências históricas tendem a ser otimistas.
+                  A lista só tem empresas e fundos grandes de hoje. Os que encolheram ou sumiram ficam de
+                  fora, então os números do passado tendem a parecer melhores do que foram.
                 </p>
               </div>
             </Card>
@@ -123,17 +123,17 @@ export default async function HorizonsPage({
                 </span>
                 <span className="text-right md:text-left">
                   <span className="block text-xs text-muted">
-                    Prob. vs <span className="md:hidden">índice</span>
+                    Chance de bater a <span className="md:hidden">bolsa</span>
                     <span className="hidden md:inline">{data.benchmark}</span>
                   </span>
                   <span className="tabular block font-bold text-accent-text">{formatProbability(a.prob_beat_benchmark)}</span>
                 </span>
                 <span className="hidden md:block">
-                  <span className="block text-xs text-muted">Prob. vs CDI</span>
+                  <span className="block text-xs text-muted">Chance de bater o CDI</span>
                   <span className="tabular block font-semibold">{formatProbability(a.prob_beat_cdi)}</span>
                 </span>
                 <span className="hidden md:block">
-                  <span className="block text-xs text-muted">Retorno típico ao ano</span>
+                  <span className="block text-xs text-muted">Quanto costuma render por ano</span>
                   {a.history ? (
                     <span className="tabular block">
                       {formatRatio(a.history.median)}{" "}
@@ -146,7 +146,7 @@ export default async function HorizonsPage({
                   )}
                 </span>
                 <span className="hidden md:block">
-                  <span className="block text-xs text-muted">Sharpe 10a</span>
+                  <span className="block text-xs text-muted">Retorno por risco (10 anos)</span>
                   <span className="tabular block">{a.sharpe_10y?.toLocaleString("pt-BR") ?? "–"}</span>
                 </span>
               </Link>

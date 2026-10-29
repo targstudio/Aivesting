@@ -24,8 +24,8 @@ type Metric = {
 };
 
 const METRICS: Metric[] = [
-  { label: "Retorno ao ano", term: "retorno_ano", hint: "média anual dos últimos 10 anos, com proventos", get: (r) => r.cagr, format: (v) => formatRatio(v), better: "high" },
-  { label: "R$ 1.000 viraram", hint: "no período, com proventos reinvestidos", get: (r) => 1000 * (1 + r.total_return), format: (v) => formatBRL(Math.round(v)).replace(/,00$/, ""), better: "high" },
+  { label: "Quanto rendeu por ano", term: "retorno_ano", hint: "média dos últimos 10 anos, com dividendos", get: (r) => r.cagr, format: (v) => formatRatio(v), better: "high" },
+  { label: "R$ 1.000 viraram", hint: "no período, com dividendos reinvestidos", get: (r) => 1000 * (1 + r.total_return), format: (v) => formatBRL(Math.round(v)).replace(/,00$/, ""), better: "high" },
   { label: "Volatilidade", term: "volatilidade", hint: "quanto o preço sobe e desce; menor é mais estável", get: (r) => r.volatility, format: (v) => formatRatio(v, false), better: "low" },
   { label: "Pior queda", term: "pior_queda", hint: "do topo ao fundo no período", get: (r) => r.max_drawdown, format: (v) => formatRatio(v), better: "high" },
   { label: "Pior 12 meses", hint: "o pior ano corrido", get: (r) => r.worst_12m, format: (v) => formatRatio(v), better: "high" },
@@ -70,9 +70,9 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <Breadcrumbs items={[{ label: "Comparar ativos" }]} />
+      <Breadcrumbs items={[{ label: "Comparar" }]} />
       <PageTitle
-        title="Comparar ativos"
+        title="Comparar investimentos"
         subtitle="Coloque até 4 ações ou FIIs lado a lado: retorno, risco, comportamento nas crises e chances por horizonte, com 10 anos de histórico."
       />
       <Picker selected={selected} options={options} />
@@ -81,7 +81,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
       )}
 
       {items.length < 2 ? (
-        <EmptyState>Escolha pelo menos dois ativos para comparar.</EmptyState>
+        <EmptyState>Escolha pelo menos dois investimentos para comparar.</EmptyState>
       ) : (
         <div className="flex flex-col gap-6">
           <Card>
@@ -105,7 +105,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
           <CompareTable
             title="Risco e retorno"
-            subtitle={`Últimos 10 anos (ou desde o início do ativo), até ${formatMonth(items[0].data_through)}. Em amarelo, o melhor de cada linha.`}
+            subtitle={`Últimos 10 anos (ou desde que ele existe), até ${formatMonth(items[0].data_through)}. Em amarelo, o melhor de cada linha.`}
             items={items}
             rows={METRICS.map((m) => {
               const values = items.map((h) => (h.risk_10y ? m.get(h.risk_10y) : null));
@@ -121,7 +121,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
           <CompareTable
             title="Chance de superar o índice"
-            subtitle="Probabilidade estimada de cada ativo superar o Ibovespa (ações) ou o IFIX (FIIs) em cada prazo."
+            subtitle="Chance de cada um render mais que a média da bolsa (Ibovespa para ações, IFIX para fundos imobiliários) em cada prazo."
             items={items}
             rows={HORIZON_YEARS.map((y) => {
               const values = items.map((h) => h.horizons[y]?.prob_beat_benchmark ?? null);
@@ -135,7 +135,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
           <CompareTable
             title="Nas crises"
-            subtitle="Queda do pico ao fundo em cada crise. Traço quando o ativo ainda não negociava."
+            subtitle="Quanto caiu em cada crise, do ponto mais alto ao mais baixo. Traço quando ainda não existia na bolsa."
             items={items}
             rows={items[0].crisis_list.map((c) => {
               const values = items.map((h) => h.crises.find((x) => x.key === c.key)?.return ?? null);
@@ -150,7 +150,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
           <CompareTable
             title="Ano a ano"
-            subtitle="Retorno em cada ano-calendário, com proventos."
+            subtitle="Quanto rendeu em cada ano, com dividendos."
             items={items}
             rows={[...new Set(items.flatMap((h) => h.annual.map((a) => a.year)))]
               .sort((a, b) => b - a)

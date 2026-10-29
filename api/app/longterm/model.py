@@ -20,11 +20,11 @@ from .stats import monthly_returns
 HORIZONS = {1: 12, 3: 36, 5: 60, 10: 120}
 
 FEATURE_LABELS = {
-    "momentum_12m": "Momentum de 12 meses (sem o último mês)",
-    "volatility_3y": "Volatilidade de 3 anos",
-    "drawdown_3y": "Distância do topo de 3 anos",
-    "reversal_5y": "Retorno de 5 anos (reversão de longo prazo)",
-    "scenario_fit": "Desempenho histórico em cenários parecidos com o atual",
+    "momentum_12m": "Quanto subiu no último ano",
+    "volatility_3y": "Quanto o preço sobe e desce (últimos 3 anos)",
+    "drawdown_3y": "Quanto está abaixo do maior preço dos últimos 3 anos",
+    "reversal_5y": "Quanto rendeu nos últimos 5 anos",
+    "scenario_fit": "Como foi em momentos parecidos com o de hoje",
 }
 FEATURES = list(FEATURE_LABELS)
 

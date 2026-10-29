@@ -241,7 +241,7 @@ export function Settings() {
             <Status
               ok
               label="Ranking"
-              detail={`Recalculado a cada ${health.ranking_interval_minutes} min no pregão · pregão ${health.market_open ? "aberto" : "fechado"}`}
+              detail={`Recalculado a cada ${health.ranking_interval_minutes} min com a bolsa aberta · bolsa ${health.market_open ? "aberta" : "fechada"}`}
             />
             <Status
               ok={health.advisor}

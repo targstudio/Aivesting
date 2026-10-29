@@ -16,7 +16,7 @@ type Reading = { text: string; generated_at: string; cached: boolean };
  */
 export function AiInsight({
   context,
-  title = "Leitura da IA",
+  title = "Resumo da IA",
   askPrompt,
 }: {
   context: string;
@@ -47,7 +47,7 @@ export function AiInsight({
       setState("done");
     } catch (e) {
       setAsleep(e instanceof ApiNetworkError);
-      setError(e instanceof Error ? e.message : "Não foi possível gerar a leitura.");
+      setError(e instanceof Error ? e.message : "Não foi possível gerar o resumo.");
       setState("error");
     }
   }, [context, prefs.level, storeKey]);
@@ -95,7 +95,7 @@ export function AiInsight({
           {state === "done" && (
             <button
               onClick={() => run(true)}
-              title="Pede uma leitura nova à IA (gasta tokens)"
+              title="Pede um resumo novo à IA"
               className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 font-semibold text-text hover:bg-track"
             >
               <RefreshCw size={13} /> Atualizar
@@ -109,7 +109,7 @@ export function AiInsight({
           onClick={() => run()}
           className="inline-flex items-center gap-2 rounded-full bg-accent-bg px-5 py-2.5 text-sm font-semibold text-accent-text"
         >
-          <Sparkles size={16} /> Gerar leitura da IA
+          <Sparkles size={16} /> Pedir resumo da IA
         </button>
       )}
       {state === "loading" && (
@@ -122,7 +122,7 @@ export function AiInsight({
       {state === "done" && reading && <Markdown text={reading.text} className="text-sm leading-relaxed text-text/90 md:text-[15px]" />}
       {state === "error" && (
         <p className="text-sm text-muted">
-          {asleep ? "A API está acordando; a leitura aparece sozinha quando o indicador do topo ficar verde." : error}{" "}
+          {asleep ? "O app está acordando; o resumo aparece sozinho em até 1 minuto." : error}{" "}
           {!asleep && (
             <button onClick={() => run()} className="font-semibold underline">
               Tentar de novo
@@ -132,7 +132,7 @@ export function AiInsight({
       )}
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-        <span className="text-xs text-muted">Gerada pela Claude a partir dos dados do app. Não é recomendação.</span>
+        <span className="text-xs text-muted">Feito pela IA a partir dos dados do app. Não é recomendação.</span>
         <button
           onClick={() => askAI({ prompt: askPrompt })}
           className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold hover:bg-track"
