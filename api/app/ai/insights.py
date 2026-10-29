@@ -44,6 +44,10 @@ TASKS = {
     "horizontes": "Explique em até 2 parágrafos curtos o ranking deste horizonte: se o modelo foi validado ou se a "
     "ordem segue o histórico, o que os primeiros colocados têm em comum e o que o cenário atual sugere sobre o "
     "passado em situações parecidas. Lembre que rentabilidade passada não garante futura.",
+    "curtoprazo": "Explique em até 2 parágrafos curtos a varredura de curto prazo desta classe: o que os papéis com "
+    "desconto e ganhando força têm em comum (P/VP, P/L, dividendos, como o preço vem andando) e quais alertas se "
+    "repetem. Deixe claro que barato pode ficar mais barato, que curto prazo tem risco alto e que a lista é ponto de "
+    "partida para estudar, não indicação de compra.",
     "alertas": "Explique em até 2 parágrafos curtos por que este alerta disparou, com os dados do ativo (preço, "
     "variação, posição no ranking, fatores do modelo) e o contexto do mercado e do macro. Não sugira o que fazer.",
 }
@@ -89,6 +93,7 @@ class Insights:
         self.longterm = longterm
         self.market = market
         self._cache: dict[tuple, tuple[float, dict]] = {}
+        self.trader = None  # TraderService, ligado pela API
 
     # ---- Dados de cada contexto ----
 
@@ -131,6 +136,20 @@ class Insights:
                 "frequencia_historica_superar_indice": result["beat_benchmark"]["base_rate"],
                 "dados_ate": result["data_through"], "cenario_atual": result["scenario"],
                 "ativos": result["assets"][:10],
+            }
+            return kind, data
+        if kind == "curtoprazo" and len(parts) == 2 and parts[1] in CLASSES and self.trader:
+            view = self.trader.view(parts[1], "oportunidades", limit=8)
+            cheapest = self.trader.view(parts[1], "pvp", limit=5)
+            if view is None:
+                return None
+            keep = ("ticker", "name", "segment", "price", "p_vp", "p_l", "dy", "roe", "vacancy", "momentum",
+                    "scores", "signal_label", "risk_label", "alerts")
+            slim = lambda items: [{k: a.get(k) for k in keep} for a in items]  # noqa: E731
+            data = {
+                "papeis_na_varredura": view["screened"], "sinais": view["signals"],
+                "barato_e_ganhando_forca": slim(view["assets"]), "menor_p_vp": slim(cheapest["assets"]),
+                "dados_de": view["fundamentals_at"],
             }
             return kind, data
         return None

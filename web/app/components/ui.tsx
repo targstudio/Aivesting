@@ -69,7 +69,7 @@ export function Segmented({ options }: { options: { label: string; href: string;
         <Link
           key={o.href}
           href={o.href}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2 font-semibold transition-colors ${
+          className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 font-semibold transition-colors ${
             o.active ? "bg-surface-2 text-text ring-1 ring-border" : "text-muted hover:text-text"
           }`}
         >

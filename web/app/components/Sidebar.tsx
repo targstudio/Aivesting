@@ -22,6 +22,7 @@ export const MARKET: Area = {
     { href: "/ranking", label: "Ações" },
     { href: "/ranking?classe=fiis", label: "Fundos imobiliários" },
     { href: "/renda-fixa", label: "Renda fixa" },
+    { href: "/curto-prazo", label: "Curto prazo" },
     { href: "/horizontes", label: "Longo prazo" },
     { href: "/comparar", label: "Comparar" },
     { href: "/macro", label: "Economia" },
