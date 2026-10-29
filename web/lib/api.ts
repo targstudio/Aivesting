@@ -601,3 +601,23 @@ export type FixedIncomeRates = {
 };
 
 export const getFixedIncomeRates = () => get<FixedIncomeRates>("/renda-fixa/taxas");
+
+// ---- Fundamentos (brapi, plano pago) ----
+
+export type Fundamentals = {
+  ticker: string;
+  price: number | null;
+  price_earnings: number | null;
+  price_to_book: number | null;
+  earnings_per_share: number | null;
+  roe: number | null;
+  net_margin: number | null;
+  ebitda_margin: number | null;
+  debt_to_equity: number | null;
+  revenue_growth: number | null;
+  market_cap: number | null;
+  ev_ebitda: number | null;
+  disclaimer: string;
+};
+
+export const getFundamentals = (ticker: string) => get<Fundamentals>(`/assets/${encodeURIComponent(ticker)}/fundamentos`);

@@ -64,6 +64,26 @@ export const GLOSSARY = {
     term: "Rebalanceamento",
     text: "Trazer a carteira de volta às proporções do plano. Com aportes, basta colocar o dinheiro novo nas classes que ficaram abaixo, sem vender nada nem pagar imposto.",
   },
+  pl: {
+    term: "P/L (preço sobre lucro)",
+    text: "Preço da ação dividido pelo lucro por ação do último ano: quantos anos de lucro atual pagariam o preço. P/L baixo pode indicar ação barata ou um lucro que o mercado espera que caia; compare com empresas do mesmo setor.",
+  },
+  pvp: {
+    term: "P/VP (preço sobre valor patrimonial)",
+    text: "Preço dividido pelo patrimônio contábil por ação ou cota. Abaixo de 1, o mercado paga menos do que o patrimônio no balanço. Em FIIs é muito usado: P/VP perto de 1 quer dizer que a cota está perto do valor dos imóveis.",
+  },
+  roe: {
+    term: "ROE (retorno sobre o patrimônio)",
+    text: "Lucro do ano dividido pelo patrimônio da empresa: quanto ela ganha com o dinheiro dos sócios. ROE de 20% é considerado alto; bancos e empresas maduras costumam ficar entre 10% e 25%.",
+  },
+  margem_liquida: {
+    term: "Margem líquida",
+    text: "Quanto sobra de lucro de cada R$ 100 vendidos, depois de custos, juros e impostos. Varia muito por setor: varejo tem margens baixas, bancos e energia margens maiores.",
+  },
+  divida_patrimonio: {
+    term: "Dívida sobre patrimônio",
+    text: "Dívida total dividida pelo patrimônio, em %. 100% quer dizer dívida do tamanho do patrimônio. Quanto maior, mais a empresa sofre com juros altos.",
+  },
 } as const;
 
 export type GlossaryKey = keyof typeof GLOSSARY;
