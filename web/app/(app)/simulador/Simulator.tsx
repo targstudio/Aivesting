@@ -81,7 +81,7 @@ export function Simulator() {
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[380px_1fr]">
+    <div className="grid grid-cols-1 gap-6 xl:grid-cols-[380px_1fr]">
       <Card className="h-fit">
         <form onSubmit={submit} className="flex flex-col gap-5">
           <MoneyField label="Sua meta (opcional)" value={goal} onChange={setGoal} />

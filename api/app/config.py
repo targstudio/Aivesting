@@ -2,6 +2,8 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from .fixed_income import TESOURO_CSV
+
 # Universo inicial: ações líquidas e FIIs grandes. Cada classe é ranqueada contra seus pares.
 DEFAULT_STOCKS = [
     "PETR4", "VALE3", "ITUB4", "BBDC4", "BBAS3", "ABEV3", "WEGE3", "B3SA3",
@@ -59,6 +61,8 @@ class Settings(BaseSettings):
 
     # Usa dados sintéticos (sem brapi nem BCB). Útil para desenvolvimento e demonstração.
     demo_mode: bool = False
+    # Arquivo público de preços e taxas do Tesouro Direto (Tesouro Transparente).
+    tesouro_csv_url: str = TESOURO_CSV
 
 
 @lru_cache
