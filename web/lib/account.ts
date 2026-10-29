@@ -3,7 +3,7 @@ import { apiFetch } from "./api";
 // Conta (Google, e-mail e senha ou link no e-mail). O navegador guarda a sessão e espelha no banco as chaves abaixo, para a pessoa ver a mesma
 // carteira, alertas, perfil e preferências em qualquer aparelho.
 
-export const SYNC_KEYS = ["aivesting.carteira", "aivesting.alerts", "aivesting.assessor", "aivesting.prefs", "aivesting.simulador"];
+export const SYNC_KEYS = ["aivesting.carteira", "aivesting.alerts", "aivesting.assessor", "aivesting.prefs", "aivesting.simulador", "aivesting.jornada"];
 const SESSION_KEY = "aivesting.sessao";
 const SYNCED_KEY = "aivesting.conta.sincronizado";
 export const ACCOUNT_EVENT = "aivesting:conta";

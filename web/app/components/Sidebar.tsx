@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, BriefcaseBusiness, Compass, House, WalletCards, type LucideIcon } from "lucide-react";
+import { BookOpen, BriefcaseBusiness, Compass, Flag, WalletCards, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo, Wordmark } from "./Logo";
@@ -13,7 +13,7 @@ type Area = { href: string; label: string; short?: string; icon: LucideIcon; tab
  * de uma área aparecem como abas no topo (AreaTabs). Explorar guarda as listas para quem quer ir além.
  */
 export const AREAS: Area[] = [
-  { href: "/", label: "Início", icon: House },
+  { href: "/", label: "Jornada", icon: Flag },
   {
     href: "/assessor",
     label: "Onde investir",
