@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getDividendYields, getRanking, type AssetClass } from "@/lib/api";
 import { formatTime } from "@/lib/format";
 import { AiInsight } from "@/app/components/AiInsight";
@@ -41,15 +40,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       </div>
 
       {snapshot && snapshot.assets.length ? (
-        <>
-          <RankingList assets={snapshot.assets} benchmark={snapshot.benchmark} yields={yields} />
-          <p className="mt-4 text-center text-sm text-muted">
-            Não achou o ativo?{" "}
-            <Link href={assetClass === "fiis" ? "/b3?tipo=fii" : "/b3"} className="font-semibold text-accent-text underline">
-              Veja todos os ativos da B3
-            </Link>
-          </p>
-        </>
+        <RankingList assets={snapshot.assets} benchmark={snapshot.benchmark} yields={yields} />
       ) : (
         <EmptyState>Ranking ainda não calculado. Verifique se a API está rodando.</EmptyState>
       )}

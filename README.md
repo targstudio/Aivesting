@@ -71,9 +71,9 @@ pregão, e usa IA para explicar cada posição com base em dados micro e macroec
     médio, posição no ranking e histórico de 10 anos de cada ativo, e como a carteira de hoje teria ido ano a ano e nas crises.
     Com o perfil do Assessor preenchido, compara a carteira com o plano e mostra quanto falta ou sobra em cada classe; o chat
     do assessor recebe a carteira. A leitura da IA (`POST /carteira/explicar`) fica guardada até a carteira mudar.
-14. **Todas da B3** (`api/app/catalog.py`, `GET /b3/ativos` e `/b3/ativos/{ticker}`, tela `/b3`): lista completa de
-    ações, FIIs, ETFs, BDRs e units negociados na B3, com busca por código ou nome, filtro por tipo e fechamento, variação
-    e volume do último pregão. A fonte é o arquivo público de cotações históricas da B3 (COTAHIST diário, gratuito): uma
+14. **Lista da B3** (`api/app/catalog.py`, `GET /b3/ativos` e `/b3/ativos/{ticker}`, sem item no menu): lista completa
+    de ações, FIIs, ETFs, BDRs e units negociados na B3, com busca por código ou nome, filtro por tipo e fechamento,
+    variação e volume do último pregão. A tela `/ativo/{ticker}` abre qualquer ativo da lista. A fonte é o arquivo público de cotações históricas da B3 (COTAHIST diário, gratuito): uma
     cópia fica em `api/data/b3_listados.json` (workflow `b3-list.yml`, toda segunda e sob demanda) e a API confere a cada 6
     horas se saiu um pregão novo. Ao abrir um ativo fora do ranking, a cotação é buscada no Yahoo na hora (cache de 5
     minutos, no máximo `ON_DEMAND_QUOTES_PER_MINUTE` chamadas por minuto; acima disso mostra o fechamento da B3), sem mexer
