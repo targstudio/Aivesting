@@ -182,14 +182,17 @@ export async function pullData(): Promise<boolean> {
   } catch {}
   if (synced && new Date(synced) >= new Date(r.updated_at)) return false;
   const local = snapshot();
-  const changed = SYNC_KEYS.some((k) => (r.data[k] ?? null) !== (local[k] ?? null));
+  // Primeira sincronização deste aparelho: o que só existe aqui (ex.: a carteira) não é apagado; sobe para a conta.
+  const keepLocal = !synced ? SYNC_KEYS.filter((k) => r.data[k] == null && local[k] != null) : [];
+  const changed = SYNC_KEYS.some((k) => !keepLocal.includes(k) && (r.data[k] ?? null) !== (local[k] ?? null));
   try {
     for (const k of SYNC_KEYS) {
       if (r.data[k] != null) localStorage.setItem(k, r.data[k]);
-      else localStorage.removeItem(k);
+      else if (!keepLocal.includes(k)) localStorage.removeItem(k);
     }
     localStorage.setItem(SYNCED_KEY, r.updated_at);
   } catch {}
+  if (keepLocal.length) await pushData().catch(() => null);
   return changed;
 }
 

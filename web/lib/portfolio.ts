@@ -65,6 +65,26 @@ export async function syncPortfolio(local: StoredPortfolio): Promise<StoredPortf
   return local;
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Recupera a carteira gravada no banco pelo id (link /carteira?id=...), por exemplo em outro navegador ou depois de
+ * limpar os dados do site. Devolve null se o id não existe.
+ */
+export async function restorePortfolio(id: string): Promise<StoredPortfolio | null> {
+  if (!UUID.test(id)) return null;
+  try {
+    const remote = await apiFetch<{ holdings: Holding[]; updated_at: string }>(`/carteira/${id}`);
+    if (!Array.isArray(remote.holdings) || !remote.holdings.length) return null;
+    const stored: StoredPortfolio = { id, holdings: remote.holdings, updatedAt: remote.updated_at };
+    localStorage.setItem(KEY, JSON.stringify(stored));
+    window.dispatchEvent(new Event(PORTFOLIO_EVENT));
+    return stored;
+  } catch {
+    return null;
+  }
+}
+
 export async function deletePortfolio(p: StoredPortfolio | null) {
   try {
     localStorage.removeItem(KEY);

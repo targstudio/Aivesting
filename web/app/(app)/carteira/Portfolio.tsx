@@ -26,6 +26,7 @@ import {
   mergeHoldings,
   savePortfolio,
   saveReading,
+  restorePortfolio,
   syncPortfolio,
   type StoredPortfolio,
 } from "@/lib/portfolio";
@@ -74,6 +75,23 @@ export function Portfolio() {
 
   useEffect(() => {
     const local = loadPortfolio();
+    const params = new URLSearchParams(window.location.search);
+    const restoreId = params.get("id");
+    if (restoreId && restoreId !== local?.id) {
+      // Link de recuperação: traz do banco a carteira salva com este id.
+      history.replaceState(null, "", window.location.pathname);
+      restorePortfolio(restoreId).then((p) => {
+        if (p) {
+          setStored(p);
+          setNotice("Carteira recuperada.");
+        } else {
+          setStored(local);
+          setError("Não encontramos uma carteira salva com este link.");
+        }
+        setLoaded(true);
+      });
+      return;
+    }
     setStored(local);
     setLoaded(true);
     if (local) syncPortfolio(local).then((p) => p !== local && setStored(p));
