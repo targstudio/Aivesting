@@ -10,7 +10,7 @@ import { ExplainButton } from "@/app/components/ExplainButton";
 import { SwotAnalysis } from "@/app/components/SwotAnalysis";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAsset, getAssetDividends, getAssetHistory, getB3Quote, getFundamentals, type B3Quote } from "@/lib/api";
-import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatUpdated } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
@@ -66,7 +66,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
             <Stat
               value={formatProbability(asset.probability_outperform)}
               label={<Term k="probabilidade">Chance de render mais que a bolsa</Term>}
-              sub={`atualizado às ${formatTime(detail.computed_at)}`}
+              sub={`última atualização: ${formatUpdated(asset.as_of ?? detail.prices_as_of ?? detail.computed_at)}`}
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ function QuoteSection({ quote }: { quote: B3Quote }) {
   const spark = quote.spark ?? [];
   const asOf = quote.as_of
     ? quote.live
-      ? `às ${formatTime(quote.as_of)}`
+      ? `última atualização: ${formatUpdated(quote.as_of)}`
       : `fechamento de ${new Date(`${quote.as_of}T12:00:00`).toLocaleDateString("pt-BR")}`
     : undefined;
   return (

@@ -13,7 +13,7 @@ import { Card, CardHeader } from "./ui";
 
 type State = ReturnType<typeof journeyState>;
 
-export type Today = { lines: { label: string; value: string; note?: string }[] };
+export type Today = { lines: { label: string; value: string; note?: string }[]; updated?: string };
 
 function useJourney() {
   const [state, setState] = useState<State | null>(null);
@@ -122,7 +122,7 @@ export function Journey({ today }: { today: Today }) {
         <div className="flex flex-col gap-6">
           <DividendsSnowball holdings={state.holdings} />
           <Card>
-            <CardHeader title="Como está hoje" />
+            <CardHeader title="Como está hoje" subtitle={today.updated && `Última atualização: ${today.updated}`} />
             <ul className="flex flex-col gap-3 text-sm">
               {today.lines.map((l) => (
                 <li key={l.label} className="flex items-baseline justify-between gap-3">

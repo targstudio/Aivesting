@@ -1,6 +1,6 @@
 import { Journey, type Today } from "@/app/components/Journey";
 import { getMacro, getMarket } from "@/lib/api";
-import { formatBRL, formatNumber, formatPercent } from "@/lib/format";
+import { formatBRL, formatNumber, formatPercent, formatUpdated } from "@/lib/format";
 
 // Os números de "Como está hoje" mudam durante o dia: renderiza a cada acesso.
 export const dynamic = "force-dynamic";
@@ -20,6 +20,7 @@ export default async function Home() {
       ...(ibov ? [{ label: "Bolsa hoje", value: formatPercent(ibov.change_percent), note: "Ibovespa" }] : []),
       ...(usd ? [{ label: "Dólar", value: formatBRL(usd.value), note: `${formatPercent(usd.change_percent)} hoje` }] : []),
     ],
+    updated: market?.precos_de || market?.atualizado_em ? formatUpdated((market.precos_de ?? market.atualizado_em)!) : undefined,
   };
   if (!today.lines.length) today.lines.push({ label: "Dados do dia", value: "carregando", note: "tente de novo em 1 minuto" });
 

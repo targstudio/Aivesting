@@ -23,6 +23,7 @@ export type RankedAsset = {
   logo_url: string | null;
   /** Últimos fechamentos (até 30 pregões). */
   spark: number[];
+  as_of?: string | null;
 };
 
 export type RankingSnapshot = {
@@ -30,6 +31,8 @@ export type RankingSnapshot = {
   benchmark: string;
   model_version: string;
   computed_at: string;
+  /** Horário da cotação mais recente (o que o app mostra como "última atualização"). */
+  prices_as_of?: string | null;
   data_realtime: boolean;
   assets: RankedAsset[];
   disclaimer: string;
@@ -49,6 +52,7 @@ export type AssetDetail = {
   benchmark: string;
   total: number;
   computed_at: string;
+  prices_as_of?: string | null;
   data_realtime: boolean;
   model_version: string;
   disclaimer: string;
@@ -200,6 +204,7 @@ export type MarketItem = {
   value: number;
   change_percent: number;
   spark: number[];
+  as_of?: string | null;
 };
 
 export type Mover = Pick<RankedAsset, "ticker" | "name" | "asset_class" | "price" | "change_percent" | "rank" | "logo_url" | "spark">;
@@ -207,6 +212,7 @@ export type Mover = Pick<RankedAsset, "ticker" | "name" | "asset_class" | "price
 export type MarketOverview = {
   indices: MarketItem[];
   atualizado_em: string | null;
+  precos_de?: string | null;
   altas: Mover[];
   baixas: Mover[];
   amplitude: { altas: number; baixas: number; estaveis: number };

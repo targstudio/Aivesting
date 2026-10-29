@@ -281,6 +281,11 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "portfolio_storage": portfolios is not None,
             "b3_assets": len(catalog.assets),
             "b3_trade_date": catalog.trade_date,
+            # Para conferir se os dados estão chegando: quando o ranking rodou e de quando são os preços.
+            "ranking": {
+                cls: {"computed_at": snap.computed_at, "prices_as_of": snap.prices_as_of, "assets": len(snap.assets)}
+                for cls, snap in ranking.snapshots.items()
+            },
         }
 
     # ---- Modo assessor ----
@@ -795,6 +800,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "benchmark": snapshot.benchmark,
             "total": len(snapshot.assets),
             "computed_at": snapshot.computed_at,
+            "prices_as_of": snapshot.prices_as_of,
             "data_realtime": snapshot.data_realtime,
             "model_version": snapshot.model_version,
             "disclaimer": DISCLAIMER,

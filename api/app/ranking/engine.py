@@ -53,6 +53,8 @@ class RankedAsset:
     logo_url: str | None = None
     # Últimos fechamentos (até 30 pregões), para o minigráfico nas listas.
     spark: list[float] = field(default_factory=list)
+    # Momento da última cotação segundo o provedor (ISO, UTC). Com o Yahoo, uns 15 minutos de atraso.
+    as_of: str | None = None
 
 
 @dataclass
@@ -63,6 +65,8 @@ class RankingSnapshot:
     computed_at: str
     data_realtime: bool
     assets: list[RankedAsset]
+    # Cotação mais recente entre os ativos: é a "data dos preços" mostrada no app (computed_at é só o recálculo).
+    prices_as_of: str | None = None
 
 
 def _zscores(values: list[float]) -> list[float]:
@@ -117,6 +121,21 @@ def rank_assets(
                 top_factors=contributions[:3],
                 logo_url=quote.logo_url,
                 spark=[round(b.close, 2) for b in quote.history[-SPARK_DAYS:]],
+                as_of=quote.as_of,
             )
         )
-    return RankingSnapshot(asset_class, benchmark, MODEL_VERSION, computed_at, data_realtime, assets)
+    prices_as_of = latest_as_of(a.as_of for a in assets)
+    return RankingSnapshot(asset_class, benchmark, MODEL_VERSION, computed_at, data_realtime, assets, prices_as_of)
+
+
+def latest_as_of(values) -> str | None:
+    """O horário mais recente de uma lista de ISO (com fuso), ignorando os vazios."""
+    parsed = []
+    for v in values:
+        try:
+            dt = datetime.fromisoformat(v) if v else None
+        except (TypeError, ValueError):
+            continue
+        if dt:
+            parsed.append(dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc))
+    return max(parsed).isoformat() if parsed else None
