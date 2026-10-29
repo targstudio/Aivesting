@@ -84,6 +84,18 @@ export const GLOSSARY = {
     term: "Dívida sobre patrimônio",
     text: "Dívida total dividida pelo patrimônio, em %. 100% quer dizer dívida do tamanho do patrimônio. Quanto maior, mais a empresa sofre com juros altos.",
   },
+  vacancia: {
+    term: "Vacância",
+    text: "Parte dos imóveis de um fundo imobiliário que está vazia, sem pagar aluguel. 5% é pouco; acima de 15% a renda do fundo costuma sofrer.",
+  },
+  liquidez: {
+    term: "Liquidez (negociado por dia)",
+    text: "Quanto dinheiro troca de mãos por dia naquele papel, em média. Muita liquidez quer dizer que é fácil comprar e vender rápido sem mexer no preço; pouca liquidez pode deixar você preso na hora de vender.",
+  },
+  embalo: {
+    term: "Embalo do preço",
+    text: "Como o preço vem andando nas últimas semanas: se subiu no mês, se está acima da média dos últimos 20 pregões e se mais gente está negociando. Mostra o que já aconteceu, não garante que continue.",
+  },
 } as const;
 
 export type GlossaryKey = keyof typeof GLOSSARY;

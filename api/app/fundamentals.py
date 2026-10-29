@@ -1,7 +1,8 @@
-"""Fundamentos (P/L, P/VP, ROE, margens, dívida) pela brapi.
+"""Fundamentos (P/L, P/VP, ROE, margens, dívida) pela brapi ou, sem ela, pela varredura gratuita do curto prazo.
 
-Os módulos de balanço da brapi (`defaultKeyStatistics`, `financialData`) exigem um plano pago: sem BRAPI_TOKEN a
-função fica desligada e a tela do ativo esconde o card. Vacância de FIIs não vem dessa fonte.
+Os módulos de balanço da brapi (`defaultKeyStatistics`, `financialData`) exigem um plano pago. Sem BRAPI_TOKEN, os
+números vêm das tabelas do Fundamentus que a tela Curto prazo já baixa (ver trader.py), que trazem também a vacância
+dos FIIs.
 """
 
 import asyncio
@@ -11,7 +12,7 @@ import time
 import httpx
 
 CACHE_SECONDS = 24 * 3600
-DISCLAIMER = "Indicadores do último balanço divulgado, segundo a brapi. Não é recomendação de investimento."
+DISCLAIMER = "Indicadores do último balanço divulgado. Não é recomendação de investimento."
 
 
 def _f(v) -> float | None:
@@ -65,25 +66,50 @@ def demo_fundamentals(ticker: str) -> dict:
     }
 
 
+def from_screener(r: dict) -> dict:
+    """Converte uma linha da varredura do curto prazo (Fundamentus) no formato do card de fundamentos."""
+    debt = r.get("debt_equity")
+    return {
+        "ticker": r["ticker"],
+        "price": r.get("price"),
+        "price_earnings": r.get("p_l"),
+        "price_to_book": r.get("p_vp"),
+        "earnings_per_share": None,
+        "roe": r.get("roe"),
+        "net_margin": r.get("net_margin"),
+        "ebitda_margin": None,
+        "debt_to_equity": round(debt * 100, 1) if debt is not None else None,
+        "revenue_growth": None,
+        "market_cap": r.get("market_cap"),
+        "ev_ebitda": r.get("ev_ebitda"),
+        "dividend_yield": r.get("dy"),
+        "vacancy": r.get("vacancy"),
+        "source": "Fundamentus",
+    }
+
+
 class FundamentalsService:
-    def __init__(self, base_url: str, token: str, demo: bool = False, client: httpx.AsyncClient | None = None):
+    def __init__(self, base_url: str, token: str, demo: bool = False, client: httpx.AsyncClient | None = None,
+                 fallback=None):
         self.base_url = base_url.rstrip("/")
         self.token = token
         self.demo = demo
+        self.fallback = fallback  # ticker -> linha da varredura do curto prazo, ou None
         self.client = client or httpx.AsyncClient(timeout=20)
         self._cache: dict[str, tuple[float, dict | None]] = {}
         self._lock = asyncio.Semaphore(4)
 
     @property
     def enabled(self) -> bool:
-        return self.demo or bool(self.token)
+        return self.demo or bool(self.token) or self.fallback is not None
 
     async def get(self, ticker: str) -> dict | None:
         ticker = ticker.upper()
         if self.demo:
             return demo_fundamentals(ticker)
         if not self.token:
-            return None
+            row = self.fallback(ticker) if self.fallback else None
+            return from_screener(row) if row else None
         hit = self._cache.get(ticker)
         if hit and time.time() - hit[0] < CACHE_SECONDS:
             return hit[1]

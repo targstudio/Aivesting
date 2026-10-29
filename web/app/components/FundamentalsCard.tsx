@@ -32,6 +32,9 @@ export function FundamentalsCard({ f, isFii }: { f: Fundamentals; isFii: boolean
   if (f.net_margin != null) items.push({ term: "margem_liquida", label: "Margem líquida", value: formatRatio(f.net_margin, false) });
   if (f.debt_to_equity != null) items.push({ term: "divida_patrimonio", label: "Dívida sobre patrimônio", value: `${formatNumber(Math.round(f.debt_to_equity))}%` });
   if (f.revenue_growth != null) items.push({ label: "Crescimento da receita", value: formatRatio(f.revenue_growth), hint: "no último ano" });
+  if (f.dividend_yield != null && f.dividend_yield > 0)
+    items.push({ term: "dividend_yield", label: "Dividendos (12 meses)", value: formatRatio(f.dividend_yield, false), hint: "do preço atual" });
+  if (f.vacancy != null && isFii) items.push({ term: "vacancia", label: "Imóveis vazios (vacância)", value: formatRatio(f.vacancy, false) });
   if (f.market_cap != null) items.push({ label: "Valor de mercado", value: bigMoney(f.market_cap) });
   if (!items.length) return null;
 
@@ -48,7 +51,8 @@ export function FundamentalsCard({ f, isFii }: { f: Fundamentals; isFii: boolean
         ))}
       </div>
       <p className="mt-4 text-xs text-muted">
-        {isFii && "Vacância e dados de imóveis dos FIIs ainda não vêm dessa fonte. "}
+        {isFii && f.vacancy == null && "A vacância deste fundo não veio da fonte. "}
+        {f.source && `Fonte: ${f.source}, gratuita e só para testes. `}
         {f.disclaimer}
       </p>
     </Card>

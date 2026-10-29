@@ -51,6 +51,9 @@ from .fixed_income import TesouroService, rates_payload
 from .fundamentals import DISCLAIMER as FUNDAMENTALS_DISCLAIMER
 from .fundamentals import FundamentalsService
 from .simulator import SimulationRequest, Simulator
+from .trader import CLASSES as TRADER_CLASSES
+from .trader import VIEWS as TRADER_VIEWS
+from .trader import TraderService
 from .storage import PortfolioStore, SupabaseStore
 
 class ChatMessage(BaseModel):
@@ -193,20 +196,38 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             except Exception:  # noqa: BLE001
                 log.exception("falha ao atualizar a lista da B3")
             await asyncio.sleep(6 * 3600)
+    # Curto prazo: indicadores de todas as ações e FIIs (Fundamentus, gratuito) e embalo de preço (Yahoo).
+    trader = TraderService(
+        provider=provider if settings.demo_mode or isinstance(provider, YahooProvider) else market.source,
+        demo=settings.demo_mode,
+        names=lambda: {t: a.name for t, a in catalog.assets.items()},
+    )
+
+    async def refresh_trader_forever():
+        """Indicadores a cada 6 horas e preços dos candidatos a cada 30 minutos (o serviço decide o que vence)."""
+        while True:
+            try:
+                await trader.refresh()
+            except Exception:  # noqa: BLE001
+                log.exception("falha ao atualizar o curto prazo")
+            await asyncio.sleep(10 * 60)
     insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market, usage)
+    insights.trader = trader
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        refresher = None
+        refresher = trader_task = None
         if start_scheduler:
             await ranking.recompute(force=True)
             ranking.start()
             if not settings.demo_mode:
                 refresher = asyncio.create_task(refresh_catalog_forever())
+            trader_task = asyncio.create_task(refresh_trader_forever())
         yield
         ranking.stop()
-        if refresher:
-            refresher.cancel()
+        for task in (refresher, trader_task):
+            if task:
+                task.cancel()
 
     app = FastAPI(title="StockTower API", version="0.1.0", lifespan=lifespan)
 
@@ -239,7 +260,10 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         else None
     )
     app.state.accounts = accounts
-    app.state.fundamentals = FundamentalsService(settings.brapi_base_url, settings.brapi_token, demo=settings.demo_mode)
+    app.state.fundamentals = FundamentalsService(
+        settings.brapi_base_url, settings.brapi_token, demo=settings.demo_mode, fallback=trader.fundamentals
+    )
+    app.state.trader = trader
     app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
@@ -282,6 +306,11 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "portfolio_storage": portfolios is not None,
             "b3_assets": len(catalog.assets),
             "b3_trade_date": catalog.trade_date,
+            "short_term": trader.snapshot and {
+                "updated_at": trader.snapshot["updated_at"],
+                "fundamentals_at": trader.snapshot.get("fundamentals_at"),
+                "screened": {c: b["screened"] for c, b in trader.snapshot["classes"].items()},
+            },
             # Para conferir se os dados estão chegando: quando o ranking rodou e de quando são os preços.
             "ranking": {
                 cls: {"computed_at": snap.computed_at, "prices_as_of": snap.prices_as_of, "assets": len(snap.assets)}
@@ -769,13 +798,23 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     @app.get("/assets/{ticker}/fundamentos")
     async def asset_fundamentals(ticker: str):
         if not app.state.fundamentals.enabled:
-            raise HTTPException(503, "Fundamentos desligados: configure BRAPI_TOKEN de um plano pago da brapi.")
+            raise HTTPException(503, "Fundamentos ainda não carregados. Tente de novo em alguns minutos.")
         if not TICKER_RE.match(ticker.upper()):
             raise HTTPException(404, "Ticker inválido.")
         result = await app.state.fundamentals.get(ticker)
         if result is None:
             raise HTTPException(404, f"Sem fundamentos para {ticker.upper()}.")
         return {**result, "disclaimer": FUNDAMENTALS_DISCLAIMER}
+
+    @app.get("/curto-prazo/{classe}")
+    async def short_term(classe: str, visao: str = "oportunidades", busca: str = "", offset: int = 0, limite: int = 30):
+        """Varredura de curto prazo: todas as ações ou FIIs com desconto, qualidade, embalo, risco e alertas."""
+        if classe not in TRADER_CLASSES or visao not in TRADER_VIEWS:
+            raise HTTPException(404, "Lista desconhecida.")
+        result = app.state.trader.view(classe, visao, busca[:40], max(0, offset), max(1, min(100, limite)))
+        if result is None:
+            raise HTTPException(503, "Os dados do curto prazo ainda estão sendo preparados.")
+        return result
 
     @app.get("/proventos")
     async def dividends_many(tickers: str):
