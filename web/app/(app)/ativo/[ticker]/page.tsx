@@ -24,9 +24,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
   const quote = detail ? null : await getB3Quote(ticker);
   if (!detail && !history && !quote) notFound();
   const head = detail?.asset ?? history ?? quote!;
-  const crumb = detail
-    ? { label: "Ranking", href: detail.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" }
-    : { label: "Todas da B3", href: "/b3" };
+  const crumb = { label: "Ranking", href: detail?.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" };
 
   return (
     <>
