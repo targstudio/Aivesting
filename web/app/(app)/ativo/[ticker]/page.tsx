@@ -24,7 +24,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
   const quote = detail ? null : await getB3Quote(ticker);
   if (!detail && !history && !quote) notFound();
   const head = detail?.asset ?? history ?? quote!;
-  const crumb = { label: "Melhores", href: detail?.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" };
+  const crumb = { label: detail?.asset.asset_class === "fiis" ? "Fundos imobiliários" : "Ações", href: detail?.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" };
 
   return (
     <>

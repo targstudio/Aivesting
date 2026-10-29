@@ -2,7 +2,7 @@ import { getDividendYields, getRanking, type AssetClass } from "@/lib/api";
 import { formatUpdated } from "@/lib/format";
 import { AiInsight } from "@/app/components/AiInsight";
 import { RankingList } from "@/app/components/RankingList";
-import { Breadcrumbs, EmptyState, InfoBanner, PageTitle, Segmented } from "@/app/components/ui";
+import { Breadcrumbs, EmptyState, InfoBanner, PageTitle } from "@/app/components/ui";
 
 export default async function RankingPage({ searchParams }: { searchParams: Promise<{ classe?: string }> }) {
   const { classe } = await searchParams;
@@ -13,7 +13,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <Breadcrumbs items={[{ label: "Melhores" }]} />
+      <Breadcrumbs items={[{ label: "Mercado", href: "/mercado" }, { label: assetClass === "fiis" ? "Fundos imobiliários" : "Ações" }]} />
       <PageTitle
         title={`Melhores ${label.toLowerCase()} agora`}
         subtitle={`Chance de cada um render mais que a média da bolsa (${snapshot?.benchmark ?? "índice"}) no curto prazo.`}
@@ -30,12 +30,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       />
 
       <div className="mb-4 flex items-center justify-between">
-        <Segmented
-          options={[
-            { label: "Ações", href: "/ranking", active: assetClass === "acoes" },
-            { label: "FIIs", href: "/ranking?classe=fiis", active: assetClass === "fiis" },
-          ]}
-        />
+        <span />
         {snapshot && (
           <span className="text-sm text-muted">
             Última atualização: {formatUpdated(snapshot.prices_as_of ?? snapshot.computed_at)}

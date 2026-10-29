@@ -2,7 +2,7 @@
 
 import { ArrowRight, Check, Coins, Flame, RefreshCw, Sparkles, Trophy } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { apiFetch, type PortfolioDividends } from "@/lib/api";
 import { formatBRL } from "@/lib/format";
 import { JOURNEY_EVENT, LEVELS, dividendsPay, journeyState, loadJourney, monthKey, recordHistory, saveJourney } from "@/lib/journey";
@@ -37,7 +37,7 @@ function useJourney() {
 }
 
 /** A tela inicial: nível do patrimônio, meses seguidos guardando e a próxima missão. */
-export function Journey({ today }: { today: Today }) {
+export function Journey({ today, highlights }: { today: Today; highlights?: ReactNode }) {
   const state = useJourney();
   const { prefs } = useApp();
   if (!state) return <div className="h-64 animate-pulse rounded-card bg-surface-2" />;
@@ -82,6 +82,8 @@ export function Journey({ today }: { today: Today }) {
           </div>
         </div>
       </section>
+
+      {highlights}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="flex flex-col gap-6 lg:col-span-2">
@@ -137,7 +139,7 @@ export function Journey({ today }: { today: Today }) {
               ))}
             </ul>
             <Link href="/mercado" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent-text hover:underline">
-              Ver mais em Explorar <ArrowRight size={14} />
+              Ver mais em Mercado <ArrowRight size={14} />
             </Link>
           </Card>
           <Card>
