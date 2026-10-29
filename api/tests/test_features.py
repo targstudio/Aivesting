@@ -1,6 +1,7 @@
 """Mercado, alertas e leituras da IA em cada tela."""
 
 import asyncio
+import json
 
 from fastapi.testclient import TestClient
 
@@ -241,3 +242,43 @@ def test_ai_errors_come_back_with_cors_and_a_clear_message(monkeypatch):
         )
     assert r.status_code == 402 and "créditos" in r.json()["detail"]
     assert r.headers.get("access-control-allow-origin") == "https://site.app"
+
+
+def test_asset_swot_is_cached_and_uses_scenario(monkeypatch):
+    from app.ai.swot import SwotAnalyst
+
+    calls = []
+
+    async def fake_analyze(self, payload, level_note=""):
+        calls.append(payload)
+        return {"resumo": "r", "forcas": [{"titulo": "t", "texto": "x"}], "fraquezas": [], "oportunidades": [],
+                "ameacas": []}
+
+    monkeypatch.setattr(SwotAnalyst, "analyze", fake_analyze)
+    c = demo_client(anthropic_api_key="k")
+    top = c.get("/ranking/acoes").json()["assets"][0]["ticker"]
+    first = c.post(f"/assets/{top.lower()}/swot").json()
+    assert first["swot"]["forcas"][0]["titulo"] == "t" and not first["cached"]
+    assert c.post(f"/assets/{top}/swot").json()["cached"]
+    assert c.post(f"/assets/{top}/swot?atualizar=true").json()["cached"]  # atualizar logo em seguida não gasta
+    assert len(calls) == 1
+    payload = calls[0]
+    assert payload["ativo"]["ticker"] == top and payload["curto_prazo"]["posicao_ranking"].startswith("1º")
+    assert payload["cenario"]["macro_brasil"]
+    assert c.post("/assets/XXXX3/swot").status_code == 404
+
+
+def test_swot_requires_key():
+    c = demo_client()
+    top = c.get("/ranking/acoes").json()["assets"][0]["ticker"]
+    assert c.post(f"/assets/{top}/swot").status_code == 503
+
+
+def test_swot_clean_keeps_shape():
+    from app.ai.swot import SCHEMA, clean
+
+    out = clean({"resumo": " ok ", "forcas": [{"titulo": "A", "texto": "b"}, "lixo", {}], "ameacas": None})
+    assert out == {"resumo": "ok", "forcas": [{"titulo": "A", "texto": "b"}], "fraquezas": [], "oportunidades": [],
+                   "ameacas": []}
+    # Schemas strict da Anthropic não aceitam minimum/maximum/minItems (ver PR #14).
+    assert "minItems" not in json.dumps(SCHEMA) and "minimum" not in json.dumps(SCHEMA)

@@ -4,6 +4,7 @@ import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
+import { SwotAnalysis } from "@/app/components/SwotAnalysis";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAsset, getAssetHistory } from "@/lib/api";
 import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
@@ -29,6 +30,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
       <AssetActions ticker={head.ticker} />
       <InfoBanner>{detail?.disclaimer ?? history!.disclaimer}</InfoBanner>
       {detail && <LiveSection detail={detail} />}
+      <SwotAnalysis ticker={head.ticker} />
       {history && <AssetHistorySection h={history} />}
     </>
   );
@@ -72,7 +74,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
         </Card>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="mb-6 grid gap-6 lg:grid-cols-2">
         <Card>
           <h2 className="mb-4 text-lg">Fatores que mais pesaram</h2>
           <ul className="flex flex-col divide-y divide-border">
