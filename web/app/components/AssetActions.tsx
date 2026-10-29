@@ -1,6 +1,6 @@
 "use client";
 
-import { BellPlus, Sparkles } from "lucide-react";
+import { BellPlus, Columns3, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useApp } from "./AppProvider";
 
@@ -19,6 +19,12 @@ export function AssetActions({ ticker }: { ticker: string }) {
         className="inline-flex items-center gap-2 rounded-full bg-accent-bg px-5 py-2.5 text-sm font-semibold text-accent-text"
       >
         <BellPlus size={16} /> Criar alerta
+      </Link>
+      <Link
+        href={`/comparar?ativos=${ticker}`}
+        className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-5 py-2.5 text-sm font-semibold ring-1 ring-border"
+      >
+        <Columns3 size={16} /> Comparar
       </Link>
     </div>
   );
