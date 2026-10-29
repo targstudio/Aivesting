@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CheckCircle2, Eye, EyeOff, KeyRound, LogIn, Mail, MailCheck, User, UserPlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -295,6 +296,17 @@ export default function LoginPage() {
                 </button>
               </>
             )}
+            <p className="mt-6 text-center text-xs text-muted">
+              Ao continuar, você concorda com os{" "}
+              <Link href="/termos" className="underline">
+                Termos de Uso
+              </Link>{" "}
+              e a{" "}
+              <Link href="/privacidade" className="underline">
+                Política de Privacidade
+              </Link>
+              .
+            </p>
           </div>
         </form>
       </main>
