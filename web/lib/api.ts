@@ -456,6 +456,47 @@ export type PortfolioAnalysis = {
   disclaimer: string;
 };
 
+// ---- Simulador de metas e aportes ----
+
+export type SimulationInput = {
+  initial: number;
+  monthly: number;
+  years: number;
+  goal: number | null;
+  adjust_contributions: boolean;
+};
+
+export type SimulationStrategy = {
+  key: string;
+  label: string;
+  weights: Record<string, number>;
+  enough_history: boolean;
+  windows?: number;
+  worst?: number;
+  worst_start?: string;
+  p10?: number;
+  median?: number;
+  p90?: number;
+  best?: number;
+  best_start?: string;
+  invested?: number;
+  goal_hit_rate?: number | null;
+  needed_monthly_80?: number | null;
+};
+
+export type SimulationResult = {
+  years: number;
+  initial: number;
+  monthly: number;
+  goal: number | null;
+  strategies: SimulationStrategy[];
+  components: Record<string, string>;
+  first_start: string | null;
+  last_start: string | null;
+  data_through: string;
+  disclaimer: string;
+};
+
 // ---- Todos os ativos da B3 (lista do arquivo público de cotações da B3) ----
 
 export type B3Type = "acao" | "fii" | "etf" | "bdr" | "unit";

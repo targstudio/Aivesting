@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useApp } from "@/app/components/AppProvider";
 import { AssetLogo } from "@/app/components/AssetLogo";
+import { MoneyField, parseMoney } from "@/app/components/fields";
 import { Card, InfoBanner } from "@/app/components/ui";
 import {
   apiFetch,
@@ -59,11 +60,6 @@ function prazoFromMonths(m: number) {
 function monthsLabel(m: number) {
   if (m % 12 === 0) return m === 12 ? "1 ano" : `${m / 12} anos`;
   return `${m} meses`;
-}
-
-function parseMoney(v: string) {
-  const n = Number(v.replace(/[^\d,]/g, "").replace(",", "."));
-  return Number.isFinite(n) ? n : 0;
 }
 
 export function Advisor() {
@@ -419,35 +415,6 @@ export function Advisor() {
         </>
       )}
     </div>
-  );
-}
-
-function MoneyField({
-  label,
-  value,
-  onChange,
-  required,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  required?: boolean;
-}) {
-  return (
-    <label className="flex flex-col gap-2 text-sm font-semibold">
-      {label}
-      <span className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 focus-within:border-primary">
-        <span className="text-muted">R$</span>
-        <input
-          inputMode="decimal"
-          value={value}
-          required={required}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="0,00"
-          className="w-full bg-transparent font-normal outline-none"
-        />
-      </span>
-    </label>
   );
 }
 

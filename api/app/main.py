@@ -34,6 +34,7 @@ from .providers.demo import DemoMacro, DemoProvider
 from .providers.yahoo import YahooProvider
 from .ranking.service import CLASSES, RankingService, market_is_open
 from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
+from .simulator import SimulationRequest, Simulator
 from .storage import PortfolioStore, SupabaseStore
 
 class ChatMessage(BaseModel):
@@ -215,6 +216,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.longterm = longterm
     app.state.market = market
     app.state.insights = insights
+    app.state.simulator = Simulator()
     app.state.catalog = catalog
 
     def get_ranking() -> RankingService:
@@ -585,6 +587,13 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(404, "Sem dados para essa classe.")
         return {**result, "disclaimer": LONGTERM_DISCLAIMER}
+
+    @app.post("/simulador")
+    async def simulate(body: SimulationRequest):
+        result = app.state.simulator.simulate(body)
+        if result is None:
+            raise HTTPException(503, "Histórico de longo prazo indisponível.")
+        return result
 
     @app.get("/assets/{ticker}/historico")
     async def asset_history(ticker: str):
