@@ -34,6 +34,8 @@ from .providers.demo import DemoMacro, DemoProvider
 from .providers.yahoo import YahooProvider
 from .ranking.service import CLASSES, RankingService, market_is_open
 from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
+from .dividends import DISCLAIMER as DIVIDENDS_DISCLAIMER
+from .dividends import DividendService, DividendsRequest
 from .simulator import SimulationRequest, Simulator
 from .storage import PortfolioStore, SupabaseStore
 
@@ -217,6 +219,9 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.market = market
     app.state.insights = insights
     app.state.simulator = Simulator()
+    app.state.dividends = DividendService(
+        None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
+    )
     app.state.catalog = catalog
 
     def get_ranking() -> RankingService:
@@ -594,6 +599,26 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(503, "Histórico de longo prazo indisponível.")
         return result
+
+    @app.get("/assets/{ticker}/proventos")
+    async def asset_dividends(ticker: str):
+        if not TICKER_RE.match(ticker.upper()):
+            raise HTTPException(404, "Ticker inválido.")
+        result = await app.state.dividends.get(ticker)
+        if result is None:
+            raise HTTPException(404, f"Sem dados de proventos para {ticker.upper()}.")
+        return {**result, "disclaimer": DIVIDENDS_DISCLAIMER}
+
+    @app.get("/proventos")
+    async def dividends_many(tickers: str):
+        """Dividend yield de vários ativos (ex.: a lista do ranking de FIIs), sem o histórico."""
+        wanted = [t for t in tickers.upper().split(",") if TICKER_RE.match(t)][:40]
+        data = await app.state.dividends.many(wanted)
+        return {t: (d and {k: d[k] for k in ("dy_12m", "total_12m", "frequency")}) for t, d in data.items()}
+
+    @app.post("/carteira/proventos")
+    async def portfolio_dividends(body: DividendsRequest):
+        return await app.state.dividends.portfolio(body.holdings)
 
     @app.get("/assets/{ticker}/historico")
     async def asset_history(ticker: str):

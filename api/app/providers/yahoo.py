@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 import httpx
 
@@ -31,6 +31,17 @@ class YahooProvider:
         results = (resp.json().get("chart") or {}).get("result") or []
         return parse_chart(ticker, results[0]) if results else None
 
+    async def dividends(self, ticker: str, range_: str = "2y") -> tuple[list[tuple[date, float]], float | None] | None:
+        """Proventos por cota/ação (data com, valor) e o preço atual. O Yahoo junta dividendos, JCP e rendimentos."""
+        resp = await self.client.get(
+            f"{self.base_url}/v8/finance/chart/{ticker}.SA",
+            params={"range": range_, "interval": "1mo", "events": "div"},
+        )
+        if resp.status_code != 200:
+            return None
+        results = (resp.json().get("chart") or {}).get("result") or []
+        return parse_dividends(results[0]) if results else None
+
     async def symbols(self, symbols: list[str], range_: str = "3mo") -> list[Quote]:
         """Cotações de símbolos do Yahoo sem o sufixo da B3 (índices, moedas, commodities: ^BVSP, BRL=X)."""
         results = await asyncio.gather(*(self._fetch(s, range_, "") for s in symbols), return_exceptions=True)
@@ -40,6 +51,17 @@ class YahooProvider:
         range_ = "1y" if history_days > 180 else "6mo"
         results = await asyncio.gather(*(self._fetch(t, range_) for t in tickers), return_exceptions=True)
         return [r for r in results if isinstance(r, Quote)]
+
+
+def parse_dividends(raw: dict) -> tuple[list[tuple[date, float]], float | None]:
+    events = ((raw.get("events") or {}).get("dividends") or {}).values()
+    payments = sorted(
+        (datetime.fromtimestamp(e["date"], tz=timezone.utc).date(), float(e["amount"]))
+        for e in events
+        if e.get("date") and e.get("amount")
+    )
+    price = (raw.get("meta") or {}).get("regularMarketPrice")
+    return payments, float(price) if price else None
 
 
 def parse_chart(ticker: str, raw: dict) -> Quote:
