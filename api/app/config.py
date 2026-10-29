@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     # Limite de chamadas à IA (chat e explicação) por IP a cada hora, para controlar custo.
     ai_requests_per_hour: int = 30
 
+    # Cotações sob demanda de ativos fora do ranking (tela "Todas da B3"), por minuto, para não estourar o provedor.
+    on_demand_quotes_per_minute: int = 30
+
     # Supabase (opcional): com os dois preenchidos, cada ranking é gravado no banco.
     supabase_url: str = ""
     supabase_secret_key: str = ""

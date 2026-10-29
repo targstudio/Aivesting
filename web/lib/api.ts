@@ -455,3 +455,55 @@ export type PortfolioAnalysis = {
   };
   disclaimer: string;
 };
+
+// ---- Todos os ativos da B3 (lista do arquivo público de cotações da B3) ----
+
+export type B3Type = "acao" | "fii" | "etf" | "bdr" | "unit";
+
+export type B3Asset = {
+  ticker: string;
+  name: string;
+  type: B3Type;
+  type_label: string;
+  spec: string;
+  /** Fechamento do último pregão. */
+  price: number;
+  change_percent: number | null;
+  volume: number;
+  trades: number;
+  date: string;
+  logo_url: string;
+  /** Posição no ranking, quando o ativo faz parte dele. */
+  rank?: number;
+};
+
+export type B3List = {
+  total: number;
+  ativos: B3Asset[];
+  tipos: { key: B3Type; label: string; total: number }[];
+  pregao: string | null;
+  fonte: string;
+  disclaimer: string;
+};
+
+export type B3Quote = {
+  ticker: string;
+  name: string;
+  price: number;
+  change_percent: number | null;
+  as_of: string | null;
+  spark: number[];
+  volume: number | null;
+  source: string;
+  /** false = só o fechamento do último pregão da B3 (provedor indisponível ou sem cota agora). */
+  live: boolean;
+  type?: B3Type;
+  type_label?: string;
+  spec?: string;
+  logo_url: string;
+  rank?: number;
+  pregao: string | null;
+  disclaimer: string;
+};
+
+export const getB3Quote = (ticker: string) => get<B3Quote>(`/b3/ativos/${encodeURIComponent(ticker)}`);
