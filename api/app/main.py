@@ -36,6 +36,7 @@ from .ranking.service import CLASSES, RankingService, market_is_open
 from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
 from .dividends import DISCLAIMER as DIVIDENDS_DISCLAIMER
 from .dividends import DividendService, DividendsRequest
+from .fixed_income import TesouroService, rates_payload
 from .simulator import SimulationRequest, Simulator
 from .storage import PortfolioStore, SupabaseStore
 
@@ -219,6 +220,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.market = market
     app.state.insights = insights
     app.state.simulator = Simulator()
+    app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
     )
@@ -592,6 +594,12 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(404, "Sem dados para essa classe.")
         return {**result, "disclaimer": LONGTERM_DISCLAIMER}
+
+    @app.get("/renda-fixa/taxas")
+    async def fixed_income_rates():
+        macro = {i.key: i.value for i in await app.state.bcb.indicators()}
+        base, bonds = await app.state.tesouro.bonds()
+        return rates_payload(macro, base, bonds)
 
     @app.post("/simulador")
     async def simulate(body: SimulationRequest):

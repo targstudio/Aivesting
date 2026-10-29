@@ -586,3 +586,18 @@ export type PortfolioDividends = {
 export const getAssetDividends = (ticker: string) => get<AssetDividends>(`/assets/${encodeURIComponent(ticker)}/proventos`);
 export const getDividendYields = (tickers: string[]) =>
   tickers.length ? get<Record<string, DividendYield>>(`/proventos?tickers=${tickers.join(",")}`) : Promise.resolve(null);
+
+// ---- Renda fixa ----
+
+export type TesouroBond = { title: string; kind: "selic" | "prefixado" | "ipca" | "outro"; maturity: string; rate: number; unit_price: number | null };
+
+export type FixedIncomeRates = {
+  selic: number | null;
+  cdi: number | null;
+  ipca_12m: number | null;
+  tesouro_date: string | null;
+  tesouro: TesouroBond[];
+  source: string;
+};
+
+export const getFixedIncomeRates = () => get<FixedIncomeRates>("/renda-fixa/taxas");
