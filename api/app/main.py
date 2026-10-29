@@ -18,6 +18,7 @@ from .advisor import QUESTIONS, PlanRequest, build_plan
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
+from .ai.swot import SwotAnalyst, build_payload as swot_payload, world_markets
 from .ai.portfolio_ai import MAX_IMAGES, ImageError, PortfolioAI, decode_image, slim_analysis
 from .ai.insights import LEVELS, REFRESH_MIN_SECONDS, Insights, valid_context
 from .ai.usage import UsageTracker
@@ -221,6 +222,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
 
     ai_calls: dict[str, deque] = defaultdict(deque)
     explain_cache: dict[tuple, tuple[str, float, str]] = {}  # (texto, time.time(), ISO de quando foi gerada)
+    swot_cache: dict[tuple, tuple[dict, float, str]] = {}  # (quadro SWOT, time.time(), ISO de quando foi gerado)
 
     def ai_rate_limit(request: Request) -> None:
         """Janela deslizante de 1 hora por IP. Em memória: vale por instância da API."""
@@ -644,6 +646,50 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "ticker": asset.ticker, "explanation": text, "generated_at": generated_at, "cached": False,
             "disclaimer": DISCLAIMER,
         }
+
+    @app.post("/assets/{ticker}/swot")
+    async def asset_swot(
+        ticker: str,
+        request: Request,
+        nivel: Level = "iniciante",
+        atualizar: bool = False,
+        svc: RankingService = Depends(get_ranking),
+    ):
+        """Análise SWOT do ativo com o cenário geral. Como a explicação, fica guardada até alguém pedir "Atualizar"."""
+        require_ai()
+        ticker = ticker.upper()
+        try:
+            asset, snapshot = find_asset(svc, ticker)
+            live = {"asset": asdict(asset), "total": len(snapshot.assets), "benchmark": snapshot.benchmark}
+        except HTTPException:
+            live = None
+        history = app.state.longterm.asset(ticker) if app.state.longterm.data else None
+        if live is None and history is None:
+            raise HTTPException(404, f"{ticker} não está no app.")
+        key = (ticker, nivel)
+        saved = swot_cache.get(key)
+        if saved and (not atualizar or time.time() - saved[1] < REFRESH_MIN_SECONDS):
+            usage.hit()
+            return {"ticker": ticker, "swot": saved[0], "generated_at": saved[2], "cached": True, "disclaimer": DISCLAIMER}
+        ai_rate_limit(request)
+        overview = app.state.longterm.overview() if app.state.longterm.data else None
+        payload = swot_payload(
+            ticker, live, history,
+            [asdict(i) for i in await app.state.bcb.indicators()],
+            world_markets(await app.state.market.items()),
+            overview and overview.get("scenario"),
+        )
+        try:
+            swot = await SwotAnalyst(settings.anthropic_api_key, settings.anthropic_model, usage).analyze(
+                payload, LEVELS[nivel]
+            )
+        except ValueError as exc:
+            raise HTTPException(502, str(exc)) from None
+        if len(swot_cache) > 500:
+            swot_cache.clear()
+        generated_at = datetime.now(timezone.utc).isoformat()
+        swot_cache[key] = (swot, time.time(), generated_at)
+        return {"ticker": ticker, "swot": swot, "generated_at": generated_at, "cached": False, "disclaimer": DISCLAIMER}
 
     @app.post("/assistant/chat")
     async def chat(body: ChatRequest, request: Request, svc: RankingService = Depends(get_ranking)):

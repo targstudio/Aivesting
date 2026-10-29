@@ -4,9 +4,10 @@ import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
+import { SwotAnalysis } from "@/app/components/SwotAnalysis";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAsset, getAssetHistory, getB3Quote, type B3Quote } from "@/lib/api";
-import { changeColor, formatBRL, formatPercent, formatProbability, formatTime } from "@/lib/format";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
@@ -30,6 +31,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
       <InfoBanner>{detail?.disclaimer ?? quote?.disclaimer ?? history!.disclaimer}</InfoBanner>
       {detail && <LiveSection detail={detail} />}
       {quote && <QuoteSection quote={quote} />}
+      {(detail || history) && <SwotAnalysis ticker={head.ticker} />}
       {history && <AssetHistorySection h={history} />}
     </>
   );
@@ -50,7 +52,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
             <Stat value={formatPercent(asset.change_percent)} label="Variação no dia" />
           </div>
           <div className="md:px-8">
-            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={`score ${asset.score}/100`} />
+            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={`score ${formatNumber(asset.score)}/100`} />
           </div>
           <div className="md:px-8">
             <Stat
@@ -73,7 +75,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
         </Card>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="mb-6 grid gap-6 lg:grid-cols-2">
         <Card>
           <h2 className="mb-4 text-lg">Fatores que mais pesaram</h2>
           <ul className="flex flex-col divide-y divide-border">
@@ -82,7 +84,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
                 <span>{f.label}</span>
                 <span className={`tabular ${changeColor(f.contribution)}`}>
                   {f.contribution > 0 ? "+" : ""}
-                  {f.contribution.toFixed(2)}
+                  {f.contribution.toFixed(2).replace(".", ",")}
                 </span>
               </li>
             ))}
