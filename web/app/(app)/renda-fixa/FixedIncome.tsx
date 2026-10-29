@@ -3,6 +3,7 @@
 import { Trophy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { MoneyField, parseMoney } from "@/app/components/fields";
+import { QuickPlan } from "@/app/components/QuickPlan";
 import { Term } from "@/app/components/Term";
 import { Card, CardHeader, InfoBanner } from "@/app/components/ui";
 import type { FixedIncomeRates, TesouroBond } from "@/lib/api";
@@ -121,6 +122,15 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
   const lciEquivalent = num(lciPct) / (1 - ir);
 
   return (
+    <div className="flex flex-col gap-6">
+      <QuickPlan
+        amount={value}
+        months={months}
+        best={{
+          rf_pos: results.find((r) => ["cdb", "lci", "selic"].includes(r.key))?.label,
+          rf_ipca: results.find((r) => r.key === "ipca")?.label,
+        }}
+      />
     <div className="grid grid-cols-1 gap-6 xl:grid-cols-[360px_1fr]">
       <Card className="h-fit">
         <div className="flex flex-col gap-5">
@@ -232,6 +242,7 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
           com prazo maior que o seu podem valer mais ou menos se vendidos antes. Não é recomendação de investimento.
         </InfoBanner>
       </div>
+    </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { PORTFOLIO_EVENT } from "@/lib/portfolio";
 import { useApp } from "./AppProvider";
 import { Markdown } from "./Markdown";
 import { MoneyField, finishMoney, parseMoney } from "./fields";
+import { QuickPlan } from "./QuickPlan";
 import { Card, CardHeader } from "./ui";
 
 type State = ReturnType<typeof journeyState>;
@@ -82,6 +83,8 @@ export function Journey({ today, highlights }: { today: Today; highlights?: Reac
           </div>
         </div>
       </section>
+
+      <InvestNow />
 
       {highlights}
 
@@ -349,5 +352,64 @@ function CoachCard({ state }: { state: State }) {
         </div>
       )}
     </section>
+  );
+}
+
+const TERMS = [
+  { months: 6, label: "6 meses" },
+  { months: 12, label: "1 ano" },
+  { months: 24, label: "2 anos" },
+  { months: 36, label: "3 anos" },
+  { months: 60, label: "5 anos" },
+  { months: 120, label: "10 anos ou mais" },
+];
+
+/** "Tem um dinheiro para investir?": valor e prazo bastam para o app mostrar a divisão sugerida hoje. */
+function InvestNow() {
+  const [value, setValue] = useState("");
+  const [months, setMonths] = useState(24);
+  const [shown, setShown] = useState<{ amount: number; months: number } | null>(null);
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const amount = parseMoney(value);
+    if (amount > 0) setShown({ amount, months });
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Card>
+        <CardHeader title="Tem um dinheiro para investir?" subtitle="Diga quanto e por quanto tempo. O app mostra agora onde colocar cada parte." />
+        <form onSubmit={submit} className="flex flex-col gap-4">
+          <div className="grid gap-4 md:grid-cols-[minmax(0,260px)_1fr]">
+            <MoneyField label="Quanto" value={value} onChange={setValue} />
+            <div className="flex flex-col gap-2 text-sm font-semibold">
+              Por quanto tempo pode deixar aplicado
+              <div className="flex flex-wrap gap-2">
+                {TERMS.map((t) => (
+                  <button
+                    key={t.months}
+                    type="button"
+                    onClick={() => {
+                      setMonths(t.months);
+                      if (shown) setShown({ ...shown, months: t.months });
+                    }}
+                    className={`rounded-full border px-4 py-2 font-normal ${
+                      t.months === months ? "border-primary bg-primary text-on-primary" : "border-border text-muted hover:text-text"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <button type="submit" className="w-fit rounded-full bg-primary px-6 py-3 font-semibold text-on-primary">
+            Mostrar onde investir
+          </button>
+        </form>
+      </Card>
+      {shown && <QuickPlan amount={shown.amount} months={shown.months} />}
+    </div>
   );
 }
