@@ -55,6 +55,22 @@ export function Simulator() {
   }, []);
 
   useEffect(() => {
+    // Vindo do plano em Onde investir: ?inicial=10000&mensal=500&anos=5 preenche e já simula.
+    const q = new URLSearchParams(window.location.search);
+    if (q.has("inicial") || q.has("mensal")) {
+      const input: SimulationInput = {
+        initial: Number(q.get("inicial")) || 0,
+        monthly: Number(q.get("mensal")) || 0,
+        years: YEAR_PRESETS.includes(Number(q.get("anos"))) ? Number(q.get("anos")) : 5,
+        goal: null,
+        adjust_contributions: true,
+      };
+      setInitial(input.initial ? formatNumber(input.initial) : "");
+      setMonthly(input.monthly ? formatNumber(input.monthly) : "");
+      setYears(input.years);
+      if (input.initial || input.monthly) run(input);
+      return;
+    }
     const saved = loadSaved();
     if (!saved) return;
     setGoal(saved.goal ? formatNumber(saved.goal) : "");

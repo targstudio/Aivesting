@@ -1,7 +1,7 @@
 "use client";
 
 import { Trophy } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MoneyField, parseMoney } from "@/app/components/fields";
 import { Term } from "@/app/components/Term";
 import { Card, CardHeader, InfoBanner } from "@/app/components/ui";
@@ -57,6 +57,15 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
   const [cdi, setCdi] = useState(formatNumber(rates?.cdi ?? 14.9));
   const [ipca, setIpca] = useState(formatNumber(rates?.ipca_12m ?? 4.5));
   const bonds = rates?.tesouro ?? [];
+
+  // Vindo do plano em Onde investir: ?valor=8000&meses=24 preenche a simulação.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const v = Number(q.get("valor"));
+    const m = Number(q.get("meses"));
+    if (v > 0) setAmount(formatNumber(v));
+    if (MONTH_PRESETS.includes(m)) setMonths(m);
+  }, []);
 
   const results = useMemo(() => {
     const value = parseMoney(amount);
