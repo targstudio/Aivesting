@@ -4,31 +4,34 @@ import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
+import { SwotAnalysis } from "@/app/components/SwotAnalysis";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
-import { getAsset, getAssetHistory } from "@/lib/api";
+import { getAsset, getAssetHistory, getB3Quote, type B3Quote } from "@/lib/api";
 import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
   const [detail, history] = await Promise.all([getAsset(ticker), getAssetHistory(ticker)]);
-  if (!detail && !history) notFound();
-  const head = detail?.asset ?? history!;
+  // Fora do ranking: cotação sob demanda de qualquer ativo da B3.
+  const quote = detail ? null : await getB3Quote(ticker);
+  if (!detail && !history && !quote) notFound();
+  const head = detail?.asset ?? history ?? quote!;
+  const crumb = detail
+    ? { label: "Ranking", href: detail.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" }
+    : { label: "Todas da B3", href: "/b3" };
 
   return (
     <>
-      <Breadcrumbs
-        items={[
-          { label: "Ranking", href: head.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" },
-          { label: head.ticker },
-        ]}
-      />
+      <Breadcrumbs items={[crumb, { label: head.ticker }]} />
       <div className="flex items-center gap-4">
         <AssetLogo ticker={head.ticker} src={head.logo_url} size={64} />
         <PageTitle title={head.ticker} subtitle={head.name} />
       </div>
       <AssetActions ticker={head.ticker} />
-      <InfoBanner>{detail?.disclaimer ?? history!.disclaimer}</InfoBanner>
+      <InfoBanner>{detail?.disclaimer ?? quote?.disclaimer ?? history!.disclaimer}</InfoBanner>
       {detail && <LiveSection detail={detail} />}
+      {quote && <QuoteSection quote={quote} />}
+      {(detail || history) && <SwotAnalysis ticker={head.ticker} />}
       {history && <AssetHistorySection h={history} />}
     </>
   );
@@ -72,7 +75,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
         </Card>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="mb-6 grid gap-6 lg:grid-cols-2">
         <Card>
           <h2 className="mb-4 text-lg">Fatores que mais pesaram</h2>
           <ul className="flex flex-col divide-y divide-border">
@@ -96,6 +99,55 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
           <ExplainButton ticker={asset.ticker} />
         </Card>
       </div>
+    </>
+  );
+}
+
+function QuoteSection({ quote }: { quote: B3Quote }) {
+  const spark = quote.spark ?? [];
+  const asOf = quote.as_of
+    ? quote.live
+      ? `às ${formatTime(quote.as_of)}`
+      : `fechamento de ${new Date(`${quote.as_of}T12:00:00`).toLocaleDateString("pt-BR")}`
+    : undefined;
+  return (
+    <>
+      <h2 className="mb-3 text-lg font-bold">Cotação</h2>
+      <Card className="mb-6">
+        <div className="grid grid-cols-2 gap-6 md:flex md:gap-0 md:divide-x md:divide-border">
+          <div className="md:pr-8">
+            <Stat value={formatBRL(quote.price)} label="Preço" accent sub={quote.live ? "com atraso" : "último pregão"} />
+          </div>
+          <div className="md:px-8">
+            <Stat
+              value={quote.change_percent != null ? formatPercent(quote.change_percent) : "–"}
+              label="Variação no dia"
+              sub={asOf}
+            />
+          </div>
+          {quote.type_label && (
+            <div className="md:px-8">
+              <Stat value={quote.type_label} label="Tipo" sub={quote.spec} />
+            </div>
+          )}
+        </div>
+      </Card>
+
+      {spark.length > 1 && (
+        <Card className="mb-6">
+          <CardHeader
+            title="Preço"
+            subtitle="Últimos 30 pregões"
+            value={<span className={changeColor(spark[spark.length - 1] / spark[0] - 1)}>{formatPercent((spark[spark.length - 1] / spark[0] - 1) * 100)}</span>}
+          />
+          <AreaChart values={spark} prefix="R$ " color="var(--chart-2)" />
+        </Card>
+      )}
+
+      <Card className="mb-6 text-sm text-muted">
+        Este ativo não faz parte do ranking de 5 minutos, que cobre só os papéis mais líquidos. Você ainda pode perguntar à
+        IA sobre ele ou criar um alerta.
+      </Card>
     </>
   );
 }

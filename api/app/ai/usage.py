@@ -29,6 +29,7 @@ FEATURE_LABELS = {
     "assessor_chat": "Chat do assessor",
     "assessor_plano": "Explicação do plano (assessor)",
     "explicacao_ativo": "Explicação de ativo",
+    "swot_ativo": "Análise SWOT de ativo",
     "leitura_inicio": "Resumo da Início",
     "leitura_mercado": "Resumo do Mercado",
     "leitura_ranking": "Leitura do Ranking",
