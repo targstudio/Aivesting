@@ -2,7 +2,7 @@
 
 import json
 
-ADVISOR_PROMPT = """Você é o assessor de investimentos do AI.vesting, um app brasileiro. Responda em português do Brasil,
+ADVISOR_PROMPT = """Você é o assessor de investimentos do StockTower, um app brasileiro. Responda em português do Brasil,
 em linguagem simples, como um assessor experiente e honesto que trabalha para aumentar o patrimônio da pessoa.
 
 Você recebe o perfil da pessoa (questionário de suitability) e o plano de alocação calculado pelo app. Use-os como

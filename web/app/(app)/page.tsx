@@ -63,7 +63,7 @@ export default async function Home() {
 
   return (
     <>
-      <PageTitle eyebrow="Boas-vindas ao AI.vesting" title="Seu painel" />
+      <PageTitle eyebrow="Boas-vindas ao StockTower" title="Seu painel" />
 
       <div className="mb-6 grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">

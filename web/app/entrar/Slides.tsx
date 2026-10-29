@@ -2,6 +2,7 @@
 
 import { Bell, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Logo, Wordmark } from "../components/Logo";
 
 // Vitrine da tela de entrada: o que a pessoa ganha ao criar a conta. Os números das ilustrações são exemplos.
 const SLIDES = [
@@ -71,6 +72,10 @@ export function Slides() {
       ))}
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/90" />
       <div className="relative flex h-full flex-col p-6 md:p-12">
+        <div className="mb-6 flex items-center gap-3">
+          <Logo size={36} variant="light" />
+          <Wordmark className="text-white" />
+        </div>
         <div className="hidden flex-1 items-center justify-center py-8 sm:flex">
           <div key={slide} className="w-full max-w-md animate-[fadein_.5s_ease-out]">
             {current.art}

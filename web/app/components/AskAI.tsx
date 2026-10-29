@@ -42,7 +42,7 @@ export function AskAI() {
                   <Sparkles size={16} />
                 </span>
                 <div className="leading-tight">
-                  <div className="font-bold">IA do AI.vesting</div>
+                  <div className="font-bold">IA do StockTower</div>
                   <div className="text-xs text-muted">Sabe em que tela você está e consulta os dados do app</div>
                 </div>
               </div>

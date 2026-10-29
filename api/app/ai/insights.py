@@ -25,7 +25,7 @@ LEVELS = {
 
 BASE_RULES = """Escreva em português do Brasil. Use apenas os dados fornecidos em JSON. Não invente números, notícias,
 eventos ou causas que não estejam nos dados; se os dados não bastam para explicar um movimento, diga isso.
-O AI.vesting é informativo: não diga para comprar, vender ou manter ativos, não indique preço-alvo, não monte
+O StockTower é informativo: não diga para comprar, vender ou manter ativos, não indique preço-alvo, não monte
 carteira e não prometa rentabilidade. Probabilidades vêm de modelos estatísticos e são estimativas incertas.
 Não use títulos nem listas longas: texto corrido, frases curtas."""
 
@@ -52,7 +52,7 @@ REFRESH_MIN_SECONDS = 2 * 60
 
 def system_prompt(task: str, level: str) -> str:
     return (
-        "Você é a IA do AI.vesting, um app brasileiro de informação sobre investimentos.\n"
+        "Você é a IA do StockTower, um app brasileiro de informação sobre investimentos.\n"
         f"{TASKS[task]}\n{LEVELS.get(level, LEVELS['iniciante'])}\n\n{BASE_RULES}"
     )
 

@@ -1,4 +1,4 @@
-# AI.vesting
+# StockTower
 
 App de análise do mercado financeiro com IA nativa. Ranqueia ações e FIIs da B3 pela probabilidade
 estimada de superar o índice de referência (Ibovespa, IFIX), recalculando a cada 5 minutos durante o

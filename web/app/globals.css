@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 /*
- * Design system no estilo de internet banking: menu lateral escuro, área de trabalho clara com cards brancos de
- * bordas finas, botões de ação amarelos e números em destaque. O app é sempre claro.
+ * Identidade StockTower: área de trabalho branca com cards de bordas finas, menu lateral preto e detalhes no amarelo
+ * do logotipo (botões, item ativo, destaques). O app é sempre claro.
  */
 :root {
   color-scheme: light;
   /* Ação principal: amarelo com texto escuro */
-  --primary: 255 204 0;
+  --primary: 253 198 10;
   --on-primary: 26 26 26;
-  --background: 243 243 243;
+  --background: 252 252 252;
   --surface: 255 255 255;
-  --surface-2: 248 248 248;
+  --surface-2: 247 247 247;
   --border: 228 228 228;
   --text: 28 28 28;
   --text-muted: 112 112 112;
@@ -23,8 +23,8 @@
   --positive: 0 138 82;
   --negative: 210 45 45;
   /* Menu lateral */
-  --nav: 28 28 28;
-  --nav-2: 44 44 44;
+  --nav: 10 10 10;
+  --nav-2: 32 32 32;
   --nav-text: 214 214 214;
   --nav-muted: 140 140 140;
   /* Paleta dos gráficos */

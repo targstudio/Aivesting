@@ -207,7 +207,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if refresher:
             refresher.cancel()
 
-    app = FastAPI(title="AI.vesting API", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="StockTower API", version="0.1.0", lifespan=lifespan)
 
     # Registrado antes do CORS para ficar por dentro dele: um erro inesperado volta como JSON com os cabeçalhos de
     # CORS, e o navegador mostra a mensagem em vez de um "falha de rede" genérico.

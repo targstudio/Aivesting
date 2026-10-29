@@ -16,7 +16,6 @@ import {
   signUp,
   type Providers,
 } from "@/lib/account";
-import { Logo } from "../components/Logo";
 import { Slides } from "./Slides";
 
 type Mode = "entrar" | "criar";
@@ -146,7 +145,8 @@ export default function LoginPage() {
 
         <form onSubmit={submit} className="flex flex-1 flex-col justify-center rounded-card border border-border px-6 py-10 md:px-16">
           <div className="mx-auto w-full max-w-md">
-            <Logo size={56} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/marca/logo.png" alt="StockTower" width={146} height={84} />
             {view === "in" ? (
               <>
                 <h1 className="mt-8 text-3xl font-bold leading-tight tracking-tight">Você já está conectado</h1>
