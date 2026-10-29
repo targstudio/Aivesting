@@ -14,7 +14,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-from .account import AccountData, AccountService, AuthError, RefreshRequest, SignInRequest
+from .account import (
+    OAUTH_PROVIDERS,
+    AccountData,
+    AccountService,
+    AuthError,
+    NewPasswordRequest,
+    PasswordRequest,
+    RefreshRequest,
+    SignInRequest,
+)
 from .advisor import QUESTIONS, PlanRequest, build_plan
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
@@ -607,7 +616,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             raise HTTPException(404, "Sem dados para essa classe.")
         return {**result, "disclaimer": LONGTERM_DISCLAIMER}
 
-    # ---- Conta (login por link mágico) ----
+    # ---- Conta (Google, e-mail e senha ou link no e-mail) ----
 
     sign_in_calls: dict[str, deque] = defaultdict(deque)
 
@@ -625,25 +634,80 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         except AuthError as exc:
             raise HTTPException(exc.status, str(exc)) from None
 
-    @app.post("/conta/entrar")
-    async def account_sign_in(body: SignInRequest, request: Request):
-        svc = account_service()
+    def check_redirect(redirect_to: str) -> None:
         origins = [o.strip().rstrip("/") for o in settings.web_origin.split(",") if o.strip()]
-        # O link só pode voltar para o próprio site, nunca para um endereço qualquer.
-        if not any(body.redirect_to == o or body.redirect_to.startswith(o + "/") for o in origins):
+        # O e-mail e o Google só podem voltar para o próprio site, nunca para um endereço qualquer.
+        if not any(redirect_to == o or redirect_to.startswith(o + "/") for o in origins):
             raise HTTPException(400, "Endereço de retorno não permitido.")
+
+    def limit_sign_in(request: Request, limit: int = 10) -> None:
+        """Freio por IP (por hora) para cadastro, login e envio de e-mails, contra robôs e chute de senha."""
         ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "?").split(",")[0]
         calls, now = sign_in_calls[ip], time.monotonic()
         while calls and now - calls[0] > 3600:
             calls.popleft()
-        if len(calls) >= 10:
-            raise HTTPException(429, "Muitos pedidos de link. Tente de novo mais tarde.")
+        if len(calls) >= limit:
+            raise HTTPException(429, "Muitas tentativas. Tente de novo mais tarde.")
         calls.append(now)
+
+    async def auth_call(coro):
         try:
-            await svc.send_link(body.email.strip().lower(), body.redirect_to)
+            return await coro
         except AuthError as exc:
             raise HTTPException(exc.status, str(exc)) from None
+
+    @app.get("/conta/provedores")
+    async def account_providers():
+        """Formas de entrar ligadas no Supabase; o app só mostra o botão do Google quando ele está ativo."""
+        if app.state.accounts is None:
+            return {"available": False, "email": False, **{p: False for p in OAUTH_PROVIDERS}}
+        try:
+            return {"available": True, **await app.state.accounts.providers()}
+        except Exception:
+            return {"available": True, "email": True, **{p: False for p in OAUTH_PROVIDERS}}
+
+    @app.get("/conta/oauth/{provider}")
+    async def account_oauth(provider: str, redirect_to: str):
+        if provider not in OAUTH_PROVIDERS:
+            raise HTTPException(404, "Forma de login desconhecida.")
+        check_redirect(redirect_to)
+        return {"url": account_service().oauth_url(provider, redirect_to)}
+
+    @app.post("/conta/entrar")
+    async def account_sign_in(body: SignInRequest, request: Request):
+        svc = account_service()
+        check_redirect(body.redirect_to)
+        limit_sign_in(request)
+        await auth_call(svc.send_link(body.email.strip().lower(), body.redirect_to))
         return {"sent": True}
+
+    @app.post("/conta/cadastrar")
+    async def account_sign_up(body: PasswordRequest, request: Request):
+        svc = account_service()
+        check_redirect(body.redirect_to)
+        limit_sign_in(request)
+        session = await auth_call(svc.sign_up(body.email.strip().lower(), body.password, body.redirect_to))
+        return {"session": session, "confirm_email": session is None}
+
+    @app.post("/conta/login")
+    async def account_password(body: PasswordRequest, request: Request):
+        svc = account_service()
+        limit_sign_in(request, 20)
+        return await auth_call(svc.sign_in_password(body.email.strip().lower(), body.password))
+
+    @app.post("/conta/esqueci-senha")
+    async def account_recover(body: SignInRequest, request: Request):
+        svc = account_service()
+        check_redirect(body.redirect_to)
+        limit_sign_in(request)
+        await auth_call(svc.send_recovery(body.email.strip().lower(), body.redirect_to))
+        return {"sent": True}
+
+    @app.post("/conta/nova-senha")
+    async def account_new_password(body: NewPasswordRequest, authorization: str | None = Header(default=None)):
+        await current_user(authorization)
+        await auth_call(account_service().set_password(authorization[7:].strip(), body.password))
+        return {"saved": True}
 
     @app.post("/conta/renovar")
     async def account_refresh(body: RefreshRequest):
