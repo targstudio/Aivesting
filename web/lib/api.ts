@@ -623,11 +623,76 @@ export type Fundamentals = {
   revenue_growth: number | null;
   market_cap: number | null;
   ev_ebitda: number | null;
+  dividend_yield?: number | null;
+  vacancy?: number | null;
+  source?: string;
   disclaimer: string;
 };
 
 export const getFundamentals = (ticker: string) => get<Fundamentals>(`/assets/${encodeURIComponent(ticker)}/fundamentos`);
 
+// ---- Curto prazo: varredura de todas as ações e FIIs (Fundamentus + Yahoo, gratuitos) ----
+
+export type ShortTermView = "oportunidades" | "pvp" | "dividendos" | "todos";
+export type ShortTermSignal = "barato_subindo" | "barato_parado" | "barato_caindo" | "subindo" | "neutro" | "sem_preco";
+
+export type ShortTermMomentum = {
+  ret_1w: number;
+  ret_1m: number;
+  ret_3m: number;
+  vs_avg_20d: number;
+  vs_avg_50d: number;
+  from_high_6m: number;
+  volume_ratio: number | null;
+  volatility: number | null;
+};
+
+export type ShortTermAsset = {
+  ticker: string;
+  name: string;
+  logo_url: string | null;
+  segment?: string | null;
+  price: number | null;
+  p_vp: number | null;
+  p_l?: number | null;
+  dy: number | null;
+  roe?: number | null;
+  net_margin?: number | null;
+  debt_equity?: number | null;
+  revenue_growth_5y?: number | null;
+  vacancy?: number | null;
+  properties?: number | null;
+  liquidity: number | null;
+  momentum: ShortTermMomentum | null;
+  scores: { value: number | null; quality: number | null; momentum: number | null; total: number | null };
+  signal: ShortTermSignal;
+  signal_label: string;
+  risk: "baixo" | "medio" | "alto";
+  risk_label: string;
+  alerts: string[];
+};
+
+export type ShortTermList = {
+  asset_class: AssetClass;
+  view: ShortTermView;
+  view_label: string;
+  updated_at: string;
+  fundamentals_at: string | null;
+  source: string;
+  min_liquidity: number;
+  total_listed: number;
+  screened: number;
+  with_momentum: number;
+  signals: Partial<Record<ShortTermSignal, number>>;
+  total: number;
+  assets: ShortTermAsset[];
+  disclaimer: string;
+};
+
+export const getShortTerm = (c: AssetClass, view: ShortTermView, q = "", offset = 0) =>
+  get<ShortTermList>(
+    `/curto-prazo/${c}?${new URLSearchParams({ visao: view, busca: q, offset: String(offset), limite: "30" })}`,
+  );
 // ---- Opinião dos analistas ----
 
 export type AnalystSide = "compra" | "neutro" | "venda";
