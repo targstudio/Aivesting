@@ -6,7 +6,7 @@ import { useState } from "react";
 import type { RankedAsset } from "@/lib/api";
 import { AssetLogo } from "./AssetLogo";
 import { Sparkline } from "./Sparkline";
-import { changeColor, formatBRL, formatPercent, formatProbability } from "@/lib/format";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability } from "@/lib/format";
 
 // `compact` esconde a coluna de preço, para listas em meia largura (ex.: página inicial).
 export function RankingList({
@@ -61,7 +61,7 @@ export function RankingList({
             </button>
             {expanded && (
               <div className="border-t border-border px-4 py-4 text-sm md:px-6">
-                <p className="mb-3 text-muted">Score {a.score}/100. Fatores que mais pesaram:</p>
+                <p className="mb-3 text-muted">Score {formatNumber(a.score)}/100. Fatores que mais pesaram:</p>
                 <ul className="mb-4 flex flex-col gap-2">
                   {a.top_factors.map((f) => (
                     <li key={f.factor} className="flex justify-between gap-4">

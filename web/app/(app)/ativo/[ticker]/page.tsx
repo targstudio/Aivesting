@@ -6,7 +6,7 @@ import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAsset, getAssetHistory } from "@/lib/api";
-import { changeColor, formatBRL, formatPercent, formatProbability, formatTime } from "@/lib/format";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatTime } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
@@ -49,7 +49,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
             <Stat value={formatPercent(asset.change_percent)} label="Variação no dia" />
           </div>
           <div className="md:px-8">
-            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={`score ${asset.score}/100`} />
+            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={`score ${formatNumber(asset.score)}/100`} />
           </div>
           <div className="md:px-8">
             <Stat
@@ -81,7 +81,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
                 <span>{f.label}</span>
                 <span className={`tabular ${changeColor(f.contribution)}`}>
                   {f.contribution > 0 ? "+" : ""}
-                  {f.contribution.toFixed(2)}
+                  {f.contribution.toFixed(2).replace(".", ",")}
                 </span>
               </li>
             ))}
