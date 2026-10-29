@@ -22,6 +22,7 @@ from .ai.portfolio_ai import MAX_IMAGES, ImageError, PortfolioAI, decode_image, 
 from .ai.insights import LEVELS, REFRESH_MIN_SECONDS, Insights, valid_context
 from .ai.usage import UsageTracker
 from .alerts import Alert, evaluate
+from .catalog import TYPES, Catalog
 from .config import Settings, get_settings
 from .longterm.model import HORIZONS
 from .longterm.service import LongTermService
@@ -96,6 +97,11 @@ LONGTERM_DISCLAIMER = (
     "rentabilidade futura."
 )
 
+CATALOG_DISCLAIMER = (
+    "Lista e fechamento do arquivo público de cotações da B3, do último pregão. A cotação ao abrir um ativo tem atraso "
+    "e é informativa. Não é recomendação de investimento."
+)
+
 DISCLAIMER = (
     "Conteúdo informativo gerado por modelo estatístico. Não é recomendação de investimento. "
     "Rentabilidade passada não garante rentabilidade futura."
@@ -155,15 +161,34 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else YahooProvider()
     )
     usage = UsageTracker(settings.supabase_url, settings.supabase_secret_key)
+    # Todos os ativos da B3. A cotação sob demanda usa o Yahoo (mesmo com brapi no ranking) com cota própria.
+    catalog = Catalog(
+        provider=None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source,
+        quotes_per_minute=settings.on_demand_quotes_per_minute,
+    )
+
+    async def refresh_catalog_forever():
+        """Confere a cada 6 horas se a B3 publicou um pregão novo."""
+        while True:
+            try:
+                await catalog.refresh()
+            except Exception:  # noqa: BLE001
+                log.exception("falha ao atualizar a lista da B3")
+            await asyncio.sleep(6 * 3600)
     insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market, usage)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
+        refresher = None
         if start_scheduler:
             await ranking.recompute(force=True)
             ranking.start()
+            if not settings.demo_mode:
+                refresher = asyncio.create_task(refresh_catalog_forever())
         yield
         ranking.stop()
+        if refresher:
+            refresher.cancel()
 
     app = FastAPI(title="AI.vesting API", version="0.1.0", lifespan=lifespan)
 
@@ -189,6 +214,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.longterm = longterm
     app.state.market = market
     app.state.insights = insights
+    app.state.catalog = catalog
 
     def get_ranking() -> RankingService:
         return app.state.ranking
@@ -221,6 +247,8 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "longterm": app.state.longterm.data is not None,
             "advisor": settings.advisor_mode == "public",
             "portfolio_storage": portfolios is not None,
+            "b3_assets": len(catalog.assets),
+            "b3_trade_date": catalog.trade_date,
         }
 
     # ---- Modo assessor ----
@@ -285,7 +313,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         ai_rate_limit(request)
         assistant = Assistant(
             settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
-            app.state.market, usage, "assessor_chat",
+            app.state.market, usage, "assessor_chat", catalog,
         )
         result = await assistant.reply(
             [m.model_dump(include={"role", "content"}) for m in body.messages],
@@ -434,6 +462,51 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             ]
         }
 
+    # ---- Todos os ativos da B3 ----
+
+    def ranked_index(svc: RankingService) -> dict[str, tuple]:
+        return {a.ticker: (a, len(s.assets)) for s in svc.snapshots.values() for a in s.assets}
+
+    @app.get("/b3/ativos")
+    async def b3_list(q: str = "", tipo: str | None = None, offset: int = 0, limite: int = 50,
+                      svc: RankingService = Depends(get_ranking)):
+        """Busca na lista completa da B3 por ticker ou nome, com filtro por tipo (acao, fii, etf, bdr, unit)."""
+        if tipo and tipo not in TYPES:
+            raise HTTPException(404, f"Tipo desconhecido. Use {', '.join(TYPES)}.")
+        result = catalog.search(q[:40], tipo, max(0, offset), max(1, min(100, limite)))
+        ranked = ranked_index(svc)
+        for a in result["ativos"]:
+            if hit := ranked.get(a["ticker"]):
+                a["rank"] = hit[0].rank
+        return {
+            **result,
+            "tipos": [{"key": k, "label": v, "total": n} for (k, v), n in zip(TYPES.items(), catalog.counts().values())],
+            "pregao": catalog.trade_date,
+            "fonte": catalog.source,
+            "disclaimer": CATALOG_DISCLAIMER,
+        }
+
+    @app.get("/b3/ativos/{ticker}")
+    async def b3_asset(ticker: str, svc: RankingService = Depends(get_ranking)):
+        """Cotação de qualquer ativo da B3 (com atraso, cache de 5 min). Se o ativo está no ranking, usa o ranking."""
+        ticker = ticker.upper().strip()
+        if hit := ranked_index(svc).get(ticker):
+            a, total = hit
+            listed = catalog.get(ticker)
+            quote = {
+                "ticker": a.ticker, "name": a.name, "price": a.price, "change_percent": a.change_percent,
+                "as_of": svc.snapshots[a.asset_class].computed_at, "spark": a.spark, "volume": None,
+                "source": provider.name, "live": True, "rank": a.rank, "rank_total": total,
+                "asset_class": a.asset_class, "logo_url": a.logo_url,
+            }
+            if listed:
+                quote |= {"type": listed.type, "type_label": TYPES[listed.type], "spec": listed.spec}
+        else:
+            quote = await catalog.quote(ticker)
+        if quote is None:
+            raise HTTPException(404, f"{ticker} não foi encontrado na B3.")
+        return {**quote, "pregao": catalog.trade_date, "disclaimer": CATALOG_DISCLAIMER}
+
     @app.get("/ia/leitura")
     async def ai_reading(request: Request, contexto: str, nivel: Level = "iniciante", atualizar: bool = False):
         """Leitura da IA para uma tela: inicio, mercado, macro, ranking:acoes, horizontes:fiis:5...
@@ -580,7 +653,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         ai_rate_limit(request)
         assistant = Assistant(
             settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
-            app.state.market, usage,
+            app.state.market, usage, catalog=catalog,
         )
         result = await assistant.reply(
             [m.model_dump(include={"role", "content"}) for m in body.messages], page=body.page, level=body.level

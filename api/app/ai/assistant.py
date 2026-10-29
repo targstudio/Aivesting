@@ -26,7 +26,8 @@ FORMAT_RULES = """Formato da resposta (aparece num chat estreito, inclusive no c
 SYSTEM_PROMPT = """Você é a assistente do AI.vesting, um app brasileiro de informação sobre investimentos.
 Responda em português do Brasil, de forma direta e em linguagem simples.
 
-Use as ferramentas para buscar dados do app (ranking de ações e FIIs, detalhes de um ativo, panorama do mercado no Brasil e no mundo, indicadores macro,
+Use as ferramentas para buscar dados do app (ranking de ações e FIIs, detalhes de um ativo, lista e cotação de qualquer
+ativo da B3, panorama do mercado no Brasil e no mundo, indicadores macro,
 ranking por horizonte de 1, 3, 5 e 10 anos e o histórico de longo prazo de cada ativo, com o comportamento em crises)
 antes de citar qualquer número. Não invente preços, probabilidades, notícias ou eventos. Se o app não tem o dado,
 diga isso. As probabilidades vêm de modelos estatísticos; trate-as como estimativas incertas. No ranking por horizonte,
@@ -97,6 +98,36 @@ TOOLS = [
         "strict": True,
     },
     {
+        "name": "search_b3",
+        "description": "Busca na lista completa de ativos negociados na B3 (ações, FIIs, ETFs, BDRs e units), por ticker "
+        "ou nome. Retorna ticker, nome de pregão, tipo, fechamento e variação do último pregão e volume. Use para "
+        "ativos que não estão no ranking ou para descobrir o ticker de uma empresa.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Ticker ou parte do nome (ex.: MGLU3, magazine)"},
+                "type": {"type": "string", "enum": ["acao", "fii", "etf", "bdr", "unit"],
+                         "description": "Filtro opcional por tipo"},
+                "limit": {"type": "integer", "description": "Quantos ativos retornar, de 1 a 20"},
+            },
+            "required": ["query"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+    {
+        "name": "get_b3_quote",
+        "description": "Cotação com atraso de qualquer ativo da B3 pelo ticker, mesmo fora do ranking: preço, variação do "
+        "dia e os últimos 30 fechamentos.",
+        "input_schema": {
+            "type": "object",
+            "properties": {"ticker": {"type": "string"}},
+            "required": ["ticker"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+    {
         "name": "get_market",
         "description": "Panorama do mercado agora: Ibovespa, dólar, euro, bolsas dos EUA, Europa e China, juro americano, "
         "petróleo, ouro e bitcoin (valor e variação do dia), maiores altas e baixas entre os ativos do app e quantos "
@@ -116,7 +147,7 @@ TOOLS = [
 class Assistant:
     def __init__(
         self, api_key: str, model: str, ranking: RankingService, macro_source, longterm=None, market=None,
-        usage=None, feature: str = "chat",
+        usage=None, feature: str = "chat", catalog=None,
     ):
         self.usage = usage
         self.feature = feature
@@ -126,6 +157,7 @@ class Assistant:
         self.macro_source = macro_source
         self.longterm = longterm
         self.market = market
+        self.catalog = catalog
 
     async def run_tool(self, name: str, args: dict) -> dict:
         if name == "get_ranking":
@@ -168,6 +200,22 @@ class Assistant:
             ticker = args["ticker"].upper().strip()
             result = self.longterm.asset(ticker) if self.longterm else None
             return result or {"erro": f"{ticker} não tem histórico de longo prazo no app."}
+        if name == "search_b3":
+            if not self.catalog or not self.catalog.assets:
+                return {"erro": "Lista da B3 indisponível."}
+            limit = max(1, min(20, args.get("limit") or 10))
+            found = self.catalog.search(args["query"][:40], args.get("type"), 0, limit)
+            for a in found["ativos"]:
+                a.pop("logo_url", None)
+                a.pop("isin", None)
+            return {"pregao": self.catalog.trade_date, **found}
+        if name == "get_b3_quote":
+            if not self.catalog:
+                return {"erro": "Cotação sob demanda indisponível."}
+            quote = await self.catalog.quote(args["ticker"])
+            if quote is None:
+                return {"erro": f"{args['ticker'].upper()} não foi encontrado na B3."}
+            return {k: v for k, v in quote.items() if k != "logo_url"}
         if name == "get_market":
             if self.market is None:
                 return {"erro": "Panorama do mercado indisponível."}
