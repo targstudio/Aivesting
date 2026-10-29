@@ -51,34 +51,50 @@ export default function PrivacyPage() {
         Alguns desses fornecedores ficam fora do Brasil. A transferência internacional segue as garantias previstas na LGPD.
       </p>
 
-      <h2>4. Por quanto tempo guardamos</h2>
+      <h2>4. Dados da sua conta Google</h2>
+      <p>Se você escolher entrar com o Google, o StockTower recebe do Google apenas:</p>
+      <ul>
+        <li>seu endereço de e-mail;</li>
+        <li>seu nome e sua foto de perfil públicos;</li>
+        <li>um identificador da sua conta Google.</li>
+      </ul>
+      <p>
+        Esses dados servem só para criar sua conta, identificar você no login e mostrar seu nome e foto no app. Não
+        acessamos seus contatos, e-mails, arquivos, agenda nem qualquer outro dado da sua conta Google. Não vendemos, não
+        usamos para publicidade e não compartilhamos esses dados com terceiros, exceto com o Supabase, que faz o login em
+        nosso nome. Você pode desligar o acesso a qualquer momento em myaccount.google.com/permissions e pedir a exclusão
+        dos dados pelo contato abaixo. O uso das informações recebidas das APIs do Google segue a Política de Dados do
+        Usuário dos Serviços de API do Google, incluindo os requisitos de uso limitado.
+      </p>
+
+      <h2>5. Por quanto tempo guardamos</h2>
       <p>
         Os dados da conta ficam guardados enquanto ela existir. Ao excluir a conta, apagamos os dados vinculados a ela, exceto
         o que a lei obrigar a manter.
       </p>
 
-      <h2>5. Seus direitos</h2>
+      <h2>6. Seus direitos</h2>
       <p>
         Você pode pedir a qualquer momento: confirmação e acesso aos seus dados, correção, exclusão, portabilidade, informação
         sobre compartilhamento e revogação do consentimento. Escreva para <Contact />.
       </p>
 
-      <h2>6. Armazenamento no navegador</h2>
+      <h2>7. Armazenamento no navegador</h2>
       <p>
         O app usa o armazenamento local do navegador para guardar sua sessão e suas preferências. Não usamos cookies de
         rastreamento nem de anúncios.
       </p>
 
-      <h2>7. Segurança</h2>
+      <h2>8. Segurança</h2>
       <p>
         Usamos conexão criptografada (HTTPS), acesso ao banco restrito ao servidor e verificação da sessão em cada pedido.
         Nenhum sistema é totalmente imune; se houver um incidente relevante, avisaremos você e a ANPD.
       </p>
 
-      <h2>8. Mudanças nesta política</h2>
+      <h2>9. Mudanças nesta política</h2>
       <p>Se esta política mudar, a data acima será atualizada e, em mudanças importantes, avisaremos no app.</p>
 
-      <h2>9. Contato</h2>
+      <h2>10. Contato</h2>
       <p>
         Dúvidas ou pedidos sobre seus dados: <Contact />.
       </p>
