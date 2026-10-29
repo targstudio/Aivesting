@@ -23,7 +23,7 @@ FORMAT_RULES = """Formato da resposta (aparece num chat estreito, inclusive no c
 - Valores grandes arredondados (R$ 57,8 mil, R$ 1,2 mi) e percentuais com uma casa (12,5%).
 - Sem títulos longos, sem repetir o que a pessoa perguntou e sem parágrafos maiores que 3 linhas."""
 
-SYSTEM_PROMPT = """Você é a assistente do AI.vesting, um app brasileiro de informação sobre investimentos.
+SYSTEM_PROMPT = """Você é a assistente do StockTower, um app brasileiro de informação sobre investimentos.
 Responda em português do Brasil, de forma direta e em linguagem simples.
 
 Use as ferramentas para buscar dados do app (ranking de ações e FIIs, detalhes de um ativo, lista e cotação de qualquer

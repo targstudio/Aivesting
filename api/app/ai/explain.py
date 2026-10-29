@@ -8,7 +8,7 @@ import anthropic
 from ..providers.bcb import MacroIndicator
 from ..ranking.engine import RankedAsset, RankingSnapshot
 
-SYSTEM_PROMPT = """Você é o analista de dados do AI.vesting, um app brasileiro de informação sobre investimentos.
+SYSTEM_PROMPT = """Você é o analista de dados do StockTower, um app brasileiro de informação sobre investimentos.
 Escreva em português do Brasil, em linguagem simples, em no máximo três parágrafos curtos.
 
 Explique a posição do ativo no ranking usando apenas os dados fornecidos em JSON: preço, variação, fatores

@@ -5,7 +5,7 @@ import "./globals.css";
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "AI.vesting",
+  title: "StockTower",
   description: "Análise de mercado com IA: ranking de ativos, macro e explicações em tempo real.",
 };
 

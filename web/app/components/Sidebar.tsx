@@ -22,7 +22,7 @@ import {
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Logo } from "./Logo";
+import { Logo, Wordmark } from "./Logo";
 
 type Item = { href: string; label: string; icon: LucideIcon; mobile?: boolean; short?: string };
 
@@ -109,10 +109,8 @@ export function Sidebar() {
       <div className="hidden w-60 shrink-0 bg-nav text-nav-text md:block">
         <aside className="sticky top-0 flex h-screen flex-col overflow-y-auto px-4 py-6">
           <Link href="/" className="mb-8 flex items-center gap-2.5 px-3">
-            <Logo size={30} />
-            <span className="text-lg font-bold tracking-tight text-white">
-              AI.vesting
-            </span>
+            <Logo size={34} variant="light" />
+            <Wordmark className="text-[15px] text-white" />
           </Link>
           <WithQuery>
             {(query) =>

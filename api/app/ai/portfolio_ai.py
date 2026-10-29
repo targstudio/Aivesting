@@ -120,7 +120,7 @@ def clean_holdings(raw: list[dict]) -> list[dict]:
     return out
 
 
-ANALYSIS_PROMPT = """Você é a IA do AI.vesting, um app brasileiro de investimentos. A pessoa importou a carteira dela
+ANALYSIS_PROMPT = """Você é a IA do StockTower, um app brasileiro de investimentos. A pessoa importou a carteira dela
 e o app já calculou a análise (JSON abaixo): divisão por classe e por setor, concentração, resultado contra o preço
 médio, posição de cada ativo no ranking de curto prazo do app, histórico de 10 anos e como a carteira de hoje teria
 ido ano a ano e nas crises. Escreva em português do Brasil, em linguagem simples.

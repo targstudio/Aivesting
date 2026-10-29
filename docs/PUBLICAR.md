@@ -1,4 +1,4 @@
-# Como publicar o AI.vesting
+# Como publicar o StockTower
 
 O app tem três partes, cada uma num serviço:
 

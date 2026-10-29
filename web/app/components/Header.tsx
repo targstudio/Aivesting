@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ACCOUNT_EVENT, loadSession } from "@/lib/account";
 import { ApiStatusPill } from "./ApiStatus";
 import { useApp } from "./AppProvider";
-import { Logo } from "./Logo";
+import { Logo, Wordmark } from "./Logo";
 
 const LEVEL_LABELS = { iniciante: "IA: linguagem simples", intermediario: "IA: nível intermediário", avancado: "IA: nível avançado" };
 
@@ -24,7 +24,7 @@ export function Header() {
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-surface px-4 md:justify-end md:px-8">
       <Link href="/" className="flex items-center gap-2.5 md:hidden">
         <Logo size={30} />
-        <span className="text-lg font-bold tracking-tight">AI.vesting</span>
+        <Wordmark className="text-sm" />
       </Link>
       <div className="flex items-center gap-2 md:gap-3">
         <ApiStatusPill />
