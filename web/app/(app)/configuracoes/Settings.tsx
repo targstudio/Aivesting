@@ -1,9 +1,11 @@
 "use client";
 
-import { CheckCircle2, CircleAlert, Sparkles } from "lucide-react";
+import { CheckCircle2, CircleAlert, LogIn, Sparkles } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { useApp, type Prefs } from "@/app/components/AppProvider";
 import { Card } from "@/app/components/ui";
+import { ACCOUNT_EVENT, loadSession, signOut } from "@/lib/account";
 import { apiFetch, type Health, type Level } from "@/lib/api";
 
 const LEVELS: { value: Level; label: string; desc: string }[] = [
@@ -76,6 +78,36 @@ function Status({ ok, label, detail }: { ok: boolean; label: string; detail: str
   );
 }
 
+/** Situação da conta: conectada (com opção de sair) ou só neste navegador (com link para entrar). */
+function AccountLine() {
+  const [email, setEmail] = useState<string | null | undefined>(undefined);
+  useEffect(() => {
+    const read = () => setEmail(loadSession() ? (loadSession()?.email ?? "") : null);
+    read();
+    window.addEventListener(ACCOUNT_EVENT, read);
+    return () => window.removeEventListener(ACCOUNT_EVENT, read);
+  }, []);
+  if (email === undefined) return null;
+  return email !== null ? (
+    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+      <span>
+        Conectado como <strong className="text-text">{email || "sua conta"}</strong>: perfil, carteira e alertas ficam salvos na conta.
+      </span>
+      <button onClick={signOut} className="font-semibold text-accent-text hover:underline">
+        Sair
+      </button>
+    </p>
+  ) : (
+    <p className="text-sm text-muted">
+      Salvo só neste navegador.{" "}
+      <Link href="/entrar" className="inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
+        <LogIn size={14} /> Entre com seu e-mail
+      </Link>{" "}
+      para ver tudo em qualquer aparelho.
+    </p>
+  );
+}
+
 export function Settings() {
   const { ready, prefs, setPrefs, alerts, resetAll } = useApp();
   const [health, setHealth] = useState<Health | null | "error">(null);
@@ -129,7 +161,7 @@ export function Settings() {
 
         <Card>
           <h2 className="mb-1 text-lg font-bold">Perfil</h2>
-          <p className="text-sm text-muted">Salvo só neste navegador até o login ser ativado.</p>
+          <AccountLine />
           <div className="divide-y divide-border">
             <Row title="Como quer ser chamado">
               <input
