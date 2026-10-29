@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, Coins, Flame, RefreshCw, Sparkles, Trophy } from "lucide-react";
+import { ArrowRight, Check, Coins, Flame, Plane, RefreshCw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { apiFetch, type PortfolioDividends } from "@/lib/api";
@@ -54,7 +54,7 @@ export function Journey({ today, highlights }: { today: Today; highlights?: Reac
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-              <Trophy size={16} /> Nível {level.index + 1} · {level.level.name}
+              <Plane size={16} /> Nível {level.index + 1} · {level.level.name}
             </div>
             <div className="tabular mt-1 text-4xl font-bold">{formatBRL(total)}</div>
             <div className="mt-1 text-xs text-nav-text">
@@ -78,7 +78,7 @@ export function Journey({ today, highlights }: { today: Today; highlights?: Reac
             <span>
               {level.next
                 ? `faltam ${formatBRL(level.next.min - total)} para o nível ${level.index + 2} · ${level.next.name}`
-                : "último nível. Parabéns!"}
+                : "você chegou à torre de controle. Parabéns!"}
             </span>
           </div>
         </div>
@@ -146,14 +146,14 @@ export function Journey({ today, highlights }: { today: Today; highlights?: Reac
             </Link>
           </Card>
           <Card>
-            <CardHeader title="Os níveis" />
+            <CardHeader title="Plano de voo" />
             <ol className="flex flex-col gap-1.5 text-sm">
               {LEVELS.map((l, i) => (
                 <li key={l.name} className={`flex justify-between ${i === level.index ? "font-bold text-text" : i < level.index ? "text-muted" : "text-muted/70"}`}>
                   <span>
                     {i + 1}. {l.name}
                   </span>
-                  <span className="tabular">{l.min ? formatBRL(l.min).replace(/,00$/, "") : "início"}</span>
+                  <span className="tabular">{l.min ? formatBRL(l.min).replace(/,00$/, "") : "ponto de partida"}</span>
                 </li>
               ))}
             </ol>
