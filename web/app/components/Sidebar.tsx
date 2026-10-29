@@ -1,107 +1,116 @@
 "use client";
 
-import {
-  Bell,
-  BookOpen,
-  Bot,
-  BriefcaseBusiness,
-  Building2,
-  Calculator,
-  Columns3,
-  Hourglass,
-  House,
-  Landmark,
-  PiggyBank,
-  LineChart,
-  Settings,
-  Trophy,
-  WalletCards,
-  type LucideIcon,
-} from "lucide-react";
+import { BookOpen, BriefcaseBusiness, Compass, House, WalletCards, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { usePathname } from "next/navigation";
 import { Logo, Wordmark } from "./Logo";
 
-type Item = { href: string; label: string; icon: LucideIcon; mobile?: boolean; short?: string };
+type Tab = { href: string; label: string };
+type Area = { href: string; label: string; short?: string; icon: LucideIcon; tabs?: Tab[]; extra?: string[] };
 
-/** Menu dividido em seções, como no painel de referência. */
-export const NAV_SECTIONS: { title?: string; items: Item[] }[] = [
+/**
+ * O app em poucas áreas. Cada área junta as telas que respondem à mesma pergunta; as telas
+ * de uma área aparecem como abas no topo (AreaTabs). Explorar guarda as listas para quem quer ir além.
+ */
+export const AREAS: Area[] = [
+  { href: "/", label: "Início", icon: House },
   {
-    items: [
-      { href: "/", label: "Início", icon: House, mobile: true },
-      { href: "/mercado", label: "Mercado", icon: LineChart },
-      { href: "/ranking", label: "Melhores ações", short: "Melhores", icon: Trophy, mobile: true },
-      { href: "/ranking?classe=fiis", label: "Fundos imobiliários", icon: Building2 },
-      { href: "/horizontes", label: "Longo prazo", icon: Hourglass },
-      { href: "/comparar", label: "Comparar", icon: Columns3 },
-      { href: "/renda-fixa", label: "Renda fixa", icon: PiggyBank },
-      { href: "/macro", label: "Economia", icon: Landmark },
+    href: "/assessor",
+    label: "Onde investir",
+    short: "Investir",
+    icon: BriefcaseBusiness,
+    tabs: [
+      { href: "/assessor", label: "Seu plano" },
+      { href: "/simulador", label: "Quanto você vai ter" },
+      { href: "/renda-fixa", label: "Renda fixa" },
     ],
   },
   {
-    title: "Para você",
-    items: [
-      { href: "/carteira", label: "Minha carteira", short: "Carteira", icon: WalletCards, mobile: true },
-      {
-        href: "/assessor",
-        label: "Onde investir",
-        icon: BriefcaseBusiness,
-        mobile: true,
-      },
-      { href: "/simulador", label: "Simulador de metas", short: "Simulador", icon: Calculator },
-      { href: "/assistente", label: "Pergunte à IA", short: "IA", icon: Bot },
-      { href: "/enciclopedia", label: "Aprenda o básico", short: "Aprenda", icon: BookOpen },
+    href: "/carteira",
+    label: "Minha carteira",
+    short: "Carteira",
+    icon: WalletCards,
+    tabs: [
+      { href: "/carteira", label: "Sua carteira" },
+      { href: "/alertas", label: "Avisos" },
     ],
   },
-  {
-    title: "Outros",
-    items: [
-      { href: "/alertas", label: "Alertas", icon: Bell, mobile: true },
-      { href: "/configuracoes", label: "Configurações", icon: Settings },
-    ],
-  },
+  { href: "/enciclopedia", label: "Aprenda", icon: BookOpen },
 ];
 
-export const NAV_ITEMS = NAV_SECTIONS.flatMap((s) => s.items);
+export const EXPLORE: Area = {
+  href: "/ranking",
+  label: "Explorar",
+  icon: Compass,
+  tabs: [
+    { href: "/ranking", label: "Melhores agora" },
+    { href: "/horizontes", label: "Longo prazo" },
+    { href: "/comparar", label: "Comparar" },
+    { href: "/mercado", label: "Mercado" },
+    { href: "/macro", label: "Economia" },
+  ],
+  extra: ["/ativo", "/explorar"],
+};
 
-/** Compara caminho e query: "Ranking" e "FIIs" usam a mesma página, separadas por ?classe=fiis. */
-function isActive(pathname: string, query: string, href: string) {
-  const [path, hrefQuery = ""] = href.split("?");
-  if (path === "/") return pathname === "/";
-  if (!pathname.startsWith(path)) return false;
-  const want = new URLSearchParams(hrefQuery).get("classe");
-  const have = new URLSearchParams(query).get("classe");
-  return path === "/ranking" ? (want ?? "acoes") === (have ?? "acoes") : true;
-}
+const ALL_AREAS = [...AREAS, EXPLORE];
 
-function useQuery() {
-  return useSearchParams().toString();
-}
+const inPath = (pathname: string, href: string) =>
+  href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
-/** useSearchParams precisa de Suspense; sem ela, as páginas estáticas não compilam. */
-function WithQuery({
-  children,
-}: {
-  children: (query: string) => React.ReactNode;
-}) {
-  return (
-    <Suspense fallback={children("")}>
-      <QueryReader>{children}</QueryReader>
-    </Suspense>
+/** A área da tela atual: a que tem a tela entre as abas ou como endereço próprio. */
+export function areaOf(pathname: string) {
+  return ALL_AREAS.find(
+    (a) => inPath(pathname, a.href) || a.tabs?.some((t) => inPath(pathname, t.href)) || a.extra?.some((e) => inPath(pathname, e)),
   );
 }
 
-function QueryReader({
-  children,
-}: {
-  children: (query: string) => React.ReactNode;
-}) {
-  return <>{children(useQuery())}</>;
+/** Abas da área atual, no topo da tela. Some nas telas que não fazem parte de uma área com abas. */
+export function AreaTabs() {
+  const pathname = usePathname();
+  const area = areaOf(pathname);
+  if (!area?.tabs || pathname.startsWith("/ativo")) return null;
+  return (
+    <nav aria-label={area.label} className="-mx-4 mb-2 overflow-x-auto px-4 md:mx-0 md:px-0">
+      <div className="inline-flex gap-1 rounded-xl border border-border bg-surface p-1 text-sm">
+        {area.tabs.map((t) => {
+          const active = inPath(pathname, t.href);
+          return (
+            <Link
+              key={t.href}
+              href={t.href}
+              aria-current={active ? "page" : undefined}
+              className={`whitespace-nowrap rounded-lg px-4 py-2 font-semibold transition-colors ${
+                active ? "bg-primary text-on-primary" : "text-muted hover:text-text"
+              }`}
+            >
+              {t.label}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+function NavLink({ area, active }: { area: Area; active: boolean }) {
+  const Icon = area.icon;
+  return (
+    <Link
+      href={area.href}
+      className={`relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
+        active ? "bg-nav-2 text-white" : "text-nav-text hover:bg-nav-2/60 hover:text-white"
+      }`}
+    >
+      {active && <span className="absolute inset-y-1.5 left-0 w-1 rounded-r bg-primary" aria-hidden />}
+      <Icon size={18} strokeWidth={1.75} className={`shrink-0 ${active ? "text-primary" : ""}`} />
+      <span>{area.label}</span>
+    </Link>
+  );
 }
 
 export function Sidebar() {
   const pathname = usePathname();
+  const current = areaOf(pathname);
   return (
     <>
       <div className="hidden w-60 shrink-0 bg-nav text-nav-text md:block">
@@ -110,71 +119,31 @@ export function Sidebar() {
             <Logo size={34} variant="light" />
             <Wordmark className="text-[15px] text-white" />
           </Link>
-          <WithQuery>
-            {(query) =>
-              NAV_SECTIONS.map((section, i) => (
-                <div
-                  key={section.title ?? i}
-                  className={i > 0 ? "mt-5 border-t border-white/10 pt-5" : ""}
-                >
-                  {section.title && (
-                    <div className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-nav-muted">
-                      {section.title}
-                    </div>
-                  )}
-                  <div className="flex flex-col gap-0.5">
-                    {section.items.map(({ href, label, icon: Icon }) => {
-                      const active = isActive(pathname, query, href);
-                      return (
-                        <Link
-                          key={href}
-                          href={href}
-                          className={`relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
-                            active
-                              ? "bg-nav-2 text-white"
-                              : "text-nav-text hover:bg-nav-2/60 hover:text-white"
-                          }`}
-                        >
-                          {active && (
-                            <span
-                              className="absolute inset-y-1.5 left-0 w-1 rounded-r bg-primary"
-                              aria-hidden
-                            />
-                          )}
-                          <Icon
-                            size={18}
-                            strokeWidth={1.75}
-                            className={`shrink-0 ${active ? "text-primary" : ""}`}
-                          />
-                          <span>{label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))
-            }
-          </WithQuery>
+          <div className="flex flex-col gap-0.5">
+            {AREAS.map((a) => (
+              <NavLink key={a.href} area={a} active={current === a} />
+            ))}
+          </div>
+          <div className="mt-auto border-t border-white/10 pt-4">
+            <NavLink area={EXPLORE} active={current === EXPLORE} />
+          </div>
         </aside>
       </div>
-      {/* Mobile: barra inferior com os itens principais */}
+      {/* Mobile: barra inferior com as áreas */}
       <nav className="fixed inset-x-0 bottom-0 z-20 flex justify-around bg-nav py-2 md:hidden">
-        <WithQuery>
-          {(query) =>
-            NAV_ITEMS.filter((i) => i.mobile).map(
-              ({ href, label, short, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`flex flex-col items-center gap-1 px-2 text-[11px] ${isActive(pathname, query, href) ? "font-semibold text-primary" : "text-nav-muted"}`}
-                >
-                  <Icon size={20} strokeWidth={1.75} />
-                  {short ?? label}
-                </Link>
-              ),
-            )
-          }
-        </WithQuery>
+        {ALL_AREAS.map((a) => {
+          const Icon = a.icon;
+          return (
+            <Link
+              key={a.href}
+              href={a.href}
+              className={`flex flex-col items-center gap-1 px-2 text-[11px] ${current === a ? "font-semibold text-primary" : "text-nav-muted"}`}
+            >
+              <Icon size={20} strokeWidth={1.75} />
+              {a.short ?? a.label}
+            </Link>
+          );
+        })}
       </nav>
     </>
   );
