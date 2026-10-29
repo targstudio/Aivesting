@@ -10,6 +10,11 @@ from .insights import LEVELS
 
 MAX_TOOL_ROUNDS = 6
 
+# Ferramentas com `strict` não aceitam limites numéricos nem de texto no schema (a API devolve 400): os limites ficam
+# na descrição e são aplicados no código.
+UNSUPPORTED_STRICT_KEYS = {"minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf", "minLength",
+                           "maxLength", "minItems", "maxItems"}
+
 SYSTEM_PROMPT = """Você é a assistente do AI.vesting, um app brasileiro de informação sobre investimentos.
 Responda em português do Brasil, de forma direta e em linguagem simples.
 
@@ -34,7 +39,7 @@ TOOLS = [
             "type": "object",
             "properties": {
                 "asset_class": {"type": "string", "enum": list(CLASSES), "description": "acoes ou fiis"},
-                "limit": {"type": "integer", "minimum": 1, "maximum": 50, "description": "Quantos ativos retornar"},
+                "limit": {"type": "integer", "description": "Quantos ativos retornar, de 1 a 50"},
             },
             "required": ["asset_class"],
             "additionalProperties": False,
@@ -63,7 +68,7 @@ TOOLS = [
             "properties": {
                 "asset_class": {"type": "string", "enum": list(CLASSES), "description": "acoes ou fiis"},
                 "years": {"type": "integer", "enum": [1, 3, 5, 10], "description": "Horizonte em anos"},
-                "limit": {"type": "integer", "minimum": 1, "maximum": 50, "description": "Quantos ativos retornar"},
+                "limit": {"type": "integer", "description": "Quantos ativos retornar, de 1 a 50"},
             },
             "required": ["asset_class", "years"],
             "additionalProperties": False,
@@ -119,7 +124,7 @@ class Assistant:
             snapshot = self.ranking.snapshots.get(args["asset_class"])
             if snapshot is None:
                 return {"erro": "Ranking ainda não calculado."}
-            limit = args.get("limit") or 10
+            limit = max(1, min(50, args.get("limit") or 10))
             return {
                 "indice_referencia": snapshot.benchmark,
                 "calculado_em": snapshot.computed_at,
@@ -141,7 +146,7 @@ class Assistant:
             result = self.longterm.horizon(args["asset_class"], args["years"]) if self.longterm else None
             if result is None:
                 return {"erro": "Ranking por horizonte indisponível."}
-            limit = args.get("limit") or 10
+            limit = max(1, min(50, args.get("limit") or 10))
             return {
                 "indice_referencia": result["benchmark"],
                 "horizonte_anos": result["years"],

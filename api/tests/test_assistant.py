@@ -64,3 +64,19 @@ def test_recompute_requires_admin_token_when_set():
     c = TestClient(create_app(Settings(_env_file=None, demo_mode=True, admin_token="seg"), start_scheduler=False))
     assert c.post("/ranking/recompute").status_code == 401
     assert c.post("/ranking/recompute", headers={"X-Admin-Token": "seg"}).status_code == 200
+
+
+def test_strict_tool_schemas_have_no_unsupported_keywords():
+    from app.ai.assistant import TOOLS, UNSUPPORTED_STRICT_KEYS
+
+    def walk(node):
+        if isinstance(node, dict):
+            assert not UNSUPPORTED_STRICT_KEYS & node.keys(), node
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    for tool in TOOLS:
+        walk(tool["input_schema"])

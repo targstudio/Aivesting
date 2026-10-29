@@ -117,7 +117,11 @@ def describe_error(exc: Exception) -> tuple[int, str]:
             return 429, "A IA recebeu muitas perguntas agora. Espere alguns segundos e tente de novo."
         if exc.status_code >= 500:
             return 503, "A IA da Anthropic está instável agora. Tente de novo em alguns segundos."
-        return 502, "A IA não conseguiu responder a esta pergunta. Tente reformular."
+        # Mostra o motivo que a Anthropic deu (ex.: pedido inválido), para o erro poder ser diagnosticado pela tela.
+        reason = ""
+        if isinstance(exc.body, dict):
+            reason = str((exc.body.get("error") or {}).get("message") or "")[:200]
+        return 502, "A IA não conseguiu responder a esta pergunta." + (f" Motivo: {reason}" if reason else " Tente reformular.")
     if isinstance(exc, (anthropic.APIConnectionError, anthropic.APITimeoutError)):
         return 503, "Não consegui falar com a IA da Anthropic agora. Tente de novo em alguns segundos."
     return 500, "Erro inesperado na API. Tente de novo; se continuar, avise o suporte."
