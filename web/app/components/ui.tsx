@@ -6,7 +6,7 @@ export function Breadcrumbs({ items }: { items: { label: string; href?: string }
   return (
     <nav className="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
       <Link href="/" className="flex items-center gap-1 font-medium hover:text-text">
-        <House size={16} /> Início
+        <House size={16} /> Jornada
       </Link>
       {items.map((item) => (
         <span key={item.label} className="flex items-center gap-2">

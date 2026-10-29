@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Breadcrumbs, InfoBanner, PageTitle } from "@/app/components/ui";
+import { Breadcrumbs, PageTitle } from "@/app/components/ui";
 import { AskButton } from "./AskButton";
 import { GLOSSARY } from "@/lib/glossary";
 import { ENTRIES, GROUPS } from "./entries";
+import { Trails } from "./Trails";
 
 const ROWS: [keyof (typeof ENTRIES)[number], string][] = [
   ["howItPays", "Como rende"],
@@ -16,15 +17,17 @@ const ROWS: [keyof (typeof ENTRIES)[number], string][] = [
 export default function EncyclopediaPage() {
   return (
     <>
-      <Breadcrumbs items={[{ label: "Enciclopédia" }]} />
+      <Breadcrumbs items={[{ label: "Aprenda" }]} />
       <PageTitle
-        title="Enciclopédia do investidor"
+        title="Aprenda o básico"
         subtitle="O que é cada investimento, como rende, o risco, em quanto tempo dá para resgatar e o imposto. Tire qualquer dúvida com a IA."
       />
-      <InfoBanner>
-        Quer saber quanto colocar em cada um? O <Link href="/assessor" className="underline">Assessor</Link> monta um plano a
+      <Trails />
+      <h2 className="mb-1 text-xl font-bold">Cada investimento, explicado</h2>
+      <p className="mb-4 text-sm text-muted">
+        Quer saber quanto colocar em cada um? <Link href="/assessor" className="underline">Onde investir</Link> monta um plano a
         partir do seu perfil.
-      </InfoBanner>
+      </p>
       <nav className="mb-8 flex flex-wrap gap-2">
         {GROUPS.map((g) => (
           <a key={g} href={`#${g}`} className="rounded-full bg-track px-4 py-2 text-sm font-semibold">

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useApp } from "@/app/components/AppProvider";
@@ -366,6 +366,8 @@ export function Advisor() {
             ))}
           </div>
 
+          <NextSteps plan={plan} hasPortfolio={!!portfolio && portfolio.total > 0} />
+
           {plan.monthly_contribution && (
             <Card>
               <h2 className="mb-3 text-lg font-bold">Como dividir o que você guarda por mês</h2>
@@ -464,5 +466,67 @@ function Picks({ allocation: a, plan }: { allocation: AdvisorAllocation; plan: A
         <p className="mt-2 text-xs text-muted">Para outro prazo: só para comparar, sem valor sugerido.</p>
       )}
     </div>
+  );
+}
+
+const SIM_YEARS = [1, 3, 5, 8, 10, 15, 20];
+const FI_MONTHS = [6, 12, 24, 36, 60, 120];
+const nearest = (list: number[], v: number) => list.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a));
+
+/** O plano em passos: cada um leva para a tela certa já com os valores do plano. */
+function NextSteps({ plan, hasPortfolio }: { plan: AdvisorPlan; hasPortfolio: boolean }) {
+  const months = plan.months ?? 60;
+  const fixed = plan.allocation.filter((a) => ["reserva", "rf_pos", "rf_ipca"].includes(a.key)).reduce((s, a) => s + a.value, 0);
+  const monthly = plan.monthly_contribution?.reduce((s, c) => s + c.value, 0) ?? 0;
+  const steps = [
+    { title: "Plano montado", text: "Você já sabe quanto colocar em cada tipo de investimento.", done: true },
+    {
+      title: "Veja quanto você pode ter",
+      text: "Simule o plano com o que aconteceu desde 2000: pior caso, caso típico e melhor caso.",
+      href: `/simulador?inicial=${Math.round(plan.amount)}&mensal=${Math.round(monthly)}&anos=${nearest(SIM_YEARS, months / 12)}`,
+      cta: "Simular",
+    },
+    ...(fixed > 0
+      ? [
+          {
+            title: "Escolha onde guardar a parte segura",
+            text: `Compare poupança, CDB, LCI e Tesouro para os ${formatBRL(fixed)} de renda fixa, já com imposto.`,
+            href: `/renda-fixa?valor=${Math.round(fixed)}&meses=${nearest(FI_MONTHS, months)}`,
+            cta: "Comparar",
+          },
+        ]
+      : []),
+    {
+      title: "Coloque a carteira no app",
+      text: "Depois de investir, mande um print da corretora: o app mede seu patrimônio e sua jornada avança.",
+      href: "/carteira",
+      cta: "Importar",
+      done: hasPortfolio,
+    },
+  ];
+  return (
+    <Card>
+      <h2 className="mb-4 text-lg font-bold">Seus próximos passos</h2>
+      <ol className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {steps.map((s, i) => (
+          <li key={s.title} className={`flex flex-col rounded-2xl border p-4 ${s.done ? "border-border bg-surface-2" : "border-primary/50"}`}>
+            <span
+              className={`mb-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
+                s.done ? "bg-positive text-white" : "bg-primary text-on-primary"
+              }`}
+            >
+              {s.done ? <Check size={15} /> : i + 1}
+            </span>
+            <span className={`font-semibold ${s.done ? "text-muted line-through" : ""}`}>{s.title}</span>
+            <span className="mt-1 flex-1 text-sm text-muted">{s.text}</span>
+            {"href" in s && s.href && !s.done && (
+              <Link href={s.href} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent-text hover:underline">
+                {s.cta} <ArrowRight size={14} />
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+    </Card>
   );
 }
