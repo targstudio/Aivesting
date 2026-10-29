@@ -627,3 +627,34 @@ export type Fundamentals = {
 };
 
 export const getFundamentals = (ticker: string) => get<Fundamentals>(`/assets/${encodeURIComponent(ticker)}/fundamentos`);
+
+// ---- Opinião dos analistas ----
+
+export type AnalystSide = "compra" | "neutro" | "venda";
+
+export type AnalystFirm = {
+  firm: string;
+  side: AnalystSide;
+  grade: string;
+  previous_side: AnalystSide | null;
+  date: string;
+  source: string;
+};
+
+export type AssetAnalysts = {
+  ticker: string;
+  counts: { compra: number; neutro: number; venda: number; total: number } | null;
+  price: number | null;
+  target_mean: number | null;
+  target_high: number | null;
+  target_low: number | null;
+  upside: number | null;
+  analysts: number | null;
+  firms: AnalystFirm[];
+  adr: string | null;
+  as_of: string;
+  source: string;
+  disclaimer: string;
+};
+
+export const getAnalysts = (ticker: string) => get<AssetAnalysts>(`/assets/${encodeURIComponent(ticker)}/analistas`);

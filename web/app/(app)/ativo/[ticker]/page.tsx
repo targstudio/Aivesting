@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { AnalystsCard } from "@/app/components/AnalystsCard";
 import { AssetActions } from "@/app/components/AssetActions";
 import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
@@ -9,21 +10,23 @@ import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { SwotAnalysis } from "@/app/components/SwotAnalysis";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
-import { getAsset, getAssetDividends, getAssetHistory, getB3Quote, getFundamentals, type B3Quote } from "@/lib/api";
+import { getAnalysts, getAsset, getAssetDividends, getAssetHistory, getB3Quote, getFundamentals, type B3Quote } from "@/lib/api";
 import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatUpdated } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
-  const [detail, history, dividends, fundamentals] = await Promise.all([
+  const [detail, history, dividends, fundamentals, analysts] = await Promise.all([
     getAsset(ticker),
     getAssetHistory(ticker),
     getAssetDividends(ticker),
     getFundamentals(ticker),
+    getAnalysts(ticker),
   ]);
   // Fora do ranking: cotação sob demanda de qualquer ativo da B3.
   const quote = detail ? null : await getB3Quote(ticker);
   if (!detail && !history && !quote) notFound();
   const head = detail?.asset ?? history ?? quote!;
+  const isFii = (detail?.asset ?? history)?.asset_class === "fiis" || quote?.type === "fii";
   const crumb = { label: detail?.asset.asset_class === "fiis" ? "Fundos imobiliários" : "Ações", href: detail?.asset.asset_class === "fiis" ? "/ranking?classe=fiis" : "/ranking" };
 
   return (
@@ -37,7 +40,9 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
       <InfoBanner>{detail?.disclaimer ?? quote?.disclaimer ?? history!.disclaimer}</InfoBanner>
       {detail && <LiveSection detail={detail} />}
       {quote && <QuoteSection quote={quote} />}
-      {fundamentals && <FundamentalsCard f={fundamentals} isFii={(detail?.asset ?? history)?.asset_class === "fiis" || quote?.type === "fii"} />}
+      {fundamentals && <FundamentalsCard f={fundamentals} isFii={isFii} />}
+      {/* Poucos bancos acompanham fundos imobiliários: sem opiniões, o card só aparece para ações. */}
+      {(analysts || !isFii) && <AnalystsCard a={analysts} ticker={head.ticker} />}
       {dividends && <DividendsCard d={dividends} />}
       {(detail || history) && <SwotAnalysis ticker={head.ticker} />}
       {history && <AssetHistorySection h={history} />}

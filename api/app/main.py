@@ -45,6 +45,8 @@ from .providers.demo import DemoMacro, DemoProvider
 from .providers.yahoo import YahooProvider
 from .ranking.service import CLASSES, RankingService, market_is_open
 from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
+from .analysts import DISCLAIMER as ANALYSTS_DISCLAIMER
+from .analysts import AnalystService
 from .dividends import DISCLAIMER as DIVIDENDS_DISCLAIMER
 from .dividends import DividendService, DividendsRequest
 from .fixed_income import TesouroService, rates_payload
@@ -240,6 +242,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     )
     app.state.accounts = accounts
     app.state.fundamentals = FundamentalsService(settings.brapi_base_url, settings.brapi_token, demo=settings.demo_mode)
+    app.state.analysts = AnalystService(demo=settings.demo_mode)
     app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
@@ -765,6 +768,16 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(404, f"Sem dados de proventos para {ticker.upper()}.")
         return {**result, "disclaimer": DIVIDENDS_DISCLAIMER}
+
+    @app.get("/assets/{ticker}/analistas")
+    async def asset_analysts(ticker: str):
+        """Quantos analistas de bancos e corretoras indicam compra, neutro ou venda, e quem são (quando há nome)."""
+        if not TICKER_RE.match(ticker.upper()):
+            raise HTTPException(404, "Ticker inválido.")
+        result = await app.state.analysts.get(ticker)
+        if result is None:
+            raise HTTPException(404, f"Nenhuma recomendação de analistas encontrada para {ticker.upper()}.")
+        return {**result, "disclaimer": ANALYSTS_DISCLAIMER}
 
     @app.get("/assets/{ticker}/fundamentos")
     async def asset_fundamentals(ticker: str):
