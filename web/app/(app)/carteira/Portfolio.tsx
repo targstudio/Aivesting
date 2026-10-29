@@ -30,6 +30,7 @@ import {
   type StoredPortfolio,
 } from "@/lib/portfolio";
 import { Chat } from "../assistente/Chat";
+import { RebalanceCard } from "./Rebalance";
 
 const MAX_IMAGES = 6;
 
@@ -719,6 +720,7 @@ function Dashboard({
           </Card>
         )}
       </div>
+      {a.plan && <RebalanceCard plan={a.plan} total={a.total} />}
 
       <div>
         <h2 className="mb-3 text-lg font-bold">Converse sobre a sua carteira</h2>
