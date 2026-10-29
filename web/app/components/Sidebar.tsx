@@ -1,8 +1,9 @@
 "use client";
 
-import { BookOpen, BriefcaseBusiness, Compass, Flag, WalletCards, type LucideIcon } from "lucide-react";
+import { BookOpen, BriefcaseBusiness, Flag, LineChart, WalletCards, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Logo, Wordmark } from "./Logo";
 
 type Tab = { href: string; label: string };
@@ -12,8 +13,25 @@ type Area = { href: string; label: string; short?: string; icon: LucideIcon; tab
  * O app em poucas áreas. Cada área junta as telas que respondem à mesma pergunta; as telas
  * de uma área aparecem como abas no topo (AreaTabs). Explorar guarda as listas para quem quer ir além.
  */
+export const MARKET: Area = {
+  href: "/mercado",
+  label: "Mercado",
+  icon: LineChart,
+  tabs: [
+    { href: "/mercado", label: "Visão geral" },
+    { href: "/ranking", label: "Ações" },
+    { href: "/ranking?classe=fiis", label: "Fundos imobiliários" },
+    { href: "/renda-fixa", label: "Renda fixa" },
+    { href: "/horizontes", label: "Longo prazo" },
+    { href: "/comparar", label: "Comparar" },
+    { href: "/macro", label: "Economia" },
+  ],
+  extra: ["/ativo", "/explorar"],
+};
+
 export const AREAS: Area[] = [
   { href: "/", label: "Jornada", icon: Flag },
+  MARKET,
   {
     href: "/assessor",
     label: "Onde investir",
@@ -22,7 +40,6 @@ export const AREAS: Area[] = [
     tabs: [
       { href: "/assessor", label: "Seu plano" },
       { href: "/simulador", label: "Quanto você vai ter" },
-      { href: "/renda-fixa", label: "Renda fixa" },
     ],
   },
   {
@@ -38,24 +55,19 @@ export const AREAS: Area[] = [
   { href: "/enciclopedia", label: "Aprenda", icon: BookOpen },
 ];
 
-export const EXPLORE: Area = {
-  href: "/ranking",
-  label: "Explorar",
-  icon: Compass,
-  tabs: [
-    { href: "/ranking", label: "Melhores agora" },
-    { href: "/horizontes", label: "Longo prazo" },
-    { href: "/comparar", label: "Comparar" },
-    { href: "/mercado", label: "Mercado" },
-    { href: "/macro", label: "Economia" },
-  ],
-  extra: ["/ativo", "/explorar"],
+const ALL_AREAS = AREAS;
+
+const inPath = (pathname: string, href: string) => {
+  const path = href.split("?")[0];
+  return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`);
 };
 
-const ALL_AREAS = [...AREAS, EXPLORE];
-
-const inPath = (pathname: string, href: string) =>
-  href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+/** Abas que dividem a mesma tela pela query (Ações e Fundos imobiliários usam /ranking?classe=). */
+const tabActive = (pathname: string, query: string, href: string) => {
+  if (!inPath(pathname, href)) return false;
+  const want = new URLSearchParams(href.split("?")[1] ?? "").get("classe");
+  return want === new URLSearchParams(query).get("classe");
+};
 
 /** A área da tela atual: a que tem a tela entre as abas ou como endereço próprio. */
 export function areaOf(pathname: string) {
@@ -66,14 +78,23 @@ export function areaOf(pathname: string) {
 
 /** Abas da área atual, no topo da tela. Some nas telas que não fazem parte de uma área com abas. */
 export function AreaTabs() {
+  return (
+    <Suspense fallback={null}>
+      <AreaTabsInner />
+    </Suspense>
+  );
+}
+
+function AreaTabsInner() {
   const pathname = usePathname();
+  const query = useSearchParams().toString();
   const area = areaOf(pathname);
   if (!area?.tabs || pathname.startsWith("/ativo")) return null;
   return (
     <nav aria-label={area.label} className="-mx-4 mb-2 overflow-x-auto px-4 md:mx-0 md:px-0">
       <div className="inline-flex gap-1 rounded-xl border border-border bg-surface p-1 text-sm">
         {area.tabs.map((t) => {
-          const active = inPath(pathname, t.href);
+          const active = tabActive(pathname, query, t.href);
           return (
             <Link
               key={t.href}
@@ -123,9 +144,6 @@ export function Sidebar() {
             {AREAS.map((a) => (
               <NavLink key={a.href} area={a} active={current === a} />
             ))}
-          </div>
-          <div className="mt-auto border-t border-white/10 pt-4">
-            <NavLink area={EXPLORE} active={current === EXPLORE} />
           </div>
         </aside>
       </div>
