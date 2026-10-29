@@ -1,6 +1,7 @@
 import type { AssetHistory, RiskMetrics } from "@/lib/api";
 import { changeColor, formatMonth, formatProbability, formatRatio } from "@/lib/format";
 import { PairedBars } from "./charts";
+import { Term } from "./Term";
 import { Card, Stat } from "./ui";
 
 const plural = (y: string) => (y === "1" ? "1 ano" : `${y} anos`);
@@ -71,10 +72,10 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
               <thead className="text-xs text-muted">
                 <tr>
                   <th className="pb-2 pr-3 font-normal" />
-                  <th className="pb-2 pr-3 font-normal">Retorno ao ano</th>
-                  <th className="pb-2 pr-3 font-normal">Volatilidade</th>
-                  <th className="pb-2 pr-3 font-normal">Pior queda</th>
-                  <th className="pb-2 font-normal">Sharpe</th>
+                  <th className="pb-2 pr-3 font-normal"><Term k="retorno_ano" /></th>
+                  <th className="pb-2 pr-3 font-normal"><Term k="volatilidade" /></th>
+                  <th className="pb-2 pr-3 font-normal"><Term k="pior_queda" /></th>
+                  <th className="pb-2 font-normal"><Term k="sharpe">Sharpe</Term></th>
                 </tr>
               </thead>
               <tbody>

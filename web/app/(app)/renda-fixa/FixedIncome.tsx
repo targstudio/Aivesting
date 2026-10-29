@@ -3,6 +3,7 @@
 import { Trophy } from "lucide-react";
 import { useMemo, useState } from "react";
 import { MoneyField, parseMoney } from "@/app/components/fields";
+import { Term } from "@/app/components/Term";
 import { Card, CardHeader, InfoBanner } from "@/app/components/ui";
 import type { FixedIncomeRates, TesouroBond } from "@/lib/api";
 import { formatBRL, formatNumber } from "@/lib/format";
@@ -179,9 +180,10 @@ export function FixedIncome({ rates }: { rates: FixedIncomeRates | null }) {
         <Card>
           <CardHeader title="Dica rápida: LCI x CDB" />
           <p className="text-sm text-muted">
-            Nesse prazo, uma LCI/LCA de {lciPct}% do CDI rende o mesmo que um CDB de{" "}
+            Nesse prazo (<Term k="ir_regressivo">IR</Term> de {pctText(ir * 100)}), uma LCI/LCA de {lciPct}% do CDI rende o mesmo que um CDB de{" "}
             <strong className="text-text">{formatNumber(Math.round(lciEquivalent))}% do CDI</strong>, porque a LCI não paga IR.
-            Quanto mais curto o prazo, maior o IR e mais vantagem para as isentas.
+            Quanto mais curto o prazo, maior o IR e mais vantagem para as isentas. CDB e LCI têm a garantia do{" "}
+            <Term k="fgc">FGC</Term>; prefixados e IPCA+ sofrem <Term k="marcacao">marcação a mercado</Term>.
           </p>
         </Card>
 

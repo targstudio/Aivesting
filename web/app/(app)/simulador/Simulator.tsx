@@ -3,6 +3,7 @@
 import { Calculator, Target } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { MoneyField, parseMoney } from "@/app/components/fields";
+import { Term } from "@/app/components/Term";
 import { Card, CardHeader, InfoBanner } from "@/app/components/ui";
 import { apiFetch, type SimulationInput, type SimulationResult, type SimulationStrategy } from "@/lib/api";
 import { formatBRL, formatMonth, formatNumber, formatProbability } from "@/lib/format";
@@ -282,7 +283,7 @@ function Legend({ hasGoal }: { hasGoal: boolean }) {
         <span className="h-2.5 w-5 rounded-full bg-primary" /> 8 de cada 10 períodos
       </span>
       <span className="flex items-center gap-1.5">
-        <span className="h-3.5 w-1 rounded-full bg-text" /> resultado típico (mediana)
+        <span className="h-3.5 w-1 rounded-full bg-text" /> <Term k="mediana">resultado típico (mediana)</Term>
       </span>
       <span className="flex items-center gap-1.5">
         <span className="h-3.5 w-px bg-chart-2/50" /> total investido

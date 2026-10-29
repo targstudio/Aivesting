@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { AssetLogo } from "@/app/components/AssetLogo";
+import { Term } from "@/app/components/Term";
 import { Breadcrumbs, Card, CardHeader, EmptyState, InfoBanner, PageTitle } from "@/app/components/ui";
 import { getAssetHistory, getHorizon, type AssetHistory, type RiskMetrics } from "@/lib/api";
 import { changeColor, formatBRL, formatMonth, formatProbability, formatRatio } from "@/lib/format";
+import type { GlossaryKey } from "@/lib/glossary";
 import { Picker } from "./Picker";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +15,7 @@ const MAX_ASSETS = 4;
 
 type Metric = {
   label: string;
+  term?: GlossaryKey;
   hint: string;
   get: (r: RiskMetrics) => number | null | undefined;
   format: (v: number) => string;
@@ -21,12 +24,12 @@ type Metric = {
 };
 
 const METRICS: Metric[] = [
-  { label: "Retorno ao ano", hint: "média anual dos últimos 10 anos, com proventos", get: (r) => r.cagr, format: (v) => formatRatio(v), better: "high" },
+  { label: "Retorno ao ano", term: "retorno_ano", hint: "média anual dos últimos 10 anos, com proventos", get: (r) => r.cagr, format: (v) => formatRatio(v), better: "high" },
   { label: "R$ 1.000 viraram", hint: "no período, com proventos reinvestidos", get: (r) => 1000 * (1 + r.total_return), format: (v) => formatBRL(Math.round(v)).replace(/,00$/, ""), better: "high" },
-  { label: "Volatilidade", hint: "quanto o preço sobe e desce; menor é mais estável", get: (r) => r.volatility, format: (v) => formatRatio(v, false), better: "low" },
-  { label: "Pior queda", hint: "do topo ao fundo no período", get: (r) => r.max_drawdown, format: (v) => formatRatio(v), better: "high" },
+  { label: "Volatilidade", term: "volatilidade", hint: "quanto o preço sobe e desce; menor é mais estável", get: (r) => r.volatility, format: (v) => formatRatio(v, false), better: "low" },
+  { label: "Pior queda", term: "pior_queda", hint: "do topo ao fundo no período", get: (r) => r.max_drawdown, format: (v) => formatRatio(v), better: "high" },
   { label: "Pior 12 meses", hint: "o pior ano corrido", get: (r) => r.worst_12m, format: (v) => formatRatio(v), better: "high" },
-  { label: "Retorno por risco (Sharpe)", hint: "quanto rendeu acima do CDI para cada unidade de risco", get: (r) => r.sharpe, format: (v) => v.toLocaleString("pt-BR"), better: "high" },
+  { label: "Retorno por risco (Sharpe)", term: "sharpe", hint: "quanto rendeu acima do CDI para cada unidade de risco", get: (r) => r.sharpe, format: (v) => v.toLocaleString("pt-BR"), better: "high" },
 ];
 
 function best(values: (number | null | undefined)[], better: "high" | "low") {
@@ -109,6 +112,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
               const top = best(values, m.better);
               return {
                 label: m.label,
+                term: m.term,
                 hint: m.hint,
                 cells: values.map((v) => ({ text: v == null ? "–" : m.format(v), highlight: v != null && v === top })),
               };
@@ -169,7 +173,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
   );
 }
 
-type Row = { label: string; hint?: string; cells: { text: string; highlight: boolean; color?: string }[] };
+type Row = { label: string; term?: GlossaryKey; hint?: string; cells: { text: string; highlight: boolean; color?: string }[] };
 
 function CompareTable({ title, subtitle, items, rows }: { title: string; subtitle: string; items: AssetHistory[]; rows: Row[] }) {
   return (
@@ -191,7 +195,7 @@ function CompareTable({ title, subtitle, items, rows }: { title: string; subtitl
             {rows.map((r) => (
               <tr key={r.label} className="border-t border-border">
                 <td className="sticky left-0 max-w-[160px] bg-surface py-2.5 pr-3 md:max-w-none">
-                  <span className="font-medium">{r.label}</span>
+                  <span className="font-medium">{r.term ? <Term k={r.term}>{r.label}</Term> : r.label}</span>
                   {r.hint && <span className="block text-xs text-muted">{r.hint}</span>}
                 </td>
                 {r.cells.map((c, i) => (
