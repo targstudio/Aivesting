@@ -1,7 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 
 /**
- * Renderiza o markdown simples que a IA escreve (negrito, itálico, listas, títulos, links) sem mostrar os
+ * Renderiza o markdown simples que a IA escreve (negrito, itálico, listas, títulos, tabelas, links) sem mostrar os
  * asteriscos. Monta elementos React, sem innerHTML, então o texto da IA nunca vira HTML.
  */
 export function Markdown({ text, className = "" }: { text: string; className?: string }) {
@@ -11,17 +11,44 @@ export function Markdown({ text, className = "" }: { text: string; className?: s
 type Block =
   | { kind: "p"; lines: string[] }
   | { kind: "h"; text: string }
-  | { kind: "ul" | "ol"; items: string[] };
+  | { kind: "ul" | "ol"; items: string[] }
+  | { kind: "table"; head: string[]; rows: string[][]; align: ("left" | "right")[] };
 
 const BULLET = /^\s*[-*•+]\s+(.*)$/;
 const NUMBER = /^\s*\d+[.)]\s+(.*)$/;
 const HEADING = /^\s*#{1,6}\s+(.*)$/;
+const TABLE_ROW = /^\s*\|.*\|\s*$/;
+const TABLE_RULE = /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
+
+function cells(line: string): string[] {
+  return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+}
+
+// Coluna de números (R$, %, mil) fica alinhada à direita para comparar de relance.
+const NUMERIC = /^[-+−]?\s*(R\$\s*)?[-+−]?[\d.,]+\s*(%|mil|mi|bi|pp)?$/i;
 
 function parse(text: string): Block[] {
   const out: Block[] = [];
   const last = () => out[out.length - 1];
-  for (const raw of text.replace(/\r\n/g, "\n").split("\n")) {
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
     const line = raw.trimEnd();
+    // Tabela: linha de cabeçalho, linha |---|---| e as linhas seguintes que começam e terminam com |.
+    if (TABLE_ROW.test(line) && TABLE_RULE.test(lines[i + 1] ?? "")) {
+      const head = cells(line);
+      const rows: string[][] = [];
+      i += 2;
+      while (i < lines.length && TABLE_ROW.test(lines[i].trimEnd())) rows.push(cells(lines[i++]));
+      i--;
+      const align = head.map((_, c) =>
+        rows.length && rows.every((r) => !r[c] || NUMERIC.test(r[c].replace(/\*/g, "").replace(/^sobra[m]?\s+|^falta[m]?\s+/i, "")))
+          ? ("right" as const)
+          : ("left" as const),
+      );
+      out.push({ kind: "table", head, rows, align });
+      continue;
+    }
     if (!line.trim() || /^\s*([-*_])\1{2,}\s*$/.test(line)) {
       out.push({ kind: "p", lines: [] });
       continue;
@@ -50,6 +77,39 @@ function parse(text: string): Block[] {
 function blocks(text: string): ReactNode[] {
   return parse(text).map((b, i) => {
     if (b.kind === "h") return <p key={i} className="font-bold">{inline(b.text)}</p>;
+    if (b.kind === "table")
+      return (
+        <div key={i} className="-mx-1 overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                {b.head.map((h, j) => (
+                  <th
+                    key={j}
+                    className={`whitespace-nowrap px-2 py-2 text-xs sm:px-3 font-semibold uppercase tracking-wide text-muted ${b.align[j] === "right" ? "text-right" : "text-left"}`}
+                  >
+                    {inline(h)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {b.rows.map((r, j) => (
+                <tr key={j} className="border-b border-border/60 last:border-0 even:bg-surface-2">
+                  {b.head.map((_, c) => (
+                    <td
+                      key={c}
+                      className={`px-2 py-2 align-top sm:px-3 ${b.align[c] === "right" ? "tabular whitespace-nowrap text-right" : "text-left"} ${c === 0 ? "font-medium text-text" : ""}`}
+                    >
+                      {inline(r[c] ?? "")}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     if (b.kind === "p")
       return (
         <p key={i}>
