@@ -548,3 +548,41 @@ export type B3Quote = {
 };
 
 export const getB3Quote = (ticker: string) => get<B3Quote>(`/b3/ativos/${encodeURIComponent(ticker)}`);
+
+// ---- Proventos (dividendos, JCP e rendimentos) ----
+
+export type AssetDividends = {
+  ticker: string;
+  price: number | null;
+  total_12m: number;
+  dy_12m: number | null;
+  months_paid_12m: number;
+  frequency: string | null;
+  payments: { date: string; amount: number }[];
+  disclaimer: string;
+};
+
+export type DividendYield = { dy_12m: number | null; total_12m: number; frequency: string | null } | null;
+
+export type PortfolioDividends = {
+  income_12m: number;
+  monthly_avg: number;
+  received: { month: string; value: number }[];
+  forecast: { month: string; value: number }[];
+  assets: {
+    ticker: string;
+    asset_class?: string;
+    quantity: number;
+    available: boolean;
+    income_12m?: number;
+    dy_12m?: number | null;
+    frequency?: string | null;
+    months?: string[];
+  }[];
+  ignored: number;
+  disclaimer: string;
+};
+
+export const getAssetDividends = (ticker: string) => get<AssetDividends>(`/assets/${encodeURIComponent(ticker)}/proventos`);
+export const getDividendYields = (tickers: string[]) =>
+  tickers.length ? get<Record<string, DividendYield>>(`/proventos?tickers=${tickers.join(",")}`) : Promise.resolve(null);

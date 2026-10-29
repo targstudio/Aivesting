@@ -3,21 +3,25 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { RankedAsset } from "@/lib/api";
+import type { DividendYield, RankedAsset } from "@/lib/api";
 import { AssetLogo } from "./AssetLogo";
 import { Sparkline } from "./Sparkline";
-import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability } from "@/lib/format";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatRatio } from "@/lib/format";
 
 // `compact` esconde a coluna de preço, para listas em meia largura (ex.: página inicial).
 export function RankingList({
   assets,
   benchmark,
   compact = false,
+  yields,
 }: {
   assets: RankedAsset[];
   benchmark: string;
   compact?: boolean;
+  // Dividend yield de 12 meses por ticker; quando vem, ganha uma coluna (só na lista completa).
+  yields?: Record<string, DividendYield> | null;
 }) {
+  const showYield = !compact && !!yields;
   const [open, setOpen] = useState<string | null>(null);
   return (
     <div className="flex flex-col gap-3">
@@ -28,7 +32,11 @@ export function RankingList({
             <button
               onClick={() => setOpen(expanded ? null : a.ticker)}
               className={`grid w-full grid-cols-[1.75rem_1fr_auto] items-center gap-3 px-4 py-4 text-left md:px-6 ${
-                compact ? "md:grid-cols-[1.75rem_1fr_5rem_7rem_1.5rem]" : "md:grid-cols-[2rem_1fr_6rem_7rem_7rem_8rem_2rem]"
+                compact
+                  ? "md:grid-cols-[1.75rem_1fr_5rem_7rem_1.5rem]"
+                  : showYield
+                    ? "md:grid-cols-[2rem_1fr_6rem_7rem_6rem_6rem_8rem_2rem]"
+                    : "md:grid-cols-[2rem_1fr_6rem_7rem_7rem_8rem_2rem]"
               }`}
               aria-expanded={expanded}
             >
@@ -53,6 +61,12 @@ export function RankingList({
                 <span className="block text-xs text-muted">Dia</span>
                 <span className={`tabular block ${changeColor(a.change_percent)}`}>{formatPercent(a.change_percent)}</span>
               </span>
+              {showYield && (
+                <span className="hidden md:block" title="Proventos dos últimos 12 meses ÷ preço">
+                  <span className="block text-xs text-muted">DY 12m</span>
+                  <span className="tabular block">{formatRatio(yields?.[a.ticker]?.dy_12m, false)}</span>
+                </span>
+              )}
               <span className="text-right md:text-left">
                 <span className="block text-xs text-muted">Prob. vs {benchmark}</span>
                 <span className="tabular block font-bold text-accent-text">{formatProbability(a.probability_outperform)}</span>

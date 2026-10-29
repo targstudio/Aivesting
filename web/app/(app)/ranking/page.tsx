@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getRanking, type AssetClass } from "@/lib/api";
+import { getDividendYields, getRanking, type AssetClass } from "@/lib/api";
 import { formatTime } from "@/lib/format";
 import { AiInsight } from "@/app/components/AiInsight";
 import { RankingList } from "@/app/components/RankingList";
@@ -9,6 +9,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
   const { classe } = await searchParams;
   const assetClass: AssetClass = classe === "fiis" ? "fiis" : "acoes";
   const snapshot = await getRanking(assetClass);
+  const yields = await getDividendYields(snapshot?.assets.map((a) => a.ticker) ?? []);
   const label = assetClass === "fiis" ? "Fundos imobiliários" : "Ações";
 
   return (
@@ -41,7 +42,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
 
       {snapshot && snapshot.assets.length ? (
         <>
-          <RankingList assets={snapshot.assets} benchmark={snapshot.benchmark} />
+          <RankingList assets={snapshot.assets} benchmark={snapshot.benchmark} yields={yields} />
           <p className="mt-4 text-center text-sm text-muted">
             Não achou o ativo?{" "}
             <Link href={assetClass === "fiis" ? "/b3?tipo=fii" : "/b3"} className="font-semibold text-accent-text underline">

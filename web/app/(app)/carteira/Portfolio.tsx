@@ -30,6 +30,7 @@ import {
   type StoredPortfolio,
 } from "@/lib/portfolio";
 import { Chat } from "../assistente/Chat";
+import { IncomeCard } from "./Income";
 import { RebalanceCard } from "./Rebalance";
 
 const MAX_IMAGES = 6;
@@ -195,6 +196,7 @@ export function Portfolio() {
       )}
       {stored && analysis && (
         <Dashboard
+          holdings={stored.holdings}
           analysis={analysis}
           reading={reading}
           onExplain={explain}
@@ -542,7 +544,9 @@ function Dashboard({
   updatedAt,
   onUpdate,
   onEdit,
+  holdings,
 }: {
+  holdings: Holding[];
   analysis: PortfolioAnalysis;
   reading: Reading;
   onExplain: () => void;
@@ -696,6 +700,8 @@ function Dashboard({
       </div>
 
       <PositionsCard positions={a.positions} />
+
+      <IncomeCard holdings={holdings} />
 
       <div className="grid gap-6 xl:grid-cols-2">
         {risk && risk.crises.length > 0 && <CrisesCard risk={risk} />}
