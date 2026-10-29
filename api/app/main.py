@@ -37,6 +37,8 @@ from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
 from .dividends import DISCLAIMER as DIVIDENDS_DISCLAIMER
 from .dividends import DividendService, DividendsRequest
 from .fixed_income import TesouroService, rates_payload
+from .fundamentals import DISCLAIMER as FUNDAMENTALS_DISCLAIMER
+from .fundamentals import FundamentalsService
 from .simulator import SimulationRequest, Simulator
 from .storage import PortfolioStore, SupabaseStore
 
@@ -220,6 +222,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.market = market
     app.state.insights = insights
     app.state.simulator = Simulator()
+    app.state.fundamentals = FundamentalsService(settings.brapi_base_url, settings.brapi_token, demo=settings.demo_mode)
     app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
@@ -256,6 +259,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "ranking_interval_minutes": settings.ranking_interval_minutes,
             "market_open": market_is_open(settings),
             "longterm": app.state.longterm.data is not None,
+            "fundamentals": app.state.fundamentals.enabled,
             "advisor": settings.advisor_mode == "public",
             "portfolio_storage": portfolios is not None,
             "b3_assets": len(catalog.assets),
@@ -616,6 +620,17 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(404, f"Sem dados de proventos para {ticker.upper()}.")
         return {**result, "disclaimer": DIVIDENDS_DISCLAIMER}
+
+    @app.get("/assets/{ticker}/fundamentos")
+    async def asset_fundamentals(ticker: str):
+        if not app.state.fundamentals.enabled:
+            raise HTTPException(503, "Fundamentos desligados: configure BRAPI_TOKEN de um plano pago da brapi.")
+        if not TICKER_RE.match(ticker.upper()):
+            raise HTTPException(404, "Ticker inválido.")
+        result = await app.state.fundamentals.get(ticker)
+        if result is None:
+            raise HTTPException(404, f"Sem fundamentos para {ticker.upper()}.")
+        return {**result, "disclaimer": FUNDAMENTALS_DISCLAIMER}
 
     @app.get("/proventos")
     async def dividends_many(tickers: str):
