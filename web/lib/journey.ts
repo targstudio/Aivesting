@@ -51,17 +51,18 @@ export function streak(saved: Record<string, number>, now = monthKey()) {
   return n;
 }
 
+// Os níveis seguem um voo, combinando com a torre de controle do StockTower: do pré-voo até o comando da torre.
 export const LEVELS = [
-  { min: 0, name: "Primeiro passo" },
-  { min: 1_000, name: "Semente" },
-  { min: 5_000, name: "Broto" },
-  { min: 10_000, name: "Muda" },
-  { min: 25_000, name: "Árvore" },
-  { min: 50_000, name: "Pomar" },
-  { min: 100_000, name: "Floresta" },
-  { min: 250_000, name: "Reserva da natureza" },
-  { min: 500_000, name: "Meio milhão" },
-  { min: 1_000_000, name: "Milionário" },
+  { min: 0, name: "Pré-voo" },
+  { min: 1_000, name: "Check-in" },
+  { min: 5_000, name: "Embarque" },
+  { min: 10_000, name: "Taxiando" },
+  { min: 25_000, name: "Decolagem" },
+  { min: 50_000, name: "Subida" },
+  { min: 100_000, name: "Altitude de cruzeiro" },
+  { min: 250_000, name: "Acima das nuvens" },
+  { min: 500_000, name: "Estratosfera" },
+  { min: 1_000_000, name: "Torre de controle" },
 ];
 
 /** Nível do patrimônio e quanto falta para o próximo (progress de 0 a 1). */
