@@ -3,6 +3,7 @@ import { AssetActions } from "@/app/components/AssetActions";
 import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { DividendsCard } from "@/app/components/DividendsCard";
+import { Term } from "@/app/components/Term";
 import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { SwotAnalysis } from "@/app/components/SwotAnalysis";
@@ -54,12 +55,12 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
             <Stat value={formatPercent(asset.change_percent)} label="Variação no dia" />
           </div>
           <div className="md:px-8">
-            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={`score ${formatNumber(asset.score)}/100`} />
+            <Stat value={`${asset.rank}º de ${detail.total}`} label="Posição no ranking" sub={<><Term k="score">score</Term> {formatNumber(asset.score)}/100</>} />
           </div>
           <div className="md:px-8">
             <Stat
               value={formatProbability(asset.probability_outperform)}
-              label={`Prob. de superar o ${detail.benchmark}`}
+              label={<Term k="probabilidade">Prob. de superar o {detail.benchmark}</Term>}
               sub={`atualizado às ${formatTime(detail.computed_at)}`}
             />
           </div>

@@ -1,5 +1,6 @@
 import type { AssetDividends } from "@/lib/api";
 import { formatBRL, formatMonth, formatRatio } from "@/lib/format";
+import { Term } from "./Term";
 import { Card, CardHeader, Stat } from "./ui";
 
 const FREQUENCY_TEXT: Record<string, string> = {
@@ -18,7 +19,7 @@ export function DividendsCard({ d }: { d: AssetDividends }) {
       {d.total_12m > 0 ? (
         <div className="grid items-start gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div className="grid grid-cols-2 gap-6">
-            <Stat value={formatRatio(d.dy_12m, false)} label="Dividend yield 12 meses" accent sub="proventos do último ano ÷ preço" />
+            <Stat value={formatRatio(d.dy_12m, false)} label={<Term k="dividend_yield">Dividend yield 12 meses</Term>} accent sub="proventos do último ano ÷ preço" />
             <Stat value={formatBRL(d.total_12m)} label="Por ação ou cota em 12 meses" sub={d.frequency ? FREQUENCY_TEXT[d.frequency] : undefined} />
             {perThousand != null && (
               <p className="col-span-2 rounded-xl bg-accent-bg/60 px-4 py-3 text-sm text-accent-text">
@@ -30,7 +31,7 @@ export function DividendsCard({ d }: { d: AssetDividends }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-muted">
-                <th className="pb-2 font-medium">Data com</th>
+                <th className="pb-2 font-medium"><Term k="data_com" /></th>
                 <th className="pb-2 text-right font-medium">Valor por ação ou cota</th>
               </tr>
             </thead>

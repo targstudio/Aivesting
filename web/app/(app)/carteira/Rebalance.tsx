@@ -3,6 +3,7 @@
 import { PiggyBank } from "lucide-react";
 import { useState } from "react";
 import { MoneyField, parseMoney } from "@/app/components/fields";
+import { Term } from "@/app/components/Term";
 import { Card, CardHeader } from "@/app/components/ui";
 import type { PortfolioAnalysis } from "@/lib/api";
 import { formatBRL, formatNumber } from "@/lib/format";
@@ -45,6 +46,7 @@ export function RebalanceCard({ plan, total }: { plan: NonNullable<PortfolioAnal
     <Card>
       <CardHeader
         title="Onde colocar o próximo aporte"
+        action={<span className="text-xs text-muted"><Term k="rebalanceamento">O que é rebalancear?</Term></span>}
         subtitle="Aproxima a carteira do plano do assessor sem precisar vender nada"
       />
       <div className="grid gap-6 md:grid-cols-[280px_1fr]">

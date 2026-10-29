@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Breadcrumbs, InfoBanner, PageTitle } from "@/app/components/ui";
 import { AskButton } from "./AskButton";
+import { GLOSSARY } from "@/lib/glossary";
 import { ENTRIES, GROUPS } from "./entries";
 
 const ROWS: [keyof (typeof ENTRIES)[number], string][] = [
@@ -30,6 +31,9 @@ export default function EncyclopediaPage() {
             {g}
           </a>
         ))}
+        <a href="#glossario" className="rounded-full bg-track px-4 py-2 text-sm font-semibold">
+          Glossário dos números
+        </a>
       </nav>
       {GROUPS.map((g) => (
         <section key={g} id={g} className="mb-10 scroll-mt-24">
@@ -53,6 +57,18 @@ export default function EncyclopediaPage() {
           </div>
         </section>
       ))}
+      <section id="glossario" className="mb-10 scroll-mt-24">
+        <h2 className="mb-1 text-xl font-bold">Glossário dos números</h2>
+        <p className="mb-4 text-sm text-muted">Os termos que aparecem nas telas do app. Em qualquer tela, toque no termo sublinhado para ver a explicação.</p>
+        <dl className="grid gap-4 lg:grid-cols-2">
+          {Object.entries(GLOSSARY).map(([k, g]) => (
+            <div key={k} id={`termo-${k}`} className="scroll-mt-24 rounded-card border border-border bg-surface p-5">
+              <dt className="font-bold">{g.term}</dt>
+              <dd className="mt-1 text-sm text-muted">{g.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
     </>
   );
 }

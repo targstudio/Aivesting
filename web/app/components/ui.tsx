@@ -47,7 +47,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
   return <section className={`rounded-card border border-border bg-surface p-5 md:p-6 ${className}`}>{children}</section>;
 }
 
-export function Stat({ value, label, accent = false, sub }: { value: string; label: string; accent?: boolean; sub?: ReactNode }) {
+export function Stat({ value, label, accent = false, sub }: { value: string; label: ReactNode; accent?: boolean; sub?: ReactNode }) {
   return (
     <div>
       <div className={`tabular text-2xl font-bold tracking-tight ${accent ? "text-accent-text" : ""}`}>{value}</div>
