@@ -28,6 +28,7 @@ FEATURE_LABELS = {
     "chat": "Chat \"Pergunte à IA\"",
     "assessor_chat": "Chat do assessor",
     "assessor_plano": "Explicação do plano (assessor)",
+    "treinadora": "Resumo do mês (treinadora da jornada)",
     "explicacao_ativo": "Explicação de ativo",
     "swot_ativo": "Análise SWOT de ativo",
     "leitura_inicio": "Resumo da Início",

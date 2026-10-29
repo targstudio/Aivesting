@@ -84,3 +84,22 @@ def test_split_picks_respects_cap():
     # Valor pequeno: divide entre 3.
     assert len(split_picks(picks, 3_000, 100_000)) == 3
     assert split_picks([], 1000, 1000) == []
+
+
+def test_coach_summary(monkeypatch):
+    seen = {}
+
+    async def fake(self, system, instruction, feature="assessor_plano"):
+        seen.update(system=system, instruction=instruction, feature=feature)
+        return "bom mês"
+
+    monkeypatch.setattr(Insights, "complete_with", fake)
+    c = TestClient(create_app(Settings(_env_file=None, demo_mode=True, anthropic_api_key="k"), start_scheduler=False))
+    body = {"month": "2026-10", "level": 2, "level_name": "Semente", "total": 1500, "next_level_name": "Broto",
+            "to_next_level": 3500, "streak_months": 3, "saved_this_month": 500, "saved_last_month": 300,
+            "next_mission": "Montar a reserva de emergência", "missions_done": 3, "missions_total": 8}
+    r = c.post("/ia/treinadora", json=body)
+    assert r.json()["summary"] == "bom mês"
+    assert seen["feature"] == "treinadora" and '"meses_seguidos_guardando": 3' in seen["instruction"]
+    assert "nunca" in seen["system"]
+    assert c.post("/ia/treinadora", json={**body, "month": "out"}).status_code == 422

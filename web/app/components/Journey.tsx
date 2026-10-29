@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, Coins, Flame, Sparkles, Trophy } from "lucide-react";
+import { ArrowRight, Check, Coins, Flame, RefreshCw, Sparkles, Trophy } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { apiFetch, type PortfolioDividends } from "@/lib/api";
@@ -8,6 +8,7 @@ import { formatBRL } from "@/lib/format";
 import { JOURNEY_EVENT, LEVELS, dividendsPay, journeyState, loadJourney, monthKey, recordHistory, saveJourney } from "@/lib/journey";
 import { PORTFOLIO_EVENT } from "@/lib/portfolio";
 import { useApp } from "./AppProvider";
+import { Markdown } from "./Markdown";
 import { MoneyField, finishMoney, parseMoney } from "./fields";
 import { Card, CardHeader } from "./ui";
 
@@ -98,6 +99,7 @@ export function Journey({ today }: { today: Today }) {
             </Card>
           )}
           <SavedThisMonth />
+          <CoachCard state={state} />
           <Card>
             <CardHeader title="Missões" subtitle={`${done} de ${missions.length} cumpridas`} />
             <ol className="flex flex-col gap-1">
@@ -252,5 +254,98 @@ function DividendsSnowball({ holdings }: { holdings: State["holdings"] }) {
         </p>
       )}
     </Card>
+  );
+}
+
+const COACH_KEY = "aivesting.jornada.resumo";
+
+function prevKey(key: string) {
+  const [y, m] = key.split("-").map(Number);
+  return m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
+}
+
+/** Resumo do mês feito pela IA "treinadora". Guardado por mês: só gera de novo quando a pessoa pede. */
+function CoachCard({ state }: { state: State }) {
+  const { prefs } = useApp();
+  const month = monthKey();
+  const [text, setText] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+
+  const run = useCallback(async () => {
+    const { level, total, months, missions, journey } = journeyState();
+    setStatus("loading");
+    try {
+      const r = await apiFetch<{ summary: string }>(`/ia/treinadora?nivel=${prefs.level}`, {
+        method: "POST",
+        body: JSON.stringify({
+          month,
+          level: level.index + 1,
+          level_name: level.level.name,
+          total,
+          next_level_name: level.next?.name ?? null,
+          to_next_level: level.next ? level.next.min - total : null,
+          streak_months: months,
+          saved_this_month: journey.saved[month] ?? 0,
+          saved_last_month: journey.saved[prevKey(month)] ?? 0,
+          next_mission: missions.find((m) => !m.done)?.title ?? null,
+          missions_done: missions.filter((m) => m.done).length,
+          missions_total: missions.length,
+        }),
+      });
+      setText(r.summary);
+      setStatus("idle");
+      try {
+        localStorage.setItem(COACH_KEY, JSON.stringify({ month, text: r.summary }));
+      } catch {}
+    } catch {
+      setStatus("error");
+    }
+  }, [month, prefs.level]);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(COACH_KEY) ?? "null");
+      if (saved?.month === month) return setText(saved.text);
+    } catch {}
+    if (prefs.aiAuto && state.total > 0) run();
+    // Só na abertura da tela: depois, só quando a pessoa pede.
+  }, []);
+
+  return (
+    <section className="rounded-card border border-border bg-gradient-to-br from-surface-2 to-surface p-5 md:p-6">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="flex items-center gap-2.5 font-semibold">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bg text-accent-text">
+            <Sparkles size={16} />
+          </span>
+          Resumo do mês da sua treinadora
+        </h2>
+        {text && status !== "loading" && (
+          <button onClick={run} className="flex items-center gap-1 text-xs font-semibold text-muted hover:text-text">
+            <RefreshCw size={13} /> Atualizar
+          </button>
+        )}
+      </div>
+      {status === "loading" ? (
+        <div className="space-y-2">
+          {[92, 100, 70].map((w, i) => (
+            <div key={i} style={{ width: `${w}%` }} className="h-3.5 animate-pulse rounded-full bg-track" />
+          ))}
+        </div>
+      ) : text ? (
+        <Markdown text={text} className="text-sm leading-relaxed text-text/90 md:text-[15px]" />
+      ) : (
+        <div>
+          <p className="mb-3 text-sm text-muted">
+            {status === "error"
+              ? "Não deu para falar com a IA agora. Ela pode estar acordando; tente de novo em 1 minuto."
+              : "A IA olha quanto você guardou, quanto falta para o próximo nível e qual a próxima missão."}
+          </p>
+          <button onClick={run} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">
+            <Sparkles size={16} /> Ver o resumo do mês
+          </button>
+        </div>
+      )}
+    </section>
   );
 }

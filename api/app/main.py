@@ -25,6 +25,7 @@ from .account import (
     SignInRequest,
 )
 from .advisor import QUESTIONS, PlanRequest, build_plan
+from .ai.coach import COACH_PROMPT, CoachRequest, coach_task
 from .ai.advisor_ai import EXPLAIN_TASK, advisor_system
 from .ai.assistant import Assistant
 from .ai.explain import Explainer
@@ -340,6 +341,16 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         plan = build_plan(body, macro, advisor_picks(svc))
         text = await app.state.insights.complete_with(advisor_system(plan, LEVELS[nivel]), EXPLAIN_TASK)
         return {"explanation": text, "disclaimer": ADVISOR_DISCLAIMER}
+
+    @app.post("/ia/treinadora")
+    async def coach(body: CoachRequest, request: Request, nivel: Level = "iniciante"):
+        """Resumo do mês da jornada: quanto guardou, quanto falta para o próximo nível e a próxima missão."""
+        require_ai()
+        ai_rate_limit(request)
+        text = await app.state.insights.complete_with(
+            f"{COACH_PROMPT}\n\n{LEVELS[nivel]}", coach_task(body), feature="treinadora"
+        )
+        return {"summary": text}
 
     @app.post("/assessor/chat")
     async def advisor_chat(body: AdvisorChatRequest, request: Request, svc: RankingService = Depends(get_ranking)):
