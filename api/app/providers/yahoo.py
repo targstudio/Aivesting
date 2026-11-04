@@ -42,6 +42,17 @@ class YahooProvider:
         results = (resp.json().get("chart") or {}).get("result") or []
         return parse_dividends(results[0]) if results else None
 
+    async def adjusted(self, ticker: str, range_: str = "10y", interval: str = "1mo") -> list[tuple[date, float]] | None:
+        """Fechamentos ajustados por proventos e desdobramentos (data, valor), do mais antigo ao mais novo."""
+        resp = await self.client.get(
+            f"{self.base_url}/v8/finance/chart/{ticker}.SA",
+            params={"range": range_, "interval": interval, "events": "div,split"},
+        )
+        if resp.status_code != 200:
+            return None
+        results = (resp.json().get("chart") or {}).get("result") or []
+        return parse_adjusted(results[0]) if results else None
+
     async def symbols(self, symbols: list[str], range_: str = "3mo") -> list[Quote]:
         """Cotações de símbolos do Yahoo sem o sufixo da B3 (índices, moedas, commodities: ^BVSP, BRL=X)."""
         results = await asyncio.gather(*(self._fetch(s, range_, "") for s in symbols), return_exceptions=True)
@@ -62,6 +73,17 @@ def parse_dividends(raw: dict) -> tuple[list[tuple[date, float]], float | None]:
     )
     price = (raw.get("meta") or {}).get("regularMarketPrice")
     return payments, float(price) if price else None
+
+
+def parse_adjusted(raw: dict) -> list[tuple[date, float]]:
+    indicators = raw.get("indicators") or {}
+    closes = ((indicators.get("adjclose") or [{}])[0]).get("adjclose") or ((indicators.get("quote") or [{}])[0]).get("close") or []
+    # +12 h: o Yahoo marca a barra no começo do pregão (ou do mês) em UTC, que no Brasil ainda é o dia anterior.
+    return [
+        (datetime.fromtimestamp(ts + 12 * 3600, tz=timezone.utc).date(), float(c))
+        for ts, c in zip(raw.get("timestamp") or [], closes)
+        if c is not None and c > 0
+    ]
 
 
 def parse_chart(ticker: str, raw: dict) -> Quote:

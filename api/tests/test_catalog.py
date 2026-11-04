@@ -155,3 +155,48 @@ def test_endpoints(tmp_path):
     assert quote["live"] and quote["type"] == "acao" and "recomendação" in quote["disclaimer"]
     assert client.get("/b3/ativos/NADA3").status_code == 404
     assert client.get("/health").json()["b3_assets"] == 2
+
+
+def test_month_changes_skip_splits_and_movers_filter_liquidity(tmp_path):
+    from app.catalog import month_changes
+
+    day = "2026-10-28"
+    c = Catalog(tmp_path / "x.json")
+    c._set([
+        Listed("AAAA3", "A", "acao", "ON", 12.0, 3.0, 5_000_000, 900, day),
+        Listed("BBBB3", "B", "acao", "ON", 5.0, -2.0, 5_000_000, 900, day),  # desdobrou 1 para 2
+        Listed("CCCC3", "C", "acao", "ON", 13.0, 9.0, 10_000, 3, day),  # quase não negocia
+        Listed("DDDD11", "D", "fii", "CI", 90.0, 1.0, 900_000, 300, day),
+    ], None)
+    base = [listed("AAAA3", 10.0, "2026-09-29"), listed("BBBB3", 10.0, "2026-09-29"),
+            listed("CCCC3", 10.0, "2026-09-29"), listed("DDDD11", 100.0, "2026-09-29", "fii")]
+    assert month_changes(c.assets, base) == 3
+    assert c.get("AAAA3").change_month == 20.0
+    assert c.get("BBBB3").change_month is None
+    day_movers = c.movers("acao", "dia")
+    assert [a["ticker"] for a in day_movers["altas"]] == ["AAAA3"]
+    assert [a["ticker"] for a in day_movers["baixas"]] == ["BBBB3"]
+    month = c.movers("fii", "mes")
+    assert month["altas"] == [] and month["baixas"][0]["change"] == -10.0
+
+
+@respx.mock
+def test_refresh_adds_month_change(tmp_path):
+    base = "https://bvmf.bmfbovespa.com.br/InstDados/SerHist/"
+    respx.get(f"{base}COTAHIST_D28102026.ZIP").mock(return_value=httpx.Response(
+        200, content=cotahist_zip([cotahist_line("PETR4", "PN N2", close=11.0, day="20261028")])))
+    respx.get(f"{base}COTAHIST_D27102026.ZIP").mock(return_value=httpx.Response(
+        200, content=cotahist_zip([cotahist_line("PETR4", "PN N2", close=10.0, day="20261027")])))
+    # 21 dias úteis antes de 28/10 (29/09) não tem arquivo; o dia anterior tem.
+    respx.get(f"{base}COTAHIST_D26092026.ZIP").mock(return_value=httpx.Response(404))
+    respx.get(f"{base}COTAHIST_D28092026.ZIP").mock(return_value=httpx.Response(
+        200, content=cotahist_zip([cotahist_line("PETR4", "PN N2", close=8.8, day="20260928")])))
+    respx.get(url__regex=r".*COTAHIST_D.*").mock(return_value=httpx.Response(404))
+    path = tmp_path / "b3.json"
+    c = Catalog(path, client=httpx.AsyncClient())
+    assert asyncio.run(c.refresh(date(2026, 10, 28))) is True
+    assert c.get("PETR4").change_month == 25.0
+    assert c.month_base == "2026-09-28"
+    c.save()
+    again = Catalog(path)
+    assert again.month_base == "2026-09-28" and again.get("PETR4").change_month == 25.0

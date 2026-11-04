@@ -4,23 +4,25 @@ import { AssetActions } from "@/app/components/AssetActions";
 import { AssetHistorySection } from "@/app/components/AssetHistory";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { DividendsCard } from "@/app/components/DividendsCard";
+import { HighsCard } from "@/app/components/HighsCard";
 import { FundamentalsCard } from "@/app/components/FundamentalsCard";
 import { Term } from "@/app/components/Term";
 import { AreaChart } from "@/app/components/charts";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { SwotAnalysis } from "@/app/components/SwotAnalysis";
 import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
-import { getAnalysts, getAsset, getAssetDividends, getAssetHistory, getB3Quote, getFundamentals, type B3Quote } from "@/lib/api";
+import { getAnalysts, getAsset, getAssetDividends, getAssetHighs, getAssetHistory, getB3Quote, getFundamentals, type B3Quote } from "@/lib/api";
 import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatUpdated } from "@/lib/format";
 
 export default async function AssetPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
-  const [detail, history, dividends, fundamentals, analysts] = await Promise.all([
+  const [detail, history, dividends, fundamentals, analysts, highs] = await Promise.all([
     getAsset(ticker),
     getAssetHistory(ticker),
     getAssetDividends(ticker),
     getFundamentals(ticker),
     getAnalysts(ticker),
+    getAssetHighs(ticker),
   ]);
   // Fora do ranking: cotação sob demanda de qualquer ativo da B3.
   const quote = detail ? null : await getB3Quote(ticker);
@@ -40,6 +42,7 @@ export default async function AssetPage({ params }: { params: Promise<{ ticker: 
       <InfoBanner>{detail?.disclaimer ?? quote?.disclaimer ?? history!.disclaimer}</InfoBanner>
       {detail && <LiveSection detail={detail} />}
       {quote && <QuoteSection quote={quote} />}
+      {highs && <HighsCard h={highs} />}
       {fundamentals && <FundamentalsCard f={fundamentals} isFii={isFii} />}
       {/* Poucos bancos acompanham fundos imobiliários: sem opiniões, o card só aparece para ações. */}
       {(analysts || !isFii) && <AnalystsCard a={analysts} ticker={head.ticker} />}

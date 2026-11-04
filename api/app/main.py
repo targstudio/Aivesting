@@ -50,6 +50,8 @@ from .analysts import AnalystService
 from .consensus import SORTS as CONSENSUS_SORTS
 from .consensus import ConsensusService, liquid_universe
 from .dividends import DISCLAIMER as DIVIDENDS_DISCLAIMER
+from .highs import DISCLAIMER as HIGHS_DISCLAIMER
+from .highs import HighsService
 from .dividends import DividendService, DividendsRequest
 from .fixed_income import TesouroService, rates_payload
 from .fundamentals import DISCLAIMER as FUNDAMENTALS_DISCLAIMER
@@ -122,6 +124,10 @@ LONGTERM_DISCLAIMER = (
     "rentabilidade futura."
 )
 
+MOVERS_DISCLAIMER = (
+    "Fechamentos do arquivo público de cotações da B3, sem contar dividendos, só entre papéis com liquidez. Quem "
+    "subiu muito pode cair depois: não é recomendação de investimento."
+)
 CATALOG_DISCLAIMER = (
     "Lista e fechamento do arquivo público de cotações da B3, do último pregão. A cotação ao abrir um ativo tem atraso "
     "e é informativa. Não é recomendação de investimento."
@@ -293,6 +299,9 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
     app.state.consensus = consensus
     app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
+        None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
+    )
+    app.state.highs = HighsService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
     )
     app.state.catalog = catalog
@@ -594,6 +603,19 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "disclaimer": CATALOG_DISCLAIMER,
         }
 
+    @app.get("/b3/maiores-altas")
+    async def b3_movers(tipo: str | None = "acao", periodo: Literal["dia", "mes"] = "dia", limite: int = 10):
+        """Maiores altas e baixas de toda a B3 (no último pregão ou em cerca de um mês), só papéis com liquidez."""
+        if tipo and tipo not in TYPES:
+            raise HTTPException(404, f"Tipo desconhecido. Use {', '.join(TYPES)}.")
+        return {
+            **catalog.movers(tipo, periodo, max(1, min(50, limite))),
+            "tipo": tipo,
+            "periodo": periodo,
+            "fonte": catalog.source,
+            "disclaimer": MOVERS_DISCLAIMER,
+        }
+
     @app.get("/b3/ativos/{ticker}")
     async def b3_asset(ticker: str, svc: RankingService = Depends(get_ranking)):
         """Cotação de qualquer ativo da B3 (com atraso, cache de 5 min). Se o ativo está no ranking, usa o ranking."""
@@ -825,6 +847,16 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         if result is None:
             raise HTTPException(404, f"Sem dados de proventos para {ticker.upper()}.")
         return {**result, "disclaimer": DIVIDENDS_DISCLAIMER}
+
+    @app.get("/assets/{ticker}/altas")
+    async def asset_highs(ticker: str):
+        """Quanto o ativo subiu em cada prazo e as maiores altas dos últimos 10 anos (qualquer ativo da B3)."""
+        if not TICKER_RE.match(ticker.upper()):
+            raise HTTPException(404, "Ticker inválido.")
+        result = await app.state.highs.get(ticker)
+        if result is None:
+            raise HTTPException(404, f"Sem histórico de preços para {ticker.upper()}.")
+        return {**result, "disclaimer": HIGHS_DISCLAIMER}
 
     @app.get("/assets/{ticker}/analistas")
     async def asset_analysts(ticker: str):

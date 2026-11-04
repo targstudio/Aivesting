@@ -27,6 +27,7 @@ const METRICS: Metric[] = [
   { label: "Quanto rendeu por ano", term: "retorno_ano", hint: "média dos últimos 10 anos, com dividendos", get: (r) => r.cagr, format: (v) => formatRatio(v), better: "high" },
   { label: "R$ 1.000 viraram", hint: "no período, com dividendos reinvestidos", get: (r) => 1000 * (1 + r.total_return), format: (v) => formatBRL(Math.round(v)).replace(/,00$/, ""), better: "high" },
   { label: "Volatilidade", term: "volatilidade", hint: "quanto o preço sobe e desce; menor é mais estável", get: (r) => r.volatility, format: (v) => formatRatio(v, false), better: "low" },
+  { label: "Melhor 12 meses", term: "maior_alta", hint: "a maior alta num ano corrido", get: (r) => r.best_12m, format: (v) => formatRatio(v), better: "high" },
   { label: "Pior queda", term: "pior_queda", hint: "do topo ao fundo no período", get: (r) => r.max_drawdown, format: (v) => formatRatio(v), better: "high" },
   { label: "Pior 12 meses", hint: "o pior ano corrido", get: (r) => r.worst_12m, format: (v) => formatRatio(v), better: "high" },
   { label: "Retorno por risco (Sharpe)", term: "sharpe", hint: "quanto rendeu acima do CDI para cada unidade de risco", get: (r) => r.sharpe, format: (v) => v.toLocaleString("pt-BR"), better: "high" },

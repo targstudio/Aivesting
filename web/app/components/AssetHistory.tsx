@@ -12,6 +12,9 @@ function RiskRow({ label, m }: { label: string; m: RiskMetrics | null }) {
       <td className="py-2.5 pr-3 font-medium">{label}</td>
       <td className={`tabular py-2.5 pr-3 ${m ? changeColor(m.cagr) : ""}`}>{formatRatio(m?.cagr)}</td>
       <td className="tabular py-2.5 pr-3">{formatRatio(m?.volatility, false)}</td>
+      <td className={`tabular py-2.5 pr-3 ${label !== "CDI" && m?.best_12m != null ? changeColor(m.best_12m) : ""}`}>
+        {label === "CDI" || m?.best_12m == null ? "–" : formatRatio(m.best_12m)}
+      </td>
       <td className={`tabular py-2.5 pr-3 ${m && m.max_drawdown < 0 ? "text-negative" : ""}`}>
         {m && m.max_drawdown < 0 ? formatRatio(m.max_drawdown) : "–"}
       </td>
@@ -74,6 +77,7 @@ export function AssetHistorySection({ h }: { h: AssetHistory }) {
                   <th className="pb-2 pr-3 font-normal" />
                   <th className="pb-2 pr-3 font-normal"><Term k="retorno_ano" /></th>
                   <th className="pb-2 pr-3 font-normal"><Term k="volatilidade" /></th>
+                  <th className="pb-2 pr-3 font-normal"><Term k="maior_alta" /></th>
                   <th className="pb-2 pr-3 font-normal"><Term k="pior_queda" /></th>
                   <th className="pb-2 font-normal"><Term k="sharpe">Retorno por risco</Term></th>
                 </tr>

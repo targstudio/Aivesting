@@ -567,6 +567,46 @@ export type B3Quote = {
   disclaimer: string;
 };
 
+// ---- Maiores altas: de cada ativo (Yahoo, 10 anos) e de toda a B3 (arquivo de cotações da B3) ----
+
+export type HighMove = { change: number; start: string; end: string };
+
+export type AssetHighs = {
+  ticker: string;
+  as_of: string;
+  periods: { key: string; label: string; change: number; since: string }[];
+  best_day: HighMove | null;
+  worst_day: HighMove | null;
+  high_12m: { date: string; below: number } | null;
+  low_12m: { date: string; above: number } | null;
+  best_month: HighMove | null;
+  best_12m: HighMove | null;
+  max_rally: HighMove | null;
+  max_drawdown: HighMove | null;
+  months: number;
+  up_month_share: number | null;
+  disclaimer: string;
+};
+
+export type B3MoverType = "acao" | "fii" | "etf" | "bdr" | "unit";
+
+export type B3Mover = { ticker: string; name: string; type: B3MoverType; type_label: string; price: number; change: number; volume: number; logo_url: string | null };
+
+export type B3Movers = {
+  altas: B3Mover[];
+  baixas: B3Mover[];
+  total: number;
+  pregao: string | null;
+  desde: string | null;
+  tipo: B3MoverType;
+  periodo: "dia" | "mes";
+  disclaimer: string;
+};
+
+export const getAssetHighs = (ticker: string) => get<AssetHighs>(`/assets/${encodeURIComponent(ticker)}/altas`);
+export const getB3Movers = (tipo: B3MoverType, periodo: "dia" | "mes", limite = 8) =>
+  get<B3Movers>(`/b3/maiores-altas?tipo=${tipo}&periodo=${periodo}&limite=${limite}`);
+
 export const getB3Quote = (ticker: string) => get<B3Quote>(`/b3/ativos/${encodeURIComponent(ticker)}`);
 
 // ---- Proventos (dividendos, JCP e rendimentos) ----
