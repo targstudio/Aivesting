@@ -103,3 +103,21 @@ def test_coach_summary(monkeypatch):
     assert seen["feature"] == "treinadora" and '"meses_seguidos_guardando": 3' in seen["instruction"]
     assert "nunca" in seen["system"]
     assert c.post("/ia/treinadora", json={**body, "month": "out"}).status_code == 422
+
+
+def test_focus_concentrates_in_one_class():
+    picks = {"acoes": {"longo": [{"ticker": f"AAA{i}3", "name": f"A{i}", "note": ""} for i in range(10)]}}
+    base = dict(answers=ProfileAnswers(**AGGRESSIVE), amount=10_000, has_reserve=False)
+    acoes = build_plan(PlanRequest(**base, focus="acoes"), MACRO, picks)
+    assert [i["key"] for i in acoes["allocation"]] == ["acoes"] and acoes["allocation"][0]["value"] == 10_000
+    assert len(acoes["allocation"][0]["suggested"]) == 5 and all(s["value"] == 2_000 for s in acoes["allocation"][0]["suggested"])
+    assert acoes["focus_warning"] and "reserva" in acoes["focus_warning"] and acoes["variable_income_pct"] == 100
+    rv = build_plan(PlanRequest(**base, focus="renda_variavel"), MACRO, picks)
+    assert {i["key"] for i in rv["allocation"]} == {"acoes", "fiis", "internacional"}
+    assert round(sum(i["value"] for i in rv["allocation"]), 2) == 10_000
+    rf_short = build_plan(PlanRequest(**base, focus="renda_fixa", months=6), MACRO)
+    assert [i["key"] for i in rf_short["allocation"]] == ["rf_pos"]
+    fiis_short = build_plan(PlanRequest(**base, focus="fiis", months=6), MACRO)
+    assert fiis_short["allocation"][0]["key"] == "fiis" and "menos de 1 ano" in fiis_short["focus_warning"]
+    split = build_plan(PlanRequest(**base), MACRO, picks)
+    assert split["focus"] == "dividir" and split["focus_warning"] is None and split["allocation"][0]["key"] == "reserva"

@@ -365,7 +365,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
                 terms["curto"] = [
                     {"ticker": a.ticker, "name": a.name, "logo_url": a.logo_url,
                      "probability": a.probability_outperform, "note": f"{a.rank}º no ranking de curto prazo"}
-                    for a in snap.assets[:5]
+                    for a in snap.assets[:10]
                 ]
             for term, years in (("medio", 3), ("longo", 10)):
                 horizon = app.state.longterm.horizon(cls, years) if app.state.longterm.data else None
@@ -374,7 +374,7 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
                         {"ticker": a["ticker"], "name": a["name"], "logo_url": a.get("logo_url"),
                          "probability": a.get("prob_beat_benchmark"),
                          "note": f"{a['rank']}º no horizonte de {years} anos"}
-                        for a in horizon["assets"][:5]
+                        for a in horizon["assets"][:10]
                     ]
             out[cls] = terms
         return out
