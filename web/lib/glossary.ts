@@ -12,6 +12,14 @@ export const GLOSSARY = {
     term: "Pior queda",
     text: "A maior perda do topo até o fundo no período. Mostra quanto você teria visto o dinheiro encolher se comprasse no pior momento, antes de recuperar.",
   },
+  maior_alta: {
+    term: "Melhor 12 meses",
+    text: "A maior alta em 12 meses seguidos no período, com dividendos. Mostra até onde o investimento já chegou num ano bom; não quer dizer que vai se repetir.",
+  },
+  maior_subida: {
+    term: "Maior subida",
+    text: "Quanto teria ganho quem comprasse no ponto mais baixo e vendesse no mais alto que veio depois. É o melhor caso possível do período, quase impossível de acertar na prática.",
+  },
   sharpe: {
     term: "Retorno por risco (Sharpe)",
     text: "Mostra se valeu a pena aguentar os sobe e desce em vez de deixar o dinheiro na renda fixa (CDI). Acima de 0,5 é bom; perto de zero ou negativo quer dizer que a renda fixa teria sido melhor.",

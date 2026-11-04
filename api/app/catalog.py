@@ -57,6 +57,7 @@ class Listed:
     trades: int
     date: str
     isin: str = ""
+    change_month: float | None = None  # variação (%) desde o pregão de cerca de um mês antes (sem dividendos)
 
 
 def _num(raw: str, decimals: int = 2) -> float:
@@ -127,6 +128,35 @@ def merge(previous: list[Listed], latest: list[Listed]) -> list[Listed]:
     return sorted(out.values(), key=lambda a: a.ticker)
 
 
+# Desdobramentos e grupamentos mudam o preço sem mudar o valor do investimento, e o COTAHIST não ajusta.
+SPLIT_FACTORS = [k for n in (2, 3, 4, 5, 8, 10, 20, 25, 50, 100) for k in (n, 1 / n)] + [1.5, 2 / 3]
+
+# Liquidez mínima (R$ negociados no pregão) para entrar nas maiores altas: corta papéis que mal negociam.
+MIN_VOLUME = {"acao": 2_000_000, "fii": 500_000, "etf": 500_000, "bdr": 500_000, "unit": 2_000_000}
+MIN_TRADES = 50
+
+
+def looks_like_split(ratio: float) -> bool:
+    return abs(ratio - 1) > 0.35 and any(abs(ratio / k - 1) < 0.04 for k in SPLIT_FACTORS)
+
+
+def month_changes(latest: dict[str, Listed], base: list[Listed]) -> int:
+    """Grava em cada ativo a variação desde o pregão `base`. Devolve quantos ativos ganharam a medida."""
+    old = {a.ticker: a for a in base}
+    n = 0
+    for a in latest.values():
+        before = old.get(a.ticker)
+        a.change_month = None
+        if not before or not before.price or not a.price or before.date >= a.date:
+            continue
+        ratio = a.price / before.price
+        if looks_like_split(ratio):
+            continue
+        a.change_month = round((ratio - 1) * 100, 2)
+        n += 1
+    return n
+
+
 def normalize(text: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFD", text.upper()) if unicodedata.category(c) != "Mn")
 
@@ -147,6 +177,19 @@ async def download_day(client: httpx.AsyncClient, day: date) -> list[Listed] | N
     with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
         text = zf.read(zf.namelist()[0]).decode("latin-1")
     return parse_cotahist(text) or None
+
+
+async def download_before(client: httpx.AsyncClient, newest: date, back: int = 21, lookback: int = 6) -> list[Listed] | None:
+    """O pregão de cerca de `back` dias úteis antes de `newest` (tenta alguns dias para trás se faltar o arquivo)."""
+    start = list(business_days_back(newest, back + 1))[-1]
+    for day in business_days_back(start, lookback):
+        try:
+            rows = await download_day(client, day)
+        except (httpx.HTTPError, zipfile.BadZipFile):
+            rows = None
+        if rows:
+            return rows
+    return None
 
 
 async def download_latest(client: httpx.AsyncClient, today: date, days: int = 2, lookback: int = 10) -> list[list[Listed]]:
@@ -176,6 +219,7 @@ class Catalog:
         self.assets: dict[str, Listed] = {}
         self.trade_date: str | None = None
         self.updated_at: str | None = None
+        self.month_base: str | None = None  # data do pregão usado na variação do mês
         self.source = SOURCE
         self.quote_ttl = quote_ttl
         self.quotes_per_minute = quotes_per_minute
@@ -194,6 +238,7 @@ class Catalog:
             log.warning("lista da B3 não encontrada em %s", self.path)
             return
         self._set([Listed(**a) for a in raw.get("assets", [])], raw.get("updated_at"))
+        self.month_base = raw.get("month_base")
 
     def _set(self, assets: list[Listed], updated_at: str | None) -> None:
         self.assets = {a.ticker: a for a in assets}
@@ -205,6 +250,7 @@ class Catalog:
             "source": self.source,
             "updated_at": self.updated_at,
             "trade_date": self.trade_date,
+            "month_base": self.month_base,
             "assets": [asdict(a) for a in sorted(self.assets.values(), key=lambda a: a.ticker)],
         }
 
@@ -212,25 +258,32 @@ class Catalog:
         self.path.write_text(json.dumps(self.dump(), ensure_ascii=False, separators=(",", ":")) + "\n")
 
     async def refresh(self, today: date | None = None) -> bool:
-        """Baixa os dois últimos pregões da B3. Devolve False se nada novo foi encontrado."""
+        """Baixa os dois últimos pregões da B3 e o de um mês antes. Devolve False se nada novo foi encontrado."""
         today = today or datetime.now(timezone(timedelta(hours=-3))).date()
         async with self._lock:
             client = self.client or httpx.AsyncClient(timeout=60, follow_redirects=True,
                                                       headers={"User-Agent": "Mozilla/5.0"})
             try:
                 days = await download_latest(client, today)
+                days = [rows for rows in days if not self.trade_date or rows[0].date > self.trade_date]
+                if days:
+                    assets = list(self.assets.values())
+                    for rows in days:
+                        assets = merge(assets, rows)
+                    self._set(assets, datetime.now(timezone.utc).isoformat())
+                    log.info("lista da B3 atualizada: %d ativos do pregão de %s", len(self.assets), self.trade_date)
+                # A variação do mês precisa do pregão de um mês antes: baixa de novo a cada pregão novo.
+                month_new = False
+                if self.trade_date and (days or not self.month_base):
+                    base = await download_before(client, date.fromisoformat(self.trade_date))
+                    if base:
+                        month_changes(self.assets, base)
+                        self.month_base = base[0].date
+                        month_new = True
             finally:
                 if self.client is None:
                     await client.aclose()
-            days = [rows for rows in days if not self.trade_date or rows[0].date > self.trade_date]
-            if not days:
-                return False
-            assets = list(self.assets.values())
-            for rows in days:
-                assets = merge(assets, rows)
-            self._set(assets, datetime.now(timezone.utc).isoformat())
-            log.info("lista da B3 atualizada: %d ativos do pregão de %s", len(self.assets), self.trade_date)
-            return True
+            return bool(days) or month_new
 
     def counts(self) -> dict[str, int]:
         out = {k: 0 for k in TYPES}
@@ -265,6 +318,25 @@ class Catalog:
         return {
             "total": len(items),
             "ativos": [self.slim(a) for a in items[offset:offset + limit]],
+        }
+
+    def movers(self, kind: str | None = None, period: str = "dia", limit: int = 10) -> dict:
+        """Maiores altas e baixas de toda a B3, no último pregão ou no último mês, só entre papéis com liquidez."""
+        field = "change_month" if period == "mes" else "change_percent"
+        newest = self.trade_date
+        pool = [
+            a for a in self.assets.values()
+            if (not kind or a.type == kind) and a.date == newest and getattr(a, field) is not None
+            and a.volume >= MIN_VOLUME[a.type] and a.trades >= MIN_TRADES
+        ]
+        pool.sort(key=lambda a: getattr(a, field), reverse=True)
+        pick = lambda items: [{**self.slim(a), "change": getattr(a, field)} for a in items]  # noqa: E731
+        return {
+            "altas": pick([a for a in pool if getattr(a, field) > 0][:limit]),
+            "baixas": pick([a for a in reversed(pool) if getattr(a, field) < 0][:limit]),
+            "total": len(pool),
+            "pregao": newest,
+            "desde": self.month_base if period == "mes" else None,
         }
 
     @staticmethod

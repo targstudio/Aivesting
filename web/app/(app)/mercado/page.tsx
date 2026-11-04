@@ -2,13 +2,17 @@ import Link from "next/link";
 import { AiInsight } from "@/app/components/AiInsight";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { Sparkline } from "@/app/components/Sparkline";
-import { Breadcrumbs, Card, EmptyState, InfoBanner, PageTitle } from "@/app/components/ui";
+import { Breadcrumbs, Card, EmptyState, InfoBanner, PageTitle, Segmented } from "@/app/components/ui";
 import { SIDE } from "@/app/components/AnalystsCard";
 import {
+  getB3Movers,
   getConsensus,
   getMacro,
   getMarket,
   getShortTerm,
+  type B3Mover,
+  type B3Movers,
+  type B3MoverType,
   type ConsensusList,
   type MarketItem,
   type Mover,
@@ -75,6 +79,88 @@ function MoverList({ title, items, empty }: { title: string; items: Mover[]; emp
       ) : (
         <p className="text-sm text-muted">{empty}</p>
       )}
+    </Card>
+  );
+}
+
+const B3_TYPES: { key: B3MoverType; label: string }[] = [
+  { key: "acao", label: "Ações" },
+  { key: "fii", label: "FIIs" },
+  { key: "etf", label: "ETFs" },
+  { key: "bdr", label: "BDRs" },
+];
+
+const shortDay = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+
+function B3MoverList({ title, items, empty }: { title: string; items: B3Mover[]; empty: string }) {
+  return (
+    <div>
+      <h3 className="mb-2 text-sm font-semibold text-muted">{title}</h3>
+      {items.length ? (
+        <ul className="flex flex-col divide-y divide-border">
+          {items.map((a, i) => (
+            <li key={a.ticker}>
+              <Link href={`/ativo/${a.ticker}`} className="flex items-center gap-3 py-2.5 hover:opacity-80">
+                <span className="tabular w-5 text-right text-xs text-muted">{i + 1}</span>
+                <AssetLogo ticker={a.ticker} src={a.logo_url} size={32} />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-bold">{a.ticker}</span>
+                  <span className="block truncate text-xs text-muted">{a.name}</span>
+                </span>
+                <span className="w-24 text-right">
+                  <span className="tabular block text-sm">{formatBRL(a.price)}</span>
+                  <span className={`tabular block text-sm font-semibold ${changeColor(a.change)}`}>{formatPercent(a.change)}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted">{empty}</p>
+      )}
+    </div>
+  );
+}
+
+function B3MoversCard({ data, tipo, periodo }: { data: B3Movers | null; tipo: B3MoverType; periodo: "dia" | "mes" }) {
+  const href = (t: B3MoverType, p: "dia" | "mes") => `/mercado?altas=${t}&prazo=${p}#maiores-altas`;
+  const when =
+    periodo === "mes"
+      ? data?.desde && data.pregao
+        ? `de ${shortDay(data.desde)} a ${shortDay(data.pregao)}`
+        : "no último mês"
+      : data?.pregao
+        ? `no pregão de ${shortDay(data.pregao)}`
+        : "no último pregão";
+  return (
+    <Card className="mb-8">
+      <div id="maiores-altas" className="mb-1 flex scroll-mt-24 flex-wrap items-baseline justify-between gap-3">
+        <h2 className="text-lg font-bold">Maiores altas de toda a B3</h2>
+        {data && <span className="text-xs text-muted">{data.total} papéis com bastante negócio</span>}
+      </div>
+      <p className="mb-4 text-xs text-muted">
+        O que mais subiu e caiu {when}, entre todos os papéis da bolsa que negociam todo dia. Não conta dividendos.
+      </p>
+      <div className="mb-5 flex flex-wrap gap-3">
+        <Segmented options={B3_TYPES.map((t) => ({ label: t.label, href: href(t.key, periodo), active: t.key === tipo }))} />
+        <Segmented
+          options={[
+            { label: "No dia", href: href(tipo, "dia"), active: periodo === "dia" },
+            { label: "No mês", href: href(tipo, "mes"), active: periodo === "mes" },
+          ]}
+        />
+      </div>
+      {data ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <B3MoverList title="Subiram mais" items={data.altas} empty="Nenhum papel desse tipo subiu nesse período." />
+          <B3MoverList title="Caíram mais" items={data.baixas} empty="Nenhum papel desse tipo caiu nesse período." />
+        </div>
+      ) : (
+        <p className="text-sm text-muted">A lista da B3 não carregou agora. Tente de novo em alguns minutos.</p>
+      )}
+      <p className="mt-4 text-xs text-muted">
+        Quem subiu muito pode cair depois. Antes de comprar, abra o ativo e veja o histórico. Não é recomendação de investimento.
+      </p>
     </Card>
   );
 }
@@ -152,12 +238,16 @@ function Highlights({ cheap, consensus }: { cheap: ShortTermList | null; consens
   );
 }
 
-export default async function MarketPage() {
-  const [market, macro, cheap, consensus] = await Promise.all([
+export default async function MarketPage({ searchParams }: { searchParams: Promise<{ altas?: string; prazo?: string }> }) {
+  const { altas, prazo } = await searchParams;
+  const tipo = B3_TYPES.find((t) => t.key === altas)?.key ?? "acao";
+  const periodo = prazo === "mes" ? "mes" : "dia";
+  const [market, macro, cheap, consensus, b3Movers] = await Promise.all([
     getMarket(),
     getMacro(),
     getShortTerm("acoes", "baratas", "", 0, 5),
     getConsensus("compra", 5),
+    getB3Movers(tipo, periodo),
   ]);
   const indices = [...(market?.indices ?? [])].sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
   const breadth = market?.amplitude;
@@ -217,6 +307,8 @@ export default async function MarketPage() {
           </div>
         </>
       )}
+
+      <B3MoversCard data={b3Movers} tipo={tipo} periodo={periodo} />
 
       <Highlights cheap={cheap} consensus={consensus} />
 
