@@ -29,8 +29,10 @@ def market_is_open(settings: Settings, now: datetime | None = None) -> bool:
 class RankingService:
     """Guarda o último ranking de cada classe e o recalcula a cada N minutos durante o pregão."""
 
-    def __init__(self, settings: Settings, provider: MarketDataProvider, store=None):
+    def __init__(self, settings: Settings, provider: MarketDataProvider, store=None, fundamentals=None):
         self.settings = settings
+        # Função sem argumentos que devolve ticker -> {"dy", "p_vp", "p_l"} (o curto prazo liga isso na API).
+        self.fundamentals = fundamentals
         self.provider = provider
         self.store = store
         self.snapshots: dict[str, RankingSnapshot] = {}
@@ -45,7 +47,9 @@ class RankingService:
         for asset_class, benchmark in CLASSES.items():
             try:
                 quotes = await self.provider.quotes(self.universe(asset_class))
-                snapshot = rank_assets(quotes, asset_class, benchmark, data_realtime=self.provider.realtime)
+                snapshot = rank_assets(
+                    quotes, asset_class, benchmark, data_realtime=self.provider.realtime, fundamentals=self._fund()
+                )
                 self.snapshots[asset_class] = snapshot
             except Exception:
                 log.exception("falha ao recalcular ranking de %s", asset_class)
@@ -55,6 +59,15 @@ class RankingService:
                     await self.store.save(snapshot)
                 except Exception:
                     log.exception("falha ao gravar ranking de %s no banco", asset_class)
+
+    def _fund(self) -> dict[str, dict]:
+        if not self.fundamentals:
+            return {}
+        try:
+            return self.fundamentals() or {}
+        except Exception:  # noqa: BLE001
+            log.exception("falha ao ler os dividendos e indicadores do ranking")
+            return {}
 
     def start(self) -> None:
         self.scheduler = AsyncIOScheduler(timezone=SAO_PAULO)

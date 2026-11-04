@@ -64,6 +64,7 @@ SIGNALS = {
 
 VIEWS = {
     "oportunidades": "Barato e ganhando força",
+    "baratas": "Baratas e sem alerta grave",
     "pvp": "Mais baratos pelo P/VP",
     "dividendos": "Mais dividendos",
     "todos": "Todos",
@@ -335,13 +336,44 @@ def score_class(asset_class: str, assets: list[dict]) -> None:
         s_quality = _avg(list(zip(q, quality_w)))
         s_trend = _avg(list(zip(t, (0.4, 0.4, 0.2)))) if a.get("momentum") else None
         total = _avg([(s_value, 0.45), (s_quality, 0.2), (s_trend, 0.35)])
+        # Barata de verdade: desconto (P/VP, P/L, dividendos) com saúde, sem depender de como o preço anda.
+        s_cheap = _avg([(s_value, 0.65), (s_quality, 0.35)])
         a["scores"] = {
             "value": _pct(s_value), "quality": _pct(s_quality), "momentum": _pct(s_trend), "total": _pct(total),
+            "cheap": _pct(s_cheap),
         }
         a["signal"] = signal(a)
         a["signal_label"] = SIGNALS[a["signal"]]
         a["risk"], a["risk_label"] = risk(asset_class, a)
         a["alerts"] = alerts(asset_class, a)
+
+
+# "Barata e com as contas em dia": desconto entre os 40% maiores e saúde pelo menos na média dos pares.
+CHEAP_MIN_VALUE = 60
+CHEAP_MIN_QUALITY = 45
+
+
+def serious_flag(asset_class: str, a: dict) -> bool:
+    """Sinais de que o desconto pode ser armadilha: lucro ou dividendo pontual, dívida alta, vendas caindo, desconto
+    grande demais (o mercado costuma saber de um problema), imóveis vazios ou fundo de um imóvel só."""
+    pvp, dy = a.get("p_vp") or 0, a.get("dy") or 0
+    if dy > 0.2:
+        return True
+    if asset_class == "acoes":
+        return (
+            (a.get("p_l") or 0) < 4 or pvp < 0.4 or (a.get("debt_equity") or 0) > 2
+            or (a.get("revenue_growth_5y") is not None and a["revenue_growth_5y"] < 0)
+        )
+    return pvp < 0.6 or (a.get("vacancy") or 0) > 0.15 or a.get("properties") == 1
+
+
+def is_cheap(a: dict, asset_class: str | None = None) -> bool:
+    s = a.get("scores") or {}
+    cls = asset_class or ("fiis" if "vacancy" in a else "acoes")
+    return (
+        (s.get("value") or 0) >= CHEAP_MIN_VALUE and (s.get("quality") or 0) >= CHEAP_MIN_QUALITY
+        and not serious_flag(cls, a)
+    )
 
 
 def _pct(v: float | None) -> int | None:
@@ -543,6 +575,13 @@ class TraderService:
                     self.moms = {**self.moms, **fresh} if len(self.moms) < 400 else fresh
             self._rebuild()
 
+    def ranking_fundamentals(self) -> dict[str, dict]:
+        """Dividend yield, P/VP e P/L de todos os papéis, para o ranking principal (app/ranking)."""
+        return {
+            r["ticker"]: {"dy": r.get("dy"), "p_vp": r.get("p_vp"), "p_l": r.get("p_l")}
+            for cls in CLASSES for r in (self.raw or {}).get(cls) or []
+        }
+
     def fundamentals(self, ticker: str) -> dict | None:
         """Indicadores de um papel (para o card de fundamentos da tela do ativo, sem brapi paga)."""
         ticker = ticker.upper()
@@ -560,6 +599,9 @@ class TraderService:
         if view == "oportunidades":
             picked = [a for a in assets if a["signal"] == "barato_subindo"]
             picked.sort(key=lambda a: -(a["scores"]["total"] or 0))
+        elif view == "baratas":
+            picked = [a for a in assets if is_cheap(a, asset_class)]
+            picked.sort(key=lambda a: -(a["scores"]["cheap"] or 0))
         elif view == "pvp":
             picked = sorted(assets, key=lambda a: a["p_vp"])
         elif view == "dividendos":
@@ -584,6 +626,7 @@ class TraderService:
             "screened": block["screened"],
             "with_momentum": sum(1 for a in assets if a.get("momentum")),
             "signals": signals,
+            "cheap_count": sum(1 for a in assets if is_cheap(a, asset_class)),
             "total": len(picked),
             "assets": picked[offset : offset + limit],
             "disclaimer": DISCLAIMER,

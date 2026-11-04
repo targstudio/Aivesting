@@ -16,11 +16,13 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       <Breadcrumbs items={[{ label: "Mercado", href: "/mercado" }, { label: assetClass === "fiis" ? "Fundos imobiliários" : "Ações" }]} />
       <PageTitle
         title={`Melhores ${label.toLowerCase()} agora`}
-        subtitle={`Chance de cada um render mais que a média da bolsa (${snapshot?.benchmark ?? "índice"}) no curto prazo.`}
+        subtitle={`Chance de cada um render mais que a média da bolsa (${snapshot?.benchmark ?? "índice"}) no curto prazo, contando os dividendos.`}
       />
       <InfoBanner>
-        A lista olha como o preço de cada um vem se comportando: se vem subindo, se oscila muito e se tem muita gente
-        comprando. É uma estimativa, não uma certeza, e não é recomendação de investimento.
+        A lista junta duas coisas. Primeiro, quanto cada um rendeu nos últimos meses, somando o preço e os dividendos
+        pagos, e se o preço oscila muito. Depois, quanto paga de dividendos e se está barato perto do patrimônio e do
+        lucro da empresa{assetClass === "fiis" ? " (nos fundos imobiliários, dividendos e P/VP pesam mais)" : ""}. É uma
+        estimativa, não uma certeza, e não é recomendação de investimento.
       </InfoBanner>
 
       <AiInsight

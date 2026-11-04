@@ -47,6 +47,8 @@ from .ranking.service import CLASSES, RankingService, market_is_open
 from .portfolio import TICKER_RE, PortfolioRequest, analyze, compare_with_plan
 from .analysts import DISCLAIMER as ANALYSTS_DISCLAIMER
 from .analysts import AnalystService
+from .consensus import SORTS as CONSENSUS_SORTS
+from .consensus import ConsensusService, liquid_universe
 from .dividends import DISCLAIMER as DIVIDENDS_DISCLAIMER
 from .dividends import DividendService, DividendsRequest
 from .fixed_income import TesouroService, rates_payload
@@ -213,21 +215,42 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             except Exception:  # noqa: BLE001
                 log.exception("falha ao atualizar o curto prazo")
             await asyncio.sleep(10 * 60)
+    # O ranking usa os dividendos e o P/VP e P/L de cada papel, que vêm da mesma tabela do curto prazo.
+    ranking.fundamentals = trader.ranking_fundamentals
+    analysts = AnalystService(demo=settings.demo_mode)
+    # Ranking dos bancos e corretoras: consenso do Yahoo para as ações mais negociadas, renovado a cada 12 horas.
+    consensus = ConsensusService(
+        analysts,
+        universe=lambda: liquid_universe(trader, list(settings.stocks)),
+        names=lambda: {t: a.name for t, a in catalog.assets.items()},
+        fundamentals=trader.ranking_fundamentals,
+    )
+
+    async def refresh_consensus_forever():
+        await asyncio.sleep(60)  # deixa o curto prazo carregar a lista das mais negociadas primeiro
+        while True:
+            try:
+                await consensus.refresh()
+            except Exception:  # noqa: BLE001
+                log.exception("falha ao atualizar o consenso dos analistas")
+            await asyncio.sleep(30 * 60)
     insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market, usage)
     insights.trader = trader
+    insights.consensus = consensus
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        refresher = trader_task = None
+        refresher = trader_task = consensus_task = None
         if start_scheduler:
             await ranking.recompute(force=True)
             ranking.start()
             if not settings.demo_mode:
                 refresher = asyncio.create_task(refresh_catalog_forever())
             trader_task = asyncio.create_task(refresh_trader_forever())
+            consensus_task = asyncio.create_task(refresh_consensus_forever())
         yield
         ranking.stop()
-        for task in (refresher, trader_task):
+        for task in (refresher, trader_task, consensus_task):
             if task:
                 task.cancel()
 
@@ -266,7 +289,8 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         settings.brapi_base_url, settings.brapi_token, demo=settings.demo_mode, fallback=trader.fundamentals
     )
     app.state.trader = trader
-    app.state.analysts = AnalystService(demo=settings.demo_mode)
+    app.state.analysts = analysts
+    app.state.consensus = consensus
     app.state.tesouro = TesouroService(None if settings.demo_mode else settings.tesouro_csv_url)
     app.state.dividends = DividendService(
         None if settings.demo_mode else provider if isinstance(provider, YahooProvider) else market.source
@@ -307,6 +331,10 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             "accounts": app.state.accounts is not None,
             "advisor": settings.advisor_mode == "public",
             "portfolio_storage": portfolios is not None,
+            "consensus": app.state.consensus.snapshot and {
+                "updated_at": app.state.consensus.snapshot["updated_at"],
+                "covered": app.state.consensus.snapshot["covered"],
+            },
             "b3_assets": len(catalog.assets),
             "b3_trade_date": catalog.trade_date,
             "short_term": trader.snapshot and {
@@ -827,6 +855,18 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         result = app.state.trader.view(classe, visao, busca[:40], max(0, offset), max(1, min(100, limite)))
         if result is None:
             raise HTTPException(503, "Os dados do curto prazo ainda estão sendo preparados.")
+        return result
+
+    @app.get("/consenso")
+    async def analyst_consensus(ordem: str = "compra", limite: int = 30):
+        """Ações mais indicadas por bancos e corretoras (consenso do Yahoo), com placar, preço-alvo e casas nomeadas."""
+        if ordem not in CONSENSUS_SORTS:
+            raise HTTPException(404, "Ordem desconhecida.")
+        if app.state.consensus.snapshot is None and settings.demo_mode:
+            await app.state.consensus.refresh()
+        result = app.state.consensus.view(ordem, max(1, min(100, limite)))
+        if result is None:
+            raise HTTPException(503, "As opiniões dos analistas ainda estão sendo reunidas. Tente de novo em alguns minutos.")
         return result
 
     @app.get("/proventos")

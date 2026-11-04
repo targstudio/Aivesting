@@ -48,6 +48,12 @@ TASKS = {
     "desconto e ganhando força têm em comum (P/VP, P/L, dividendos, como o preço vem andando) e quais alertas se "
     "repetem. Deixe claro que barato pode ficar mais barato, que curto prazo tem risco alto e que a lista é ponto de "
     "partida para estudar, não indicação de compra.",
+    "baratas": "Explique em até 2 parágrafos curtos a lista de papéis baratos desta classe: o que eles têm em comum "
+    "(P/VP, P/L, dividendos, saúde) e por que barato não quer dizer que vai subir (o mercado pode estar vendo um "
+    "problema). A lista é ponto de partida para estudar, não indicação de compra.",
+    "consenso": "Explique em até 2 parágrafos curtos o ranking de opiniões de bancos e corretoras: quais ações têm "
+    "mais analistas indicando compra, quais estão divididas ou com indicação de venda, e o que o preço-alvo médio "
+    "sugere. Lembre que analistas erram e costumam ser otimistas, e que o Yahoo não diz qual banco deu cada nota.",
     "alertas": "Explique em até 2 parágrafos curtos por que este alerta disparou, com os dados do ativo (preço, "
     "variação, posição no ranking, fatores do modelo) e o contexto do mercado e do macro. Não sugira o que fazer.",
 }
@@ -94,6 +100,7 @@ class Insights:
         self.market = market
         self._cache: dict[tuple, tuple[float, dict]] = {}
         self.trader = None  # TraderService, ligado pela API
+        self.consensus = None  # ConsensusService, ligado pela API
 
     # ---- Dados de cada contexto ----
 
@@ -152,6 +159,25 @@ class Insights:
                 "dados_de": view["fundamentals_at"],
             }
             return kind, data
+        if kind == "baratas" and len(parts) == 2 and parts[1] in CLASSES and self.trader:
+            view = self.trader.view(parts[1], "baratas", limit=10)
+            if view is None:
+                return None
+            keep = ("ticker", "name", "segment", "price", "p_vp", "p_l", "dy", "roe", "vacancy", "scores", "alerts")
+            return kind, {
+                "papeis_na_varredura": view["screened"], "baratas_sem_alerta_grave": view["cheap_count"],
+                "primeiras": [{k: a.get(k) for k in keep} for a in view["assets"]], "dados_de": view["fundamentals_at"],
+            }
+        if kind == "consenso" and self.consensus:
+            view = self.consensus.view("compra", limit=12)
+            if view is None:
+                return None
+            keep = ("rank", "ticker", "name", "verdict_label", "counts", "buy_pct", "upside", "target_mean", "price")
+            worst = self.consensus.snapshot["assets"][-3:]
+            return kind, {
+                "acoes_com_cobertura": view["covered"], "mais_indicadas": [{k: a.get(k) for k in keep} for a in view["assets"]],
+                "menos_indicadas": [{k: a.get(k) for k in keep} for a in worst], "dados_de": view["updated_at"],
+            }
         return None
 
     # ---- Chamada à Claude ----

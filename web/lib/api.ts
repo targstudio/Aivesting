@@ -24,6 +24,13 @@ export type RankedAsset = {
   /** Últimos fechamentos (até 30 pregões). */
   spark: number[];
   as_of?: string | null;
+  /** Dividendos dos últimos 12 meses ÷ preço, P/VP e P/L (Fundamentus). */
+  dividend_yield?: number | null;
+  p_vp?: number | null;
+  p_l?: number | null;
+  /** Quanto rendeu em ~6 meses: só o preço, e o preço mais os dividendos (aproximado). */
+  return_6m?: number | null;
+  total_return_6m?: number | null;
 };
 
 export type RankingSnapshot = {
@@ -633,7 +640,7 @@ export const getFundamentals = (ticker: string) => get<Fundamentals>(`/assets/${
 
 // ---- Curto prazo: varredura de todas as ações e FIIs (Fundamentus + Yahoo, gratuitos) ----
 
-export type ShortTermView = "oportunidades" | "pvp" | "dividendos" | "todos";
+export type ShortTermView = "oportunidades" | "baratas" | "pvp" | "dividendos" | "todos";
 export type ShortTermSignal = "barato_subindo" | "barato_parado" | "barato_caindo" | "subindo" | "neutro" | "sem_preco";
 
 export type ShortTermMomentum = {
@@ -664,7 +671,7 @@ export type ShortTermAsset = {
   properties?: number | null;
   liquidity: number | null;
   momentum: ShortTermMomentum | null;
-  scores: { value: number | null; quality: number | null; momentum: number | null; total: number | null };
+  scores: { value: number | null; quality: number | null; momentum: number | null; total: number | null; cheap?: number | null };
   signal: ShortTermSignal;
   signal_label: string;
   risk: "baixo" | "medio" | "alto";
@@ -684,14 +691,16 @@ export type ShortTermList = {
   screened: number;
   with_momentum: number;
   signals: Partial<Record<ShortTermSignal, number>>;
+  /** Quantos estão baratos, com saúde na média ou melhor e sem alerta grave. */
+  cheap_count?: number;
   total: number;
   assets: ShortTermAsset[];
   disclaimer: string;
 };
 
-export const getShortTerm = (c: AssetClass, view: ShortTermView, q = "", offset = 0) =>
+export const getShortTerm = (c: AssetClass, view: ShortTermView, q = "", offset = 0, limit = 30) =>
   get<ShortTermList>(
-    `/curto-prazo/${c}?${new URLSearchParams({ visao: view, busca: q, offset: String(offset), limite: "30" })}`,
+    `/curto-prazo/${c}?${new URLSearchParams({ visao: view, busca: q, offset: String(offset), limite: String(limit) })}`,
   );
 // ---- Opinião dos analistas ----
 
@@ -723,3 +732,49 @@ export type AssetAnalysts = {
 };
 
 export const getAnalysts = (ticker: string) => get<AssetAnalysts>(`/assets/${encodeURIComponent(ticker)}/analistas`);
+
+// ---- Ranking das ações mais indicadas por bancos e corretoras (consenso do Yahoo) ----
+
+export type ConsensusSort = "compra" | "potencial" | "analistas";
+
+export type ConsensusAsset = {
+  rank: number;
+  ticker: string;
+  name: string;
+  logo_url: string | null;
+  counts: { compra: number; neutro: number; venda: number; total: number };
+  /** O lado com mais votos dos analistas. */
+  verdict: AnalystSide;
+  verdict_label: string;
+  buy_pct: number;
+  sell_pct: number;
+  score: number;
+  price: number | null;
+  target_mean: number | null;
+  target_low: number | null;
+  target_high: number | null;
+  upside: number | null;
+  /** Alvo longe demais do preço: provavelmente antigo, não ajustado a desdobramento ou grupamento. */
+  target_suspect?: boolean;
+  firms: { firm: string; side: AnalystSide; side_label: string; date: string; source: string }[];
+  named_firms: number;
+  dy: number | null;
+  p_vp: number | null;
+  p_l: number | null;
+};
+
+export type ConsensusList = {
+  sort: ConsensusSort;
+  sort_label: string;
+  updated_at: string;
+  checked: number;
+  covered: number;
+  min_analysts: number;
+  assets: ConsensusAsset[];
+  coverage_note: string;
+  disclaimer: string;
+  source: string;
+};
+
+export const getConsensus = (sort: ConsensusSort = "compra", limit = 30) =>
+  get<ConsensusList>(`/consenso?${new URLSearchParams({ ordem: sort, limite: String(limit) })}`);

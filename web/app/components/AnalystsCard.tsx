@@ -2,12 +2,19 @@ import type { AnalystSide, AssetAnalysts } from "@/lib/api";
 import { formatBRL, formatRatio } from "@/lib/format";
 import { Card, CardHeader, Stat } from "./ui";
 
-const SIDES: { key: AnalystSide; label: string; color: string; badge: string }[] = [
+export const SIDES: { key: AnalystSide; label: string; color: string; badge: string }[] = [
   { key: "compra", label: "Compra", color: "rgb(var(--positive))", badge: "bg-positive/10 text-positive" },
   { key: "neutro", label: "Neutro", color: "rgb(var(--chart-4))", badge: "bg-border/60 text-muted" },
   { key: "venda", label: "Venda", color: "rgb(var(--negative))", badge: "bg-negative/10 text-negative" },
 ];
-const SIDE = Object.fromEntries(SIDES.map((s) => [s.key, s]));
+export const SIDE = Object.fromEntries(SIDES.map((s) => [s.key, s]));
+
+/** O lado com mais votos; empate fica neutro (mesma regra da API em app/consensus.py). */
+export function verdictOf(c: { compra: number; neutro: number; venda: number }): AnalystSide {
+  if (c.compra > c.neutro && c.compra > c.venda) return "compra";
+  if (c.venda > c.neutro && c.venda > c.compra) return "venda";
+  return "neutro";
+}
 
 const dateBR = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00`).toLocaleDateString("pt-BR");
 
@@ -27,7 +34,7 @@ export function AnalystsCard({ a, ticker }: { a: AssetAnalysts | null; ticker: s
     );
   }
   const c = a.counts;
-  const top = c ? SIDES.reduce((best, s) => (c[s.key] > c[best.key] ? s : best), SIDES[0]) : null;
+  const top = c ? SIDE[verdictOf(c)] : null;
   return (
     <Card className="mb-6">
       <CardHeader title={title} subtitle={subtitle} />
@@ -35,10 +42,12 @@ export function AnalystsCard({ a, ticker }: { a: AssetAnalysts | null; ticker: s
         <div className="flex flex-col gap-5">
           {c && top && (
             <div>
-              <p className="mb-3 text-sm">
-                De <strong>{c.total}</strong> {c.total === 1 ? "analista" : "analistas"}, a opinião mais comum é{" "}
-                <strong style={{ color: top.color }}>{top.label.toLowerCase()}</strong>.
-              </p>
+              <div className="mb-3 flex flex-wrap items-center gap-3">
+                <span className={`rounded-full px-4 py-1.5 text-base font-bold ${top.badge}`}>Consenso: {top.label}</span>
+                <span className="text-sm">
+                  de <strong>{c.total}</strong> {c.total === 1 ? "analista" : "analistas"}
+                </span>
+              </div>
               <div className="flex h-3 overflow-hidden rounded-full bg-border">
                 {SIDES.map((s) =>
                   c[s.key] ? <span key={s.key} style={{ width: `${(100 * c[s.key]) / c.total}%`, background: s.color }} /> : null,
