@@ -27,6 +27,9 @@ DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "consenso.json"
 REFRESH_SECONDS = 12 * 3600
 UNIVERSE_SIZE = 90  # as mais negociadas do curto prazo (Fundamentus), mais as do ranking principal
 MIN_ANALYSTS = 3
+# Preço-alvo muito longe do preço quase sempre é alvo antigo que o Yahoo não ajustou (desdobramento, grupamento,
+# bonificação) ou é de poucos analistas. A tela mostra o aviso no lugar do número.
+SUSPECT_UPSIDE = (-0.5, 0.8)
 DISCLAIMER = (
     "Opiniões de analistas de bancos e corretoras compiladas pelo Yahoo Finance. Analistas erram com frequência, "
     "costumam ser otimistas e não conhecem o seu objetivo. A lista mostra o que eles dizem, não é recomendação de "
@@ -68,6 +71,8 @@ def row(ticker: str, data: dict, names: dict[str, str], fund: dict | None) -> di
         return None
     fund = fund or {}
     firms = (data.get("firms") or [])[:6]
+    upside = data.get("upside")
+    suspect = upside is not None and not (SUSPECT_UPSIDE[0] <= upside <= SUSPECT_UPSIDE[1])
     return {
         "ticker": ticker,
         "name": names.get(ticker) or ticker,
@@ -82,7 +87,8 @@ def row(ticker: str, data: dict, names: dict[str, str], fund: dict | None) -> di
         "target_mean": data.get("target_mean"),
         "target_low": data.get("target_low"),
         "target_high": data.get("target_high"),
-        "upside": data.get("upside"),
+        "upside": upside,
+        "target_suspect": suspect,
         # Últimas notas com nome da casa (compra, neutro ou venda), quando o Yahoo publica.
         "firms": [
             {"firm": f["firm"], "side": f["side"], "side_label": VERDICTS[f["side"]], "date": f["date"], "source": f["source"]}
@@ -99,7 +105,7 @@ def build(results: dict[str, dict | None], names: dict[str, str] | None = None,
           fund: dict[str, dict] | None = None) -> dict:
     names, fund = names or {}, fund or {}
     rows = [r for t, d in results.items() if d and (r := row(t, d, names, fund.get(t)))]
-    rows.sort(key=lambda r: (-r["score"], -r["counts"]["total"], -(r["upside"] or -1)))
+    rows.sort(key=lambda r: (-r["score"], -r["counts"]["total"], -(-1 if r["target_suspect"] else r["upside"] or -1)))
     for i, r in enumerate(rows, start=1):
         r["rank"] = i
     return {
@@ -183,7 +189,7 @@ class ConsensusService:
             return None
         assets = list(self.snapshot["assets"])
         if sort == "potencial":
-            assets = [a for a in assets if a["upside"] is not None]
+            assets = [a for a in assets if a["upside"] is not None and not a.get("target_suspect")]
             assets.sort(key=lambda a: -a["upside"])
         elif sort == "analistas":
             assets.sort(key=lambda a: (-a["counts"]["total"], -a["score"]))

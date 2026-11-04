@@ -66,3 +66,15 @@ def test_endpoint_demo():
     assert body["assets"] and body["coverage_note"]
     assert {"verdict", "verdict_label", "counts", "upside"} <= set(body["assets"][0])
     assert c.get("/consenso?ordem=xyz").status_code == 404
+
+
+def test_far_target_is_flagged_and_left_out_of_upside_sort(tmp_path):
+    snap = build({
+        "LONG3": {"counts": counts(5, 0, 0), "upside": 1.4, "price": 6.8, "target_mean": 16},
+        "PERT3": {"counts": counts(5, 0, 0), "upside": 0.2, "price": 10, "target_mean": 12},
+    })
+    flags = {a["ticker"]: a["target_suspect"] for a in snap["assets"]}
+    assert flags == {"LONG3": True, "PERT3": False}
+    svc = ConsensusService(AnalystService(), path=tmp_path / "x.json")
+    svc.snapshot = snap
+    assert [a["ticker"] for a in svc.view("potencial")["assets"]] == ["PERT3"]

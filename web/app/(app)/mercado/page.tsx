@@ -139,7 +139,7 @@ function Highlights({ cheap, consensus }: { cheap: ShortTermList | null; consens
                   <span className="w-20 text-right text-xs text-muted">
                     Preço-alvo
                     <strong className={`tabular block text-sm ${a.upside != null && a.upside < 0 ? "text-negative" : "text-positive"}`}>
-                      {formatRatio(a.upside)}
+                      {a.target_suspect ? "–" : formatRatio(a.upside)}
                     </strong>
                   </span>
                 </Link>

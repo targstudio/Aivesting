@@ -55,15 +55,25 @@ function Row({ a, position }: { a: ConsensusAsset; position: number }) {
         </div>
         <div>
           <div className="text-xs text-muted">Preço que esperam (média)</div>
-          <div className="tabular font-bold">{a.target_mean != null ? formatBRL(a.target_mean) : "–"}</div>
+          <div className={`tabular font-bold ${a.target_suspect ? "text-muted line-through" : ""}`}>
+            {a.target_mean != null ? formatBRL(a.target_mean) : "–"}
+          </div>
           {a.price != null && <div className="text-[11px] text-muted">hoje {formatBRL(a.price)}</div>}
         </div>
         <div>
           <div className="text-xs text-muted">Diferença para hoje</div>
-          <div className={`tabular font-bold ${a.upside != null && a.upside < 0 ? "text-negative" : "text-positive"}`}>
-            {formatRatio(a.upside)}
-          </div>
-          <div className="text-[11px] text-muted">em cerca de 12 meses, se acertarem</div>
+          {a.target_suspect ? (
+            <div className="text-xs text-muted">
+              Longe demais do preço de hoje: o alvo pode estar desatualizado (por exemplo, depois de um desdobramento).
+            </div>
+          ) : (
+            <>
+              <div className={`tabular font-bold ${a.upside != null && a.upside < 0 ? "text-negative" : "text-positive"}`}>
+                {formatRatio(a.upside)}
+              </div>
+              <div className="text-[11px] text-muted">em cerca de 12 meses, se acertarem</div>
+            </>
+          )}
         </div>
       </div>
 

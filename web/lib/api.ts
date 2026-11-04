@@ -754,6 +754,8 @@ export type ConsensusAsset = {
   target_low: number | null;
   target_high: number | null;
   upside: number | null;
+  /** Alvo longe demais do preço: provavelmente antigo, não ajustado a desdobramento ou grupamento. */
+  target_suspect?: boolean;
   firms: { firm: string; side: AnalystSide; side_label: string; date: string; source: string }[];
   named_firms: number;
   dy: number | null;
