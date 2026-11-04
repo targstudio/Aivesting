@@ -1,5 +1,5 @@
 # Baixa os indicadores (P/VP, P/L, dividendos, vacância...) de todas as ações e FIIs no Fundamentus e o embalo de
-# preço dos mais baratos no Yahoo, e grava em api/data/curto_prazo.json (cópia inicial da tela Curto prazo; a API
+# preço dos mais baratos e o consenso dos analistas no Yahoo, e grava em api/data/curto_prazo.json e consenso.json (cópia inicial da tela Curto prazo; a API
 # também se atualiza sozinha). Roda nos dias úteis depois do pregão, sob demanda e em PRs que mudam a varredura.
 name: Atualizar curto prazo
 
@@ -11,6 +11,8 @@ on:
     paths:
       - api/app/trader.py
       - api/scripts/fetch_trader.py
+      - api/app/consensus.py
+      - api/scripts/fetch_consensus.py
       - .github/workflows/trader-data.yml
 
 permissions:
@@ -36,15 +38,20 @@ jobs:
       - run: pip install -e .
       - name: Baixar indicadores e preços
         run: python scripts/fetch_trader.py
+      - name: Baixar a opinião dos analistas (consenso de bancos e corretoras)
+        # Não derruba o resto se o Yahoo recusar: a API tenta de novo sozinha.
+        continue-on-error: true
+        run: python scripts/fetch_consensus.py
       - name: Gravar no branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898338+github-actions[bot]@users.noreply.github.com"
           git add data/curto_prazo.json
+          [ -f data/consenso.json ] && git add data/consenso.json
           if git diff --cached --quiet; then
             echo "Sem mudanças."
           else
-            git commit -m "Atualiza os dados do curto prazo"
+            git commit -m "Atualiza os dados do curto prazo e do consenso"
             git pull --rebase
             git push
           fi

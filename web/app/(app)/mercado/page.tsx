@@ -3,8 +3,18 @@ import { AiInsight } from "@/app/components/AiInsight";
 import { AssetLogo } from "@/app/components/AssetLogo";
 import { Sparkline } from "@/app/components/Sparkline";
 import { Breadcrumbs, Card, EmptyState, InfoBanner, PageTitle } from "@/app/components/ui";
-import { getMacro, getMarket, type MarketItem, type Mover } from "@/lib/api";
-import { changeColor, formatBRL, formatNumber, formatPercent, formatUpdated } from "@/lib/format";
+import { SIDE } from "@/app/components/AnalystsCard";
+import {
+  getConsensus,
+  getMacro,
+  getMarket,
+  getShortTerm,
+  type ConsensusList,
+  type MarketItem,
+  type Mover,
+  type ShortTermList,
+} from "@/lib/api";
+import { changeColor, formatBRL, formatNumber, formatPercent, formatRatio, formatUpdated } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -69,8 +79,86 @@ function MoverList({ title, items, empty }: { title: string; items: Mover[]; emp
   );
 }
 
+function Highlights({ cheap, consensus }: { cheap: ShortTermList | null; consensus: ConsensusList | null }) {
+  if (!cheap?.assets.length && !consensus?.assets.length) return null;
+  return (
+    <div className="mb-8 grid gap-6 lg:grid-cols-2">
+      {cheap?.assets.length ? (
+        <Card>
+          <div className="mb-1 flex items-baseline justify-between gap-3">
+            <h2 className="text-lg font-bold">Empresas baratas agora</h2>
+            <Link href="/baratas" className="rounded-full bg-accent-bg px-4 py-1.5 text-sm font-semibold text-accent-text">
+              Ver todas
+            </Link>
+          </div>
+          <p className="mb-3 text-xs text-muted">Preço baixo perto do patrimônio e do lucro, pagando dividendos e sem alerta grave.</p>
+          <ul className="flex flex-col divide-y divide-border">
+            {cheap.assets.map((a) => (
+              <li key={a.ticker}>
+                <Link href={`/ativo/${a.ticker}`} className="flex items-center gap-3 py-3 hover:opacity-80">
+                  <AssetLogo ticker={a.ticker} src={a.logo_url} size={36} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold">{a.ticker}</span>
+                    <span className="block truncate text-xs text-muted">{a.name}</span>
+                  </span>
+                  <span className="text-right text-xs text-muted">
+                    <span className="block">P/VP <strong className="tabular text-text">{formatNumber(Math.round((a.p_vp ?? 0) * 100) / 100)}</strong></span>
+                    <span className="block">P/L <strong className="tabular text-text">{a.p_l != null ? formatNumber(Math.round(a.p_l * 10) / 10) : "–"}</strong></span>
+                  </span>
+                  <span className="w-20 text-right text-xs text-muted">
+                    Dividendos
+                    <strong className="tabular block text-sm text-text">{formatRatio(a.dy, false)}</strong>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
+      {consensus?.assets.length ? (
+        <Card>
+          <div className="mb-1 flex items-baseline justify-between gap-3">
+            <h2 className="text-lg font-bold">Mais indicadas pelos bancos</h2>
+            <Link href="/consenso" className="rounded-full bg-accent-bg px-4 py-1.5 text-sm font-semibold text-accent-text">
+              Ver ranking
+            </Link>
+          </div>
+          <p className="mb-3 text-xs text-muted">Opinião da maioria dos analistas de bancos e corretoras. Analistas também erram.</p>
+          <ul className="flex flex-col divide-y divide-border">
+            {consensus.assets.map((a) => (
+              <li key={a.ticker}>
+                <Link href={`/ativo/${a.ticker}`} className="flex items-center gap-3 py-3 hover:opacity-80">
+                  <AssetLogo ticker={a.ticker} src={a.logo_url} size={36} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold">{a.ticker}</span>
+                    <span className="block truncate text-xs text-muted">
+                      {a.counts.compra} de {a.counts.total} indicam compra
+                    </span>
+                  </span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${SIDE[a.verdict].badge}`}>{a.verdict_label}</span>
+                  <span className="w-20 text-right text-xs text-muted">
+                    Preço-alvo
+                    <strong className={`tabular block text-sm ${a.upside != null && a.upside < 0 ? "text-negative" : "text-positive"}`}>
+                      {formatRatio(a.upside)}
+                    </strong>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
+    </div>
+  );
+}
+
 export default async function MarketPage() {
-  const [market, macro] = await Promise.all([getMarket(), getMacro()]);
+  const [market, macro, cheap, consensus] = await Promise.all([
+    getMarket(),
+    getMacro(),
+    getShortTerm("acoes", "baratas", "", 0, 5),
+    getConsensus("compra", 5),
+  ]);
   const indices = [...(market?.indices ?? [])].sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
   const breadth = market?.amplitude;
   const total = breadth ? breadth.altas + breadth.baixas + breadth.estaveis : 0;
@@ -129,6 +217,8 @@ export default async function MarketPage() {
           </div>
         </>
       )}
+
+      <Highlights cheap={cheap} consensus={consensus} />
 
       {macro?.indicators.length ? (
         <Card>

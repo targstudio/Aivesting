@@ -21,7 +21,8 @@ export function RankingList({
   // Dividend yield de 12 meses por ticker; quando vem, ganha uma coluna (só na lista completa).
   yields?: Record<string, DividendYield> | null;
 }) {
-  const showYield = !compact && !!yields;
+  const showYield = !compact && (!!yields || assets.some((a) => a.dividend_yield != null));
+  const dyOf = (a: RankedAsset) => yields?.[a.ticker]?.dy_12m ?? a.dividend_yield ?? null;
   const [open, setOpen] = useState<string | null>(null);
   return (
     <div className="flex flex-col gap-3">
@@ -64,7 +65,7 @@ export function RankingList({
               {showYield && (
                 <span className="hidden md:block" title="Dividendos dos últimos 12 meses ÷ preço">
                   <span className="block text-xs text-muted">DY 12m</span>
-                  <span className="tabular block">{formatRatio(yields?.[a.ticker]?.dy_12m, false)}</span>
+                  <span className="tabular block">{formatRatio(dyOf(a), false)}</span>
                 </span>
               )}
               <span className="text-right md:text-left">
@@ -75,6 +76,35 @@ export function RankingList({
             </button>
             {expanded && (
               <div className="border-t border-border px-4 py-4 text-sm md:px-6">
+                {(a.total_return_6m != null || dyOf(a) != null) && (
+                  <div className="mb-4 grid grid-cols-2 gap-3 rounded-2xl bg-track/50 px-4 py-3 md:grid-cols-4">
+                    <div>
+                      <div className="text-xs text-muted">Dividendos por ano</div>
+                      <div className="tabular font-bold">{formatRatio(dyOf(a), false)}</div>
+                    </div>
+                    {a.return_6m != null && (
+                      <div>
+                        <div className="text-xs text-muted">Preço em 6 meses</div>
+                        <div className={`tabular font-bold ${changeColor(a.return_6m)}`}>{formatRatio(a.return_6m)}</div>
+                      </div>
+                    )}
+                    {a.total_return_6m != null && (
+                      <div title="Preço mais os dividendos do período (aproximado pela metade dos dividendos de 12 meses)">
+                        <div className="text-xs text-muted">Com dividendos, 6 meses</div>
+                        <div className={`tabular font-bold ${changeColor(a.total_return_6m)}`}>{formatRatio(a.total_return_6m)}</div>
+                      </div>
+                    )}
+                    {a.p_vp != null && (
+                      <div>
+                        <div className="text-xs text-muted">Preço/patrimônio (P/VP)</div>
+                        <div className="tabular font-bold">
+                          {formatNumber(Math.round(a.p_vp * 100) / 100)}x{" "}
+                          <span className="text-xs font-normal text-muted">{a.p_vp < 1 ? "barato" : "acima do patrimônio"}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <p className="mb-3 text-muted">Nota {formatNumber(a.score)} de 100. O que mais pesou:</p>
                 <ul className="mb-4 flex flex-col gap-2">
                   {a.top_factors.map((f) => (

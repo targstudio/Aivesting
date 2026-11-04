@@ -128,3 +128,17 @@ def test_fundamentals_fallback_without_brapi():
     body = client.get("/assets/HGLG11/fundamentos").json()
     assert body["price_to_book"] == 0.98 and body["source"] == "Fundamentus"
     assert client.get("/assets/ABCD3/fundamentos").status_code == 404
+
+
+def test_cheap_view_skips_serious_flags():
+    svc = TraderService(demo=True)
+    asyncio.run(svc.refresh(force=True))
+    view = svc.view("acoes", "baratas", limit=100)
+    assert view["cheap_count"] == view["total"]
+    for a in view["assets"]:
+        assert a["scores"]["value"] >= 60 and a["scores"]["quality"] >= 45
+        assert a["p_l"] >= 4 and (a["debt_equity"] or 0) <= 2
+    cheap = [a["scores"]["cheap"] for a in view["assets"]]
+    assert cheap == sorted(cheap, reverse=True)
+    funds = svc.ranking_fundamentals()
+    assert set(funds["PETR4"]) == {"dy", "p_vp", "p_l"}
