@@ -95,6 +95,35 @@ REAL_RATE_HIGH = 6.0  # % a.a. de juro real (Selic menos IPCA 12 meses) a partir
 TILT = 5
 
 
+Focus = Literal["dividir", "renda_fixa", "renda_variavel", "acoes", "fiis"]
+
+# Classes que entram em cada escolha concentrada; os pesos entre elas seguem o perfil.
+FOCUS = {
+    "renda_fixa": {"label": "Só renda fixa", "keys": ("rf_pos", "rf_ipca")},
+    "renda_variavel": {"label": "Só renda variável", "keys": ("acoes", "fiis", "internacional")},
+    "acoes": {"label": "Só ações", "keys": ("acoes",)},
+    "fiis": {"label": "Só fundos imobiliários", "keys": ("fiis",)},
+}
+FOCUS_MAX_PER_ASSET = 0.20  # concentrando, cada ativo leva até 20% do total (mínimo de 5 nomes numa classe só)
+
+
+def focus_warning(focus: str, prazo: int, has_reserve: bool) -> str | None:
+    if focus == "dividir":
+        return None
+    parts = []
+    if focus == "renda_fixa":
+        parts.append("Tudo em renda fixa é seguro, mas no longo prazo tende a crescer menos que uma carteira dividida.")
+    else:
+        parts.append(
+            "Colocar tudo em um só tipo de investimento aumenta o risco: se esse mercado cair, todo o seu dinheiro cai junto."
+        )
+        if prazo == 0:
+            parts.append("Para usar em menos de 1 ano, é arriscado: o valor pode estar abaixo do que você pôs na hora de resgatar.")
+    if not has_reserve:
+        parts.append("Antes, vale ter uma reserva de emergência guardada em algo de resgate imediato.")
+    return " ".join(parts)
+
+
 class PlanRequest(BaseModel):
     answers: ProfileAnswers
     amount: float = Field(gt=0, le=1e10, description="Quanto a pessoa quer investir agora, em R$")
@@ -103,6 +132,8 @@ class PlanRequest(BaseModel):
     has_reserve: bool = False
     # Por quantos meses o dinheiro pode ficar aplicado. Quando informado, substitui a resposta de prazo do questionário.
     months: int | None = Field(default=None, ge=1, le=600)
+    # Onde a pessoa quer colocar o dinheiro. "dividir" segue o perfil; as outras concentram em uma classe.
+    focus: Focus = "dividir"
 
     def effective_answers(self) -> ProfileAnswers:
         if self.months is None:
@@ -126,11 +157,11 @@ def term_for(prazo: int) -> str:
 MAX_PER_ASSET = 0.10  # nenhum ativo individual passa de 10% do total investido
 
 
-def split_picks(picks: list[dict], class_value: float, total: float) -> list[dict]:
+def split_picks(picks: list[dict], class_value: float, total: float, max_share: float = MAX_PER_ASSET) -> list[dict]:
     """Divide o valor da classe entre os primeiros ativos, com no máximo 10% do total em cada um."""
     if not picks or class_value <= 0:
         return []
-    cap = total * MAX_PER_ASSET
+    cap = total * max_share
     n = min(len(picks), max(3, -(-int(class_value) // max(int(cap), 1))))
     each = class_value / n
     if each > cap:  # não há ativos suficientes: o resto fica no ETF/fundo da classe
@@ -145,10 +176,11 @@ def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[
     profile, score = classify(answers)
     weights = dict(WEIGHTS[profile])
     notes: list[str] = []
+    focused = req.focus != "dividir"
 
     selic, ipca = macro.get("selic"), macro.get("ipca_12m")
     real_rate = round(selic - ipca, 2) if selic is not None and ipca is not None else None
-    if real_rate is not None and real_rate >= REAL_RATE_HIGH and profile != "conservador":
+    if not focused and real_rate is not None and real_rate >= REAL_RATE_HIGH and profile != "conservador":
         weights["acoes"] -= TILT
         weights["rf_ipca"] += TILT
         rate = f"{real_rate:.1f}".replace(".", ",")
@@ -157,8 +189,14 @@ def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[
             "renda fixa atrelada à inflação."
         )
 
+    if focused:
+        keys = FOCUS[req.focus]["keys"]
+        if req.focus == "renda_fixa" and answers.prazo == 0:
+            keys = ("rf_pos",)  # para menos de 1 ano, o pós-fixado não oscila no resgate
+        weights = {k: weights[k] for k in keys}
+
     reserve = 0.0
-    if not req.has_reserve:
+    if not req.has_reserve and not focused:
         target = req.monthly_expenses * 6 if req.monthly_expenses else req.amount * 0.2
         reserve = min(req.amount, target)
         notes.append(
@@ -167,13 +205,14 @@ def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[
             + " em aplicações de resgate imediato."
         )
     rest = req.amount - reserve
+    weight_sum = sum(weights.values()) or 1
 
     allocations = []
     if reserve:
         allocations.append(("reserva", reserve))
     for key, pct in weights.items():
         if pct > 0:
-            allocations.append((key, rest * pct / 100))
+            allocations.append((key, rest * pct / weight_sum))
 
     cdi = round(selic - 0.1, 2) if selic is not None else None
     term = term_for(answers.prazo)
@@ -181,7 +220,8 @@ def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[
     for key, value in allocations:
         info = CLASSES[key]
         class_picks = (picks or {}).get(key, {})
-        chosen = split_picks(class_picks.get(term, []), value, req.amount)
+        chosen = split_picks(class_picks.get(term, []), value, req.amount,
+                             FOCUS_MAX_PER_ASSET if focused else MAX_PER_ASSET)
         items.append({
             "key": key,
             "label": info["label"],
@@ -190,14 +230,14 @@ def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[
             "risk": info["risk"],
             "why": info["why"],
             "products": info["products"],
-            "picks": {t: class_picks.get(t, []) for t in TERMS if class_picks.get(t)},
+            "picks": {t: class_picks.get(t, [])[:5] for t in TERMS if class_picks.get(t)},
             "suggested": chosen,
             "suggested_rest": round(value - sum(c["value"] for c in chosen), 2) if chosen else None,
         })
     contribution = None
     if req.monthly_contribution:
         contribution = [
-            {"key": k, "label": CLASSES[k]["label"], "value": round(req.monthly_contribution * p / 100, 2)}
+            {"key": k, "label": CLASSES[k]["label"], "value": round(req.monthly_contribution * p / weight_sum, 2)}
             for k, p in weights.items() if p > 0
         ]
     return {
@@ -213,5 +253,8 @@ def build_plan(req: PlanRequest, macro: dict[str, float], picks: dict[str, dict[
         "variable_income_pct": round(sum(i["pct"] for i in items if i["key"] in ("acoes", "fiis", "internacional")), 1),
         "macro": {"selic": selic, "ipca_12m": ipca, "juro_real": real_rate, "cdi_estimado": cdi},
         "notes": notes,
+        "focus": req.focus,
+        "focus_label": FOCUS[req.focus]["label"] if focused else "Dividido pelo perfil",
+        "focus_warning": focus_warning(req.focus, answers.prazo, req.has_reserve),
     }
 

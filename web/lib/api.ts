@@ -304,7 +304,11 @@ export type AdvisorInput = {
   monthly_expenses: number;
   has_reserve: boolean;
   months?: number;
+  focus?: AdvisorFocus;
 };
+
+/** Onde a pessoa quer colocar o dinheiro: dividir pelo perfil ou concentrar em uma classe. */
+export type AdvisorFocus = "dividir" | "renda_fixa" | "renda_variavel" | "acoes" | "fiis";
 
 export type AdvisorTerm = "curto" | "medio" | "longo";
 
@@ -343,6 +347,9 @@ export type AdvisorPlan = {
   variable_income_pct: number;
   macro: { selic: number | null; ipca_12m: number | null; juro_real: number | null; cdi_estimado: number | null };
   notes: string[];
+  focus?: AdvisorFocus;
+  focus_label?: string;
+  focus_warning?: string | null;
   disclaimer: string;
 };
 
