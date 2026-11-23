@@ -7,10 +7,10 @@ import { DividendsCard } from "@/app/components/DividendsCard";
 import { HighsCard } from "@/app/components/HighsCard";
 import { FundamentalsCard } from "@/app/components/FundamentalsCard";
 import { Term } from "@/app/components/Term";
-import { AreaChart } from "@/app/components/charts";
+import { AssetPriceChart } from "@/app/components/trading/AssetPriceChart";
 import { ExplainButton } from "@/app/components/ExplainButton";
 import { SwotAnalysis } from "@/app/components/SwotAnalysis";
-import { Breadcrumbs, Card, CardHeader, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
+import { Breadcrumbs, Card, InfoBanner, PageTitle, Stat } from "@/app/components/ui";
 import { getAnalysts, getAsset, getAssetDividends, getAssetHighs, getAssetHistory, getB3Quote, getFundamentals, type B3Quote } from "@/lib/api";
 import { changeColor, formatBRL, formatNumber, formatPercent, formatProbability, formatUpdated } from "@/lib/format";
 
@@ -80,16 +80,7 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
         </div>
       </Card>
 
-      {asset.spark?.length > 1 && (
-        <Card className="mb-6">
-          <CardHeader
-            title="Preço"
-            subtitle="Últimos 30 dias de bolsa"
-            value={<span className={changeColor(asset.spark[asset.spark.length - 1] / asset.spark[0] - 1)}>{formatPercent((asset.spark[asset.spark.length - 1] / asset.spark[0] - 1) * 100)}</span>}
-          />
-          <AreaChart values={asset.spark} prefix="R$ " color="var(--chart-2)" />
-        </Card>
-      )}
+      <AssetPriceChart ticker={asset.ticker} />
 
       <div className="mb-6 grid gap-6 lg:grid-cols-2">
         <Card>
@@ -120,7 +111,6 @@ function LiveSection({ detail }: { detail: NonNullable<Awaited<ReturnType<typeof
 }
 
 function QuoteSection({ quote }: { quote: B3Quote }) {
-  const spark = quote.spark ?? [];
   const asOf = quote.as_of
     ? quote.live
       ? `última atualização: ${formatUpdated(quote.as_of)}`
@@ -149,16 +139,7 @@ function QuoteSection({ quote }: { quote: B3Quote }) {
         </div>
       </Card>
 
-      {spark.length > 1 && (
-        <Card className="mb-6">
-          <CardHeader
-            title="Preço"
-            subtitle="Últimos 30 dias de bolsa"
-            value={<span className={changeColor(spark[spark.length - 1] / spark[0] - 1)}>{formatPercent((spark[spark.length - 1] / spark[0] - 1) * 100)}</span>}
-          />
-          <AreaChart values={spark} prefix="R$ " color="var(--chart-2)" />
-        </Card>
-      )}
+      <AssetPriceChart ticker={quote.ticker} />
 
       <Card className="mb-6 text-sm text-muted">
         Este investimento não está na lista de melhores, que cobre só os mais negociados. Você ainda pode perguntar à

@@ -144,11 +144,97 @@ TOOLS = [
 ]
 
 
+TRADING_TOOLS = [
+    {
+        "name": "get_technical",
+        "description": "Leitura técnica de qualquer ativo da B3 num tempo gráfico: preço, tendência pelas médias, IFR14 e "
+        "IFR2, MACD, Bandas de Bollinger, ATR, estocástico, volume relativo, setups presentes no último candle (9.1, "
+        "cruzamento de médias, rompimento, IFR2, VWAP, gap etc.) e níveis (pivôs do dia, suporte e resistência de 20 "
+        "barras, VWAP e stop sugerido pelo ATR). Dados com cerca de 15 minutos de atraso.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "ticker": {"type": "string"},
+                "interval": {"type": "string", "enum": ["5m", "15m", "60m", "1d", "1wk"]},
+            },
+            "required": ["ticker", "interval"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+    {
+        "name": "get_radar",
+        "description": "Radar de setups no gráfico diário das ações mais negociadas: quem apresentou setups de alta ou de "
+        "baixa hoje, ou (view day_trade) as mais líquidas com maior amplitude diária (ATR%), boas para day trade.",
+        "input_schema": {
+            "type": "object",
+            "properties": {"view": {"type": "string", "enum": ["setups", "alta", "baixa", "day_trade"]}},
+            "required": ["view"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+    {
+        "name": "run_backtest",
+        "description": "Testa uma estratégia no histórico com custos da B3, lote de 100, execução no candle seguinte e "
+        "imposto estimado. Séries: preco, abertura, maxima, minima, volume, mmeN, mmaN, ifrN, macd, macd_sinal, "
+        "macd_hist, bb_supN, bb_infN, bb_meioN, vwap, atrN, maxN, minN (das N barras anteriores), vol_mediaN ou um "
+        "número. Entrada: todas as condições (E). Saída: qualquer uma (OU). Day trade exige 5m, 15m ou 60m.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "ticker": {"type": "string"},
+                "intervalo": {"type": "string", "enum": ["5m", "15m", "60m", "1d", "1wk"]},
+                "lado": {"type": "string", "enum": ["compra", "venda"]},
+                "modalidade": {"type": "string", "enum": ["day_trade", "swing"]},
+                "entrada": {"type": "array", "items": {
+                    "type": "object",
+                    "properties": {
+                        "esquerda": {"type": "string"},
+                        "operador": {"type": "string", "enum": ["cruza_acima", "cruza_abaixo", "acima", "abaixo"]},
+                        "direita": {"type": "string"},
+                    },
+                    "required": ["esquerda", "operador", "direita"],
+                    "additionalProperties": False,
+                }},
+                "saida": {"type": "array", "items": {
+                    "type": "object",
+                    "properties": {
+                        "esquerda": {"type": "string"},
+                        "operador": {"type": "string", "enum": ["cruza_acima", "cruza_abaixo", "acima", "abaixo"]},
+                        "direita": {"type": "string"},
+                    },
+                    "required": ["esquerda", "operador", "direita"],
+                    "additionalProperties": False,
+                }},
+                "stop_pct": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+                "alvo_pct": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+                "stop_atr": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+                "max_barras": {"anyOf": [{"type": "integer"}, {"type": "null"}]},
+            },
+            "required": ["ticker", "intervalo", "lado", "modalidade", "entrada", "saida", "stop_pct", "alvo_pct",
+                         "stop_atr", "max_barras"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+]
+
+TRADING_PROMPT = """A pessoa está no módulo de trading (para quem opera day trade e swing trade). Aqui pode usar termos
+técnicos (IFR, MACD, VWAP, stop, alvo, payoff), explicando rapidamente quando ajudar. Use get_technical, get_radar e
+run_backtest antes de citar números. Você pode descrever o que o gráfico mostra, os setups presentes, os níveis de
+suporte, resistência e stop pelo ATR, e o resultado de testes de estratégia. Não diga "compre" ou "venda agora" e não
+dê preço-alvo como promessa: apresente cenários (se romper X, a referência seguinte é Y; se perder Z, o stop técnico
+fica em W). Sempre lembre do gerenciamento de risco (arriscar pouco por operação, usar stop) e que os dados têm cerca de
+15 minutos de atraso, então não servem para execução em tempo real."""
+
+
 class Assistant:
     def __init__(
         self, api_key: str, model: str, ranking: RankingService, macro_source, longterm=None, market=None,
-        usage=None, feature: str = "chat", catalog=None,
+        usage=None, feature: str = "chat", catalog=None, trading=None,
     ):
+        self.trading = trading  # (CandleSource, TradingService) do módulo de trading
         self.usage = usage
         self.feature = feature
         self.client = anthropic.AsyncAnthropic(api_key=api_key)
@@ -226,7 +312,45 @@ class Assistant:
             return overview
         if name == "get_macro":
             return {"indicadores": [asdict(i) for i in await self.macro_source.indicators()]}
+        if name in ("get_technical", "get_radar", "run_backtest"):
+            return await self.run_trading_tool(name, args)
         return {"erro": f"Ferramenta desconhecida: {name}"}
+
+    async def run_trading_tool(self, name: str, args: dict) -> dict:
+        from ..trading.backtest import Strategy, run
+        from ..trading.data import BACKTEST_RANGE
+        from ..trading.data import INTERVALS
+        from ..trading.setups import analyze
+
+        if not self.trading:
+            return {"erro": "Módulo de trading indisponível."}
+        source, radar = self.trading
+        if name == "get_technical":
+            data = await source.get(args["ticker"], args["interval"])
+            if not data:
+                return {"erro": f"Sem candles para {args['ticker'].upper()}."}
+            return analyze(data, INTERVALS[args["interval"]].intraday)
+        if name == "get_radar":
+            await radar.refresh()
+            view = radar.view(args["view"])
+            if view is None:
+                return {"erro": "O radar ainda está sendo montado."}
+            for a in view["ativos"]:
+                a.pop("spark", None)
+            view["ativos"] = view["ativos"][:20]
+            return view
+        try:
+            strategy = Strategy(**{k: v for k, v in args.items() if v is not None})
+            data = await source.get(strategy.ticker, strategy.intervalo, BACKTEST_RANGE[strategy.intervalo])
+            if not data:
+                return {"erro": f"Sem candles para {strategy.ticker}."}
+            result = run(strategy, data["candles"])
+        except ValueError as exc:
+            return {"erro": str(exc)}
+        result.pop("curva", None)
+        result["operacoes"] = result["operacoes"][-5:]
+        result["imposto"].pop("meses", None)
+        return result
 
     async def reply(
         self, history: list[dict], page: str | None = None, level: str = "iniciante", system: str | None = None
@@ -239,6 +363,8 @@ class Assistant:
         # `system` substitui o papel padrão (ex.: modo assessor); o nível e a tela valem para os dois.
         system = system or f"{SYSTEM_PROMPT}\n\n{LEVELS.get(level, LEVELS['iniciante'])}"
         system = f"{system}\n\n{FORMAT_RULES}"
+        if page and page.startswith("/trading") and self.trading:
+            system += f"\n\n{TRADING_PROMPT}"
         if page:
             system += f"\n\nA pessoa está na tela {page!r} do app. Use isso para entender referências como " \
                 "\"este ativo\" ou \"este ranking\"."
@@ -248,7 +374,7 @@ class Assistant:
                 model=self.model,
                 max_tokens=4000,
                 system=system,
-                tools=TOOLS,
+                tools=TOOLS + (TRADING_TOOLS if self.trading else []),
                 output_config={"effort": "low"},
                 betas=["server-side-fallback-2026-07-01"],
                 fallbacks="default",
