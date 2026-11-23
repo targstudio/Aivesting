@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, BriefcaseBusiness, Flag, LineChart, WalletCards, type LucideIcon } from "lucide-react";
+import { BookOpen, BriefcaseBusiness, ChartCandlestick, Flag, LineChart, WalletCards, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -32,9 +32,22 @@ export const MARKET: Area = {
   extra: ["/ativo", "/explorar"],
 };
 
+export const TRADING: Area = {
+  href: "/trading",
+  label: "Trading",
+  icon: ChartCandlestick,
+  tabs: [
+    { href: "/trading", label: "Gráfico" },
+    { href: "/trading/radar", label: "Radar de setups" },
+    { href: "/trading/estrategias", label: "Testar estratégia" },
+    { href: "/trading/diario", label: "Diário de trades" },
+  ],
+};
+
 export const AREAS: Area[] = [
   { href: "/", label: "Jornada", icon: Flag },
   MARKET,
+  TRADING,
   {
     href: "/assessor",
     label: "Onde investir",
@@ -67,7 +80,8 @@ const inPath = (pathname: string, href: string) => {
 
 /** Abas que dividem a mesma tela pela query (Ações e Fundos imobiliários usam /ranking?classe=). */
 const tabActive = (pathname: string, query: string, href: string) => {
-  if (!inPath(pathname, href)) return false;
+  // Aba é a tela exata (Gráfico em /trading não fica ativa em /trading/radar).
+  if (pathname !== href.split("?")[0]) return false;
   const want = new URLSearchParams(href.split("?")[1] ?? "").get("classe");
   return want === new URLSearchParams(query).get("classe");
 };

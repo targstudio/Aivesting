@@ -61,6 +61,9 @@ from .trader import CLASSES as TRADER_CLASSES
 from .trader import VIEWS as TRADER_VIEWS
 from .trader import TraderService
 from .storage import PortfolioStore, SupabaseStore
+from .trading.data import CandleSource
+from .trading.routes import build_router as trading_router
+from .trading.service import TradingService
 
 class ChatMessage(BaseModel):
     role: Literal["user", "assistant"]
@@ -240,13 +243,25 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
             except Exception:  # noqa: BLE001
                 log.exception("falha ao atualizar o consenso dos analistas")
             await asyncio.sleep(30 * 60)
+    # Módulo de trading: candles diários e intradiários (Yahoo) e radar de setups das ações mais negociadas.
+    candles = CandleSource(demo=settings.demo_mode)
+    trading = TradingService(candles, universe=lambda: liquid_universe(trader, list(settings.stocks)))
+
+    async def refresh_trading_forever():
+        await asyncio.sleep(90)  # depois do curto prazo, que traz a lista das ações mais negociadas
+        while True:
+            try:
+                await trading.refresh(max_age=15 * 60 if market_is_open(settings) else 3 * 3600)
+            except Exception:  # noqa: BLE001
+                log.exception("falha ao atualizar o radar de trading")
+            await asyncio.sleep(15 * 60)
     insights = Insights(settings.anthropic_api_key, settings.anthropic_model, ranking, bcb, longterm, market, usage)
     insights.trader = trader
     insights.consensus = consensus
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        refresher = trader_task = consensus_task = None
+        refresher = trader_task = consensus_task = trading_task = None
         if start_scheduler:
             await ranking.recompute(force=True)
             ranking.start()
@@ -254,9 +269,10 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
                 refresher = asyncio.create_task(refresh_catalog_forever())
             trader_task = asyncio.create_task(refresh_trader_forever())
             consensus_task = asyncio.create_task(refresh_consensus_forever())
+            trading_task = asyncio.create_task(refresh_trading_forever())
         yield
         ranking.stop()
-        for task in (refresher, trader_task, consensus_task):
+        for task in (refresher, trader_task, consensus_task, trading_task):
             if task:
                 task.cancel()
 
@@ -1026,13 +1042,15 @@ def create_app(settings: Settings | None = None, start_scheduler: bool = True) -
         ai_rate_limit(request)
         assistant = Assistant(
             settings.anthropic_api_key, settings.anthropic_model, svc, app.state.bcb, app.state.longterm,
-            app.state.market, usage, catalog=catalog,
+            app.state.market, usage, catalog=catalog, trading=(candles, trading),
         )
         result = await assistant.reply(
             [m.model_dump(include={"role", "content"}) for m in body.messages], page=body.page, level=body.level
         )
         return {**result, "disclaimer": DISCLAIMER}
 
+    app.state.trading = trading
+    app.include_router(trading_router(candles, trading, settings, usage, ai_rate_limit, require_ai))
     return app
 
 
